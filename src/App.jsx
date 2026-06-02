@@ -8,8 +8,8 @@ import { Sparkles, PawPrint, Flame, Droplets, Leaf, Zap, Heart, Map, Backpack, G
 
 const SAVE_KEY = "mythbound_tamers_save_v4";
 const OLD_SAVE_KEYS = ["mythbound_tamers_save_v6", "mythbound_tamers_save_v5", "mythbound_tamers_save_v4", "mythbound_tamers_save_v3", "mythbound_tamers_save_v2", "mythbound_tamers_save"];
-const APP_VERSION = "0.51.0";
-const APP_VERSION_CODE = 51;
+const APP_VERSION = "0.52.0";
+const APP_VERSION_CODE = 52;
 const UPDATE_MANIFEST_URL = import.meta.env.VITE_UPDATE_MANIFEST_URL || "https://costaskk.github.io/Mythbound-Tamers/update-manifest.json";
 const SHINY_RATE = 1 / 192;
 const VALID_SCREENS = new Set(["title","story","starter","world","party","pc","shop","dex","account","multiplayer","help","atlas","update","battle","gameover"]);
@@ -386,6 +386,13 @@ const BESTIARY = {
   cinderwing: { name: "Cinderwing", type: "Flame", species: "Cinder Wing", cry: "CIN-DER-WING!", stage: 2, evo: { to: "phoenixar", method: "Reach Lv.38 after Caldera Crown" }, base: [78, 43, 24, 70], skills: ["Flare Burst", "Sky Dive", "Sky Rebirth"], capture: 0.06, body: "phoenix", colors: ["#ef4444", "#fef08a", "#451a03"], lore: "Its wings heal minor burns with glowing feather dust." },
   phoenixar: { name: "Phoenixar", type: "Light", species: "Solar Phoenix", cry: "PHOE-NIX-AR!", stage: 3, base: [122, 62, 42, 88], skills: ["Sky Rebirth", "Radiant Lance", "Solar Crown"], capture: 0.016, body: "phoenix", colors: ["#fbbf24", "#fff7ed", "#7c2d12"], lore: "A rebirth Mythling that turns sunrise into living fire." },
 
+  budbyte: { name: "Budbyte", type: "Verdant", species: "Pixel Bud", cry: "bud-bit!", stage: 1, evo: { to: "florabyte", method: "Reach Lv.21 in Prism Ruins" }, base: [42, 24, 18, 35], skills: ["Vine Kick", "Petal Lance", "Rune Torrent"], capture: 0.20, body: "flower", colors: ["#86efac", "#a5f3fc", "#14532d"], lore: "A tiny flower with crystal pixels shining on each petal." },
+  florabyte: { name: "Florabyte", type: "Crystal", species: "Data Bloom", cry: "FLO-RA-BYTE!", stage: 2, evo: { to: "prismbloom", method: "Reach Lv.37 after Prism Ruins" }, base: [82, 45, 34, 54], skills: ["Petal Lance", "Rune Torrent", "Nova Shell"], capture: 0.055, body: "flower", colors: ["#22d3ee", "#f0abfc", "#052e16"], lore: "Its petals arrange into living runes when moonlight touches them." },
+  prismbloom: { name: "Prismbloom", type: "Crystal", species: "Prism Garden", cry: "PRISM-BLOOM!", stage: 3, base: [126, 64, 52, 70], skills: ["Petal Lance", "Nova Shell", "Prism Nova"], capture: 0.018, body: "flower", colors: ["#67e8f9", "#fef3c7", "#020617"], lore: "A walking garden of light; every petal reflects a different possible future." },
+  wolfrune: { name: "Wolfrune", type: "Sound", species: "Rune Pup", cry: "wo-rune!", stage: 1, evo: { to: "howlglyph", method: "Reach Lv.22 in Echo Caves" }, base: [50, 29, 18, 42], skills: ["Night Nip", "Rune Howl", "Gust Peck"], capture: 0.18, body: "wolf", colors: ["#7dd3fc", "#c4b5fd", "#111827"], lore: "It howls symbols into the air that only old cave walls remember." },
+  howlglyph: { name: "Howlglyph", type: "Sound", species: "Glyph Wolf", cry: "HOWL-GLYPH!", stage: 2, evo: { to: "runewarden", method: "Reach Lv.39 after Storm Bell Trial" }, base: [92, 54, 35, 66], skills: ["Rune Howl", "Cyclone Fang", "Storm Sonata"], capture: 0.045, body: "wolf", colors: ["#38bdf8", "#f0abfc", "#020617"], lore: "Its mane becomes a ribbon of floating sound runes in battle." },
+  runewarden: { name: "Runewarden", type: "Sound", species: "Rune Warden", cry: "RUNE-WAR-DEN!", stage: 3, base: [138, 74, 54, 84], skills: ["Rune Howl", "Storm Sonata", "Radiant Lance"], capture: 0.014, body: "wolf", colors: ["#0ea5e9", "#fde68a", "#020617"], lore: "A guardian wolf whose howl can seal cracked Prism gates." },
+
   solguard: { name: "Solguard", type: "Light", species: "Legendary Sun Sentinel", cry: "SOOOOL-GUAAARD!", stage: 1, legendary: true, base: [150, 48, 40, 34], skills: ["Dawn Judgment", "Solar Crown", "Light Fang"], capture: 0.018, body: "dragon", colors: ["#facc15", "#fef3c7", "#7c2d12"], lore: "A legendary sentinel sealed beneath the Sunken Sun Catacombs. It answers only at morning after the Prism is restored." },
   umbraclaw: { name: "Umbraclaw", type: "Shadow", species: "Legendary Eclipse Beast", cry: "UM-BRAAA-CLAW!", stage: 1, legendary: true, base: [142, 53, 32, 41], skills: ["Eclipse Rend", "Shadow Spiral", "Night Nip"], capture: 0.014, body: "cat", colors: ["#111827", "#a855f7", "#000000"], lore: "A predatory legend chained in the Nocturne Catacombs. Its claws cut through moonlight." },
   thalassor: { name: "Thalassor", type: "Aqua", species: "Legendary Abyss Whale", cry: "THA-LAAAS-SOOOR!", stage: 1, legendary: true, base: [178, 42, 43, 18], skills: ["Abyssal Maelstrom", "Tidal Crush", "Healing Rain"], capture: 0.012, body: "whale", colors: ["#0e7490", "#67e8f9", "#020617"], lore: "A legendary abyssal whale sleeping below the Tideglass Grotto. It awakens only when the tide and night align." },
@@ -454,7 +461,7 @@ const BESTIARY = {
   regaldrake: { name: "Regaldrake", type: "Flame", species: "Sky Prism Dragon", cry: "REGAL-DRAY!", stage: 2, base: [108, 32, 22, 20], skills: ["Royal Flame", "Meteor Claw", "Prism Nova"], capture: 0.03, body: "dragon", colors: ["#dc2626", "#fef08a", "#111827"], lore: "The restored royal dragon whose wings reflect every color of the Sky Prism." },
 };
 const DEX_ORDER = Object.keys(BESTIARY);
-const SKILLS = { "Cinder Paw": { power: 18, type: "Flame", text: "A hot claw swipe.", kind: "attack", fx: "slash" }, "Flare Burst": { power: 30, type: "Flame", text: "A flame blast.", kind: "attack", unlock: 3, fx: "blast" }, "Meteor Claw": { power: 43, type: "Flame", text: "A burning claw.", kind: "attack", unlock: 5, fx: "meteor" }, "Solar Crown": { power: 54, type: "Flame", text: "A sun crown attack.", kind: "attack", unlock: 8, fx: "blast" }, "Royal Flame": { power: 30, type: "Flame", text: "A noble flame.", kind: "attack", fx: "blast" }, "Bubble Bite": { power: 17, type: "Aqua", text: "A bubble bite.", kind: "attack", fx: "bubble" }, "Healing Rain": { power: 25, type: "Aqua", text: "Restore HP.", kind: "heal", unlock: 3, fx: "heal" }, "Tidal Crush": { power: 40, type: "Aqua", text: "A crushing wave.", kind: "attack", unlock: 5, fx: "bubble" }, "Vine Kick": { power: 18, type: "Verdant", text: "A leafy kick.", kind: "attack", fx: "slash" }, "Bloom Heal": { power: 23, type: "Verdant", text: "Heal with petals.", kind: "heal", unlock: 3, fx: "heal" }, "Worldroot Ram": { power: 52, type: "Verdant", text: "A sacred root charge.", kind: "attack", unlock: 8, fx: "slam" }, "Jolt Kick": { power: 19, type: "Volt", text: "A shocking kick.", kind: "attack", fx: "zap" }, "Static Rush": { power: 31, type: "Volt", text: "A fast electric rush.", kind: "attack", unlock: 3, fx: "zap" }, "Thunder Crown": { power: 42, type: "Volt", text: "Lightning falls.", kind: "attack", unlock: 5, fx: "zap" }, "Moon Tap": { power: 17, type: "Mystic", text: "A lunar strike.", kind: "attack", fx: "moon" }, "Dream Pulse": { power: 33, type: "Mystic", text: "A dream pulse.", kind: "attack", unlock: 4, fx: "moon" }, "Prism Nova": { power: 48, type: "Mystic", text: "Prism burst.", kind: "attack", unlock: 7, fx: "nova" }, "Root Ram": { power: 21, type: "Stone", text: "A mossy ram.", kind: "attack", fx: "slam" }, "Thorn Wall": { power: 0, type: "Verdant", text: "Guard strongly.", kind: "guard", unlock: 3, fx: "guard" }, "Boulder Crash": { power: 38, type: "Stone", text: "Rock impact.", kind: "attack", unlock: 4, fx: "slam" }, "Pebble Toss": { power: 18, type: "Stone", text: "Stone throw.", kind: "attack", fx: "slam" }, "Gust Peck": { power: 17, type: "Air", text: "Wind peck.", kind: "attack", fx: "wind" }, "Sky Dive": { power: 34, type: "Air", text: "Aerial dive.", kind: "attack", unlock: 4, fx: "wind" }, "Cyclone Fang": { power: 45, type: "Air", text: "Cyclone strike.", kind: "attack", unlock: 6, fx: "wind" }, "Night Nip": { power: 18, type: "Shadow", text: "Dark bite.", kind: "attack", fx: "moon" }, "Light Fang": { power: 24, type: "Light", text: "A shining bite.", kind: "attack", fx: "nova" }, "Metal Bite": { power: 25, type: "Metal", text: "A steel-jawed bite.", kind: "attack", fx: "slam" }, "Frost Peck": { power: 22, type: "Ice", text: "A chilling peck.", kind: "attack", fx: "wind" }, "Shadow Spiral": { power: 36, type: "Shadow", text: "Black mist.", kind: "attack", unlock: 4, fx: "moon" }, "Crystal Shard": { power: 27, type: "Crystal", text: "A glittering shard strike.", kind: "attack", unlock: 2, fx: "nova" }, "Toxic Sting": { power: 26, type: "Toxic", text: "A venomous jab.", kind: "attack", unlock: 2, fx: "slash" }, "Spirit Claw": { power: 28, type: "Spirit", text: "A ghostly claw swipe.", kind: "attack", unlock: 2, fx: "moon", accuracy: 0.94, crit: 0.13 }, "Echo Pulse": { power: 25, type: "Sound", text: "A ringing pulse with high accuracy.", kind: "attack", unlock: 2, fx: "nova", accuracy: 0.98, crit: 0.08 }, "Sonic Roar": { power: 42, type: "Sound", text: "A loud shockwave with higher crit chance.", kind: "attack", unlock: 5, fx: "nova", accuracy: 0.88, crit: 0.18 }, "Fang Rush": { power: 34, type: "Beast", text: "A fierce rushing bite.", kind: "attack", unlock: 3, fx: "slash", accuracy: 0.92, crit: 0.16 }, "Terra Howl": { power: 50, type: "Beast", text: "A mountain-shaking howl.", kind: "attack", unlock: 7, fx: "slam", accuracy: 0.86, crit: 0.12 }, "Abyssal Spiral": { power: 64, type: "Aqua", text: "A deep whirlpool strike that may confuse.", kind: "attack", unlock: 8, fx: "bubble", accuracy: 0.9, status: { name: "confuse", chance: 0.18 } }, "Shell Bastion": { power: 0, type: "Stone", text: "A fortress shell guard that greatly reduces damage.", kind: "guard", unlock: 4, fx: "guard" }, "Foxfire Veil": { power: 50, type: "Flame", text: "Mystic foxfire that may burn.", kind: "attack", unlock: 6, fx: "moon", accuracy: 0.92, status: { name: "burn", chance: 0.22 } }, "Sky Rebirth": { power: 34, type: "Light", text: "Heal with sunrise feathers.", kind: "heal", unlock: 7, fx: "heal" }, "Crystal Pincer": { power: 46, type: "Crystal", text: "A precise crystal claw snap.", kind: "attack", unlock: 5, fx: "slash", accuracy: 0.95, crit: 0.16 }, "Tsunami Crown": { power: 76, type: "Aqua", text: "A royal wave with huge power.", kind: "attack", unlock: 11, fx: "bubble", accuracy: 0.84, crit: 0.12 }, "Rune Torrent": { power: 57, type: "Mystic", text: "A runic wave that may confuse.", kind: "attack", unlock: 8, fx: "nova", accuracy: 0.91, status: { name: "confuse", chance: 0.2 } }, "Petro Bloom": { power: 53, type: "Verdant", text: "Stone flowers burst from the ground.", kind: "attack", unlock: 7, fx: "slam", accuracy: 0.93, crit: 0.1 }, "Gilded Fang": { power: 49, type: "Light", text: "A golden bite that strikes cleanly.", kind: "attack", unlock: 6, fx: "slash", accuracy: 0.96, crit: 0.14 }, "Radiant Lance": { power: 62, type: "Light", text: "A piercing lance of sunlight with strong accuracy.", kind: "attack", unlock: 8, fx: "nova", accuracy: 0.95, crit: 0.12 }, "Storm Sonata": { power: 60, type: "Sound", text: "A thunderous song that may paralyze.", kind: "attack", unlock: 8, fx: "zap", accuracy: 0.9, status: { name: "paralyzed", chance: 0.2 } }, "Astral Bloom": { power: 56, type: "Crystal", text: "A constellation blossom that may confuse.", kind: "attack", unlock: 8, fx: "nova", accuracy: 0.91, status: { name: "confuse", chance: 0.18 } }, "Bazaar Trick": { power: 42, type: "Mystic", text: "A sly market illusion that may confuse.", kind: "attack", unlock: 5, fx: "moon", accuracy: 0.96, status: { name: "confuse", chance: 0.28 } }, "Stormglass Break": { power: 72, type: "Crystal", text: "A heavy glass thunder strike with lower accuracy.", kind: "attack", unlock: 10, fx: "zap", accuracy: 0.82, crit: 0.2 }, "Aurora Verdict": { power: 62, type: "Ice", text: "A royal blizzard beam.", kind: "attack", unlock: 8, fx: "legend", accuracy: 0.9, crit: 0.16 }, "Magma Crown": { power: 64, type: "Flame", text: "A crown of molten rock erupts.", kind: "attack", unlock: 8, fx: "legend", accuracy: 0.88, crit: 0.14 }, "Cathedral Howl": { power: 60, type: "Sound", text: "A sacred resonant howl.", kind: "attack", unlock: 8, fx: "legend", accuracy: 0.93, crit: 0.18 }, "Continental Slam": { power: 68, type: "Beast", text: "A continent-shaking strike.", kind: "attack", unlock: 8, fx: "legend", accuracy: 0.84, crit: 0.16 }, "Gear Eclipse": { power: 63, type: "Metal", text: "A perfect clockwork eclipse.", kind: "attack", unlock: 8, fx: "legend", accuracy: 0.91, crit: 0.15 }, "Dawn Judgment": { power: 78, type: "Light", text: "Solguard judges the field with sunrise fire.", kind: "attack", fx: "legend", accuracy: 0.9, crit: 0.2 }, "Eclipse Rend": { power: 82, type: "Shadow", text: "Umbraclaw tears open an eclipse slash.", kind: "attack", fx: "legend", accuracy: 0.88, crit: 0.24 }, "Abyssal Maelstrom": { power: 76, type: "Aqua", text: "Thalassor summons a crushing abyss current.", kind: "attack", fx: "legend", accuracy: 0.9, crit: 0.14 }, "Worldroot Cataclysm": { power: 80, type: "Verdant", text: "Gaialith raises ancient roots through the battlefield.", kind: "attack", fx: "legend", accuracy: 0.86, crit: 0.16 }, "Chrono Fracture": { power: 74, type: "Crystal", text: "Chronova fractures time into prism shards.", kind: "attack", fx: "legend", accuracy: 0.92, crit: 0.22 }, Guard: { power: 0, type: "Mystic", text: "Reduce damage.", kind: "guard", fx: "guard" } };
+const SKILLS = { "Cinder Paw": { power: 18, type: "Flame", text: "A hot claw swipe.", kind: "attack", fx: "slash" }, "Flare Burst": { power: 30, type: "Flame", text: "A flame blast.", kind: "attack", unlock: 3, fx: "blast" }, "Meteor Claw": { power: 43, type: "Flame", text: "A burning claw.", kind: "attack", unlock: 5, fx: "meteor" }, "Solar Crown": { power: 54, type: "Flame", text: "A sun crown attack.", kind: "attack", unlock: 8, fx: "blast" }, "Royal Flame": { power: 30, type: "Flame", text: "A noble flame.", kind: "attack", fx: "blast" }, "Bubble Bite": { power: 17, type: "Aqua", text: "A bubble bite.", kind: "attack", fx: "bubble" }, "Healing Rain": { power: 25, type: "Aqua", text: "Restore HP.", kind: "heal", unlock: 3, fx: "heal" }, "Tidal Crush": { power: 40, type: "Aqua", text: "A crushing wave.", kind: "attack", unlock: 5, fx: "bubble" }, "Vine Kick": { power: 18, type: "Verdant", text: "A leafy kick.", kind: "attack", fx: "slash" }, "Bloom Heal": { power: 23, type: "Verdant", text: "Heal with petals.", kind: "heal", unlock: 3, fx: "heal" }, "Worldroot Ram": { power: 52, type: "Verdant", text: "A sacred root charge.", kind: "attack", unlock: 8, fx: "slam" }, "Jolt Kick": { power: 19, type: "Volt", text: "A shocking kick.", kind: "attack", fx: "zap" }, "Static Rush": { power: 31, type: "Volt", text: "A fast electric rush.", kind: "attack", unlock: 3, fx: "zap" }, "Thunder Crown": { power: 42, type: "Volt", text: "Lightning falls.", kind: "attack", unlock: 5, fx: "zap" }, "Moon Tap": { power: 17, type: "Mystic", text: "A lunar strike.", kind: "attack", fx: "moon" }, "Dream Pulse": { power: 33, type: "Mystic", text: "A dream pulse.", kind: "attack", unlock: 4, fx: "moon" }, "Prism Nova": { power: 48, type: "Mystic", text: "Prism burst.", kind: "attack", unlock: 7, fx: "nova" }, "Root Ram": { power: 21, type: "Stone", text: "A mossy ram.", kind: "attack", fx: "slam" }, "Thorn Wall": { power: 0, type: "Verdant", text: "Guard strongly.", kind: "guard", unlock: 3, fx: "guard" }, "Boulder Crash": { power: 38, type: "Stone", text: "Rock impact.", kind: "attack", unlock: 4, fx: "slam" }, "Pebble Toss": { power: 18, type: "Stone", text: "Stone throw.", kind: "attack", fx: "slam" }, "Gust Peck": { power: 17, type: "Air", text: "Wind peck.", kind: "attack", fx: "wind" }, "Sky Dive": { power: 34, type: "Air", text: "Aerial dive.", kind: "attack", unlock: 4, fx: "wind" }, "Cyclone Fang": { power: 45, type: "Air", text: "Cyclone strike.", kind: "attack", unlock: 6, fx: "wind" }, "Night Nip": { power: 18, type: "Shadow", text: "Dark bite.", kind: "attack", fx: "moon" }, "Light Fang": { power: 24, type: "Light", text: "A shining bite.", kind: "attack", fx: "nova" }, "Metal Bite": { power: 25, type: "Metal", text: "A steel-jawed bite.", kind: "attack", fx: "slam" }, "Frost Peck": { power: 22, type: "Ice", text: "A chilling peck.", kind: "attack", fx: "wind" }, "Shadow Spiral": { power: 36, type: "Shadow", text: "Black mist.", kind: "attack", unlock: 4, fx: "moon" }, "Crystal Shard": { power: 27, type: "Crystal", text: "A glittering shard strike.", kind: "attack", unlock: 2, fx: "nova" }, "Toxic Sting": { power: 26, type: "Toxic", text: "A venomous jab.", kind: "attack", unlock: 2, fx: "slash" }, "Spirit Claw": { power: 28, type: "Spirit", text: "A ghostly claw swipe.", kind: "attack", unlock: 2, fx: "moon", accuracy: 0.94, crit: 0.13 }, "Echo Pulse": { power: 25, type: "Sound", text: "A ringing pulse with high accuracy.", kind: "attack", unlock: 2, fx: "nova", accuracy: 0.98, crit: 0.08 }, "Sonic Roar": { power: 42, type: "Sound", text: "A loud shockwave with higher crit chance.", kind: "attack", unlock: 5, fx: "nova", accuracy: 0.88, crit: 0.18 }, "Fang Rush": { power: 34, type: "Beast", text: "A fierce rushing bite.", kind: "attack", unlock: 3, fx: "slash", accuracy: 0.92, crit: 0.16 }, "Terra Howl": { power: 50, type: "Beast", text: "A mountain-shaking howl.", kind: "attack", unlock: 7, fx: "slam", accuracy: 0.86, crit: 0.12 }, "Petal Lance": { power: 58, type: "Verdant", text: "A piercing flower spear with high crit.", kind: "attack", unlock: 8, fx: "slash", accuracy: 0.92, crit: 0.18 }, "Rune Howl": { power: 54, type: "Sound", text: "A rune-charged howl that may confuse.", kind: "attack", unlock: 7, fx: "wind", accuracy: 0.9, status: { name: "confuse", chance: 0.2 } }, "Nova Shell": { power: 68, type: "Crystal", text: "A prismatic shell blast.", kind: "attack", unlock: 10, fx: "nova", accuracy: 0.88, crit: 0.16 }, "Abyssal Spiral": { power: 64, type: "Aqua", text: "A deep whirlpool strike that may confuse.", kind: "attack", unlock: 8, fx: "bubble", accuracy: 0.9, status: { name: "confuse", chance: 0.18 } }, "Shell Bastion": { power: 0, type: "Stone", text: "A fortress shell guard that greatly reduces damage.", kind: "guard", unlock: 4, fx: "guard" }, "Foxfire Veil": { power: 50, type: "Flame", text: "Mystic foxfire that may burn.", kind: "attack", unlock: 6, fx: "moon", accuracy: 0.92, status: { name: "burn", chance: 0.22 } }, "Sky Rebirth": { power: 34, type: "Light", text: "Heal with sunrise feathers.", kind: "heal", unlock: 7, fx: "heal" }, "Crystal Pincer": { power: 46, type: "Crystal", text: "A precise crystal claw snap.", kind: "attack", unlock: 5, fx: "slash", accuracy: 0.95, crit: 0.16 }, "Tsunami Crown": { power: 76, type: "Aqua", text: "A royal wave with huge power.", kind: "attack", unlock: 11, fx: "bubble", accuracy: 0.84, crit: 0.12 }, "Rune Torrent": { power: 57, type: "Mystic", text: "A runic wave that may confuse.", kind: "attack", unlock: 8, fx: "nova", accuracy: 0.91, status: { name: "confuse", chance: 0.2 } }, "Petro Bloom": { power: 53, type: "Verdant", text: "Stone flowers burst from the ground.", kind: "attack", unlock: 7, fx: "slam", accuracy: 0.93, crit: 0.1 }, "Gilded Fang": { power: 49, type: "Light", text: "A golden bite that strikes cleanly.", kind: "attack", unlock: 6, fx: "slash", accuracy: 0.96, crit: 0.14 }, "Radiant Lance": { power: 62, type: "Light", text: "A piercing lance of sunlight with strong accuracy.", kind: "attack", unlock: 8, fx: "nova", accuracy: 0.95, crit: 0.12 }, "Storm Sonata": { power: 60, type: "Sound", text: "A thunderous song that may paralyze.", kind: "attack", unlock: 8, fx: "zap", accuracy: 0.9, status: { name: "paralyzed", chance: 0.2 } }, "Astral Bloom": { power: 56, type: "Crystal", text: "A constellation blossom that may confuse.", kind: "attack", unlock: 8, fx: "nova", accuracy: 0.91, status: { name: "confuse", chance: 0.18 } }, "Bazaar Trick": { power: 42, type: "Mystic", text: "A sly market illusion that may confuse.", kind: "attack", unlock: 5, fx: "moon", accuracy: 0.96, status: { name: "confuse", chance: 0.28 } }, "Stormglass Break": { power: 72, type: "Crystal", text: "A heavy glass thunder strike with lower accuracy.", kind: "attack", unlock: 10, fx: "zap", accuracy: 0.82, crit: 0.2 }, "Aurora Verdict": { power: 62, type: "Ice", text: "A royal blizzard beam.", kind: "attack", unlock: 8, fx: "legend", accuracy: 0.9, crit: 0.16 }, "Magma Crown": { power: 64, type: "Flame", text: "A crown of molten rock erupts.", kind: "attack", unlock: 8, fx: "legend", accuracy: 0.88, crit: 0.14 }, "Cathedral Howl": { power: 60, type: "Sound", text: "A sacred resonant howl.", kind: "attack", unlock: 8, fx: "legend", accuracy: 0.93, crit: 0.18 }, "Continental Slam": { power: 68, type: "Beast", text: "A continent-shaking strike.", kind: "attack", unlock: 8, fx: "legend", accuracy: 0.84, crit: 0.16 }, "Gear Eclipse": { power: 63, type: "Metal", text: "A perfect clockwork eclipse.", kind: "attack", unlock: 8, fx: "legend", accuracy: 0.91, crit: 0.15 }, "Dawn Judgment": { power: 78, type: "Light", text: "Solguard judges the field with sunrise fire.", kind: "attack", fx: "legend", accuracy: 0.9, crit: 0.2 }, "Eclipse Rend": { power: 82, type: "Shadow", text: "Umbraclaw tears open an eclipse slash.", kind: "attack", fx: "legend", accuracy: 0.88, crit: 0.24 }, "Abyssal Maelstrom": { power: 76, type: "Aqua", text: "Thalassor summons a crushing abyss current.", kind: "attack", fx: "legend", accuracy: 0.9, crit: 0.14 }, "Worldroot Cataclysm": { power: 80, type: "Verdant", text: "Gaialith raises ancient roots through the battlefield.", kind: "attack", fx: "legend", accuracy: 0.86, crit: 0.16 }, "Chrono Fracture": { power: 74, type: "Crystal", text: "Chronova fractures time into prism shards.", kind: "attack", fx: "legend", accuracy: 0.92, crit: 0.22 }, Guard: { power: 0, type: "Mystic", text: "Reduce damage.", kind: "guard", fx: "guard" } };
 
 
 
@@ -743,7 +750,7 @@ const AREA_DATA = {
       "W....E...B..EE.W",
       "WWWWWWWWWWWWWWWW"
     ],
-    encounters: { E: ["echopup","bellimp","howlitzer","chimegeist","mistowl"], V: ["gloomander","shadebat","spirikit","nightmoth"], G: ["cloudfinch","prismite"] },
+    encounters: { E: ["echopup","bellimp","wolfrune","howlglyph","howlitzer","chimegeist","mistowl"], V: ["gloomander","shadebat","spirikit","nightmoth"], G: ["cloudfinch","prismite"] },
     description: "Every step echoes into battle rhythm. Sound and Spirit Mythlings are stronger here."
   },
   spiritMarsh: {
@@ -1157,7 +1164,7 @@ const AREA_DATA = {
       "W....!...D..!!.W",
       "WWWWWWWWWWWWWWWW"
     ],
-    encounters: { "!": ["stormkid","thunderchoir","glasswyrm","stormglass","ionwyrm","cloudfinch"], A: ["galegryph","dawnhare","mistowl"], Z: ["sparkitten","voltiger"] },
+    encounters: { "!": ["stormkid","thunderchoir","wolfrune","howlglyph","glasswyrm","stormglass","ionwyrm","cloudfinch"], A: ["galegryph","dawnhare","mistowl"], Z: ["sparkitten","voltiger"] },
     description: "A high-level optional cliff route. Wind, thunder, crystal, and song overlap here; enter after your team is around Lv.26+."
   },
 
@@ -1404,7 +1411,14 @@ function normalizeMon(m) {
 function scaleMonToSpecies(old, newId) { const next = makeMon(newId, old.level, false); const ratio = old.hp / Math.max(1, old.maxHp); return ensureMovePP({ ...next, nickname: old.nickname || "", gender: old.gender || next.gender, shiny: Boolean(old.shiny), status: normalizeStatus(old.status), xp: old.xp, hp: Math.max(1, Math.floor(next.maxHp * ratio)) }); }
 function migrateSave(input) {
   const data = input && typeof input === "object" ? input : {};
-  const player = { ...freshPlayer(), ...(data.player || data.tamer || {}) }; player.items = { ...freshPlayer().items, ...(player.items || {}) }; if (!AREA_DATA[player.area]) player.area = "luminara"; if (typeof player.chapter !== "number") player.chapter = currentAreaData(player).chapter || 1; player.captureItems = { ...DEFAULT_CAPTURE_ITEMS, ...(player.captureItems || {}) }; if (typeof player.balls === "number" && !data.player?.captureItems) player.captureItems["Prism Capsule"] = player.balls; player.balls = Object.values(player.captureItems || {}).reduce((a,b)=>a + Number(b || 0), 0); if (typeof player.money !== "number") player.money = 1200; const party = Array.isArray(data.party) ? data.party.map(normalizeMon).filter((m) => BESTIARY[m.id]).slice(0, 6) : []; const storage = Array.isArray(data.storage) ? data.storage.map(normalizeMon).filter((m) => BESTIARY[m.id]) : []; const dex = ensureDexShape(data.dex || freshDex()); party.concat(storage).forEach((m) => { dex.seen[m.id] = true; dex.caught[m.id] = true; if (m.shiny) { dex.shinySeen[m.id] = true; dex.shinyCaught[m.id] = true; } }); const safeScreen = VALID_SCREENS.has(data.screen) ? data.screen : (party.length ? "world" : "title"); return { version: 7, savedAt: Date.now(), screen: party.length ? (safeScreen === "battle" || safeScreen === "gameover" || safeScreen === "starter" ? "world" : safeScreen || "world") : "title", storyIndex: data.storyIndex || 0, player, party, storage, active: Math.min(data.active || 0, Math.max(0, party.length - 1)), seen: { ...freshSeen(), ...(data.seen || {}) }, dex, clock: data.clock || freshClock(), muted: Boolean(data.muted) }; }
+  const player = { ...freshPlayer(), ...(data.player || data.tamer || {}) }; player.items = { ...freshPlayer().items, ...(player.items || {}) }; if (!AREA_DATA[player.area]) player.area = "luminara"; if (typeof player.chapter !== "number") player.chapter = currentAreaData(player).chapter || 1; player.captureItems = { ...DEFAULT_CAPTURE_ITEMS, ...(player.captureItems || {}) }; if (typeof player.balls === "number" && !data.player?.captureItems) player.captureItems["Prism Capsule"] = player.balls; player.balls = Object.values(player.captureItems || {}).reduce((a,b)=>a + Number(b || 0), 0); if (typeof player.money !== "number") player.money = 1200; let party = Array.isArray(data.party) ? data.party.map(normalizeMon).filter((m) => BESTIARY[m.id]).slice(0, 6) : [];
+  let storage = Array.isArray(data.storage) ? data.storage.map(normalizeMon).filter((m) => BESTIARY[m.id]) : [];
+  if (!storage.length && Array.isArray(data.pc)) storage = data.pc.map(normalizeMon).filter((m) => BESTIARY[m.id]);
+  if (!storage.length && Array.isArray(data.box)) storage = data.box.map(normalizeMon).filter((m) => BESTIARY[m.id]);
+  if (!party.length && storage.length) {
+    party = storage.slice(0, 6);
+    storage = storage.slice(6);
+  } const dex = ensureDexShape(data.dex || freshDex()); party.concat(storage).forEach((m) => { dex.seen[m.id] = true; dex.caught[m.id] = true; if (m.shiny) { dex.shinySeen[m.id] = true; dex.shinyCaught[m.id] = true; } }); const safeScreen = VALID_SCREENS.has(data.screen) ? data.screen : ((party.length || storage.length) ? "world" : "title"); return { version: 9, savedAt: Date.now(), screen: party.length ? (safeScreen === "battle" || safeScreen === "gameover" || safeScreen === "starter" ? "world" : safeScreen || "world") : "title", storyIndex: data.storyIndex || 0, player, party, storage, active: Math.min(data.active || 0, Math.max(0, party.length - 1)), seen: { ...freshSeen(), ...(data.seen || {}) }, dex, clock: data.clock || freshClock(), muted: Boolean(data.muted) }; }
 function typeMult(a, d) {
   const chart = TYPE_MATCHUPS[a] || {};
   let mult = 1;
@@ -1552,6 +1566,79 @@ function ensureDexShape(dex) {
     shinyCaught: { ...base.shinyCaught, ...((dex || {}).shinyCaught || {}) },
   };
 }
+
+function parseMaybeJson(value) {
+  if (!value) return value;
+  if (typeof value === "string") {
+    try { return JSON.parse(value); } catch { return value; }
+  }
+  return value;
+}
+function firstCloudSaveCandidate(profile) {
+  const p = profile || {};
+  const candidates = [
+    p.save_data,
+    p.saveData,
+    p.save,
+    p.game_save,
+    p.gameSave,
+    p.state,
+    p.data,
+    p.backup,
+  ].map(parseMaybeJson).filter(Boolean);
+  for (const c of candidates) {
+    if (typeof c === "object" && (Array.isArray(c.party) || Array.isArray(c.storage) || c.player || c.dex || c.screen)) return c;
+    if (typeof c === "object" && c.save_data) {
+      const nested = parseMaybeJson(c.save_data);
+      if (nested && typeof nested === "object") return nested;
+    }
+  }
+  return null;
+}
+function recoverCloudSaveFromProfile(profile) {
+  if (!profile) return null;
+  const direct = firstCloudSaveCandidate(profile);
+  if (direct) return direct;
+
+  const partySnapshot = parseMaybeJson(profile.party_snapshot || profile.partySnapshot || profile.party);
+  const storageSnapshot = parseMaybeJson(profile.storage_snapshot || profile.storageSnapshot || profile.storage || profile.pc || profile.box);
+  const inventorySnapshot = parseMaybeJson(profile.inventory_snapshot || profile.inventorySnapshot || profile.inventory || profile.player);
+  const dexSnapshot = parseMaybeJson(profile.dex || profile.dex_snapshot || profile.dexSnapshot);
+
+  const party = Array.isArray(partySnapshot) ? partySnapshot : [];
+  const storage = Array.isArray(storageSnapshot) ? storageSnapshot : [];
+  const player = (inventorySnapshot && typeof inventorySnapshot === "object")
+    ? (inventorySnapshot.player && typeof inventorySnapshot.player === "object" ? inventorySnapshot.player : inventorySnapshot)
+    : freshPlayer();
+
+  if (!party.length && !storage.length && !profile.dex_caught) return null;
+
+  return {
+    version: Number(profile.save_version || profile.saveVersion || 1),
+    savedAt: profile.last_save_at || profile.updated_at || Date.now(),
+    screen: party.length || storage.length ? "world" : "title",
+    storyIndex: 0,
+    player,
+    party,
+    storage,
+    active: 0,
+    seen: freshSeen(),
+    dex: dexSnapshot && typeof dexSnapshot === "object" ? dexSnapshot : freshDex(),
+    clock: freshClock(),
+    muted: false,
+    _recoveredFromProfileSnapshot: true,
+  };
+}
+function cloudSaveSummary(profile) {
+  const save = recoverCloudSaveFromProfile(profile);
+  if (!save) return "No recoverable cloud save found.";
+  const party = Array.isArray(save.party) ? save.party.length : 0;
+  const storage = Array.isArray(save.storage) ? save.storage.length : 0;
+  const version = save.version || profile?.save_version || "?";
+  const savedAt = profile?.last_save_at || profile?.updated_at || save.savedAt;
+  return `Recoverable cloud save: party ${party}, PC/storage ${storage}, version ${version}, saved ${formatOnlineSyncStamp(savedAt)}.`;
+}
+
 function captureCount(player, item = "Prism Capsule") { return Number((player.captureItems || {})[item] || 0); }
 function totalCaptureItems(player) { return Object.values(player.captureItems || {}).reduce((a,b)=>a + Number(b || 0), 0); }
 function syncBallCount(player) { return { ...player, balls: totalCaptureItems(player) }; }
@@ -1658,6 +1745,9 @@ function MonsterModel({ mon, size = "large", flipped = false, faint = false, ani
         {data.body === "serpent" && <><path d="M62 142 C80 92 126 170 157 112 C174 80 206 101 189 135" fill="none" stroke={c} strokeWidth="18" strokeLinecap="round" opacity=".86"/><path d="M83 65 L113 36 L142 65" fill={b} opacity=".9" stroke="white" strokeOpacity=".35" strokeWidth="2"/><circle cx="188" cy="130" r="10" fill={b} opacity=".8"/></>}
         {data.body === "crab" && <><path d="M66 120 C30 103 32 78 67 91" fill="none" stroke={c} strokeWidth="12" strokeLinecap="round"/><path d="M166 120 C202 103 200 78 165 91" fill="none" stroke={c} strokeWidth="12" strokeLinecap="round"/><circle cx="48" cy="86" r="14" fill={b} stroke="white" strokeOpacity=".35" strokeWidth="2"/><circle cx="185" cy="86" r="14" fill={b} stroke="white" strokeOpacity=".35" strokeWidth="2"/><path d="M75 154 L54 177" stroke={c} strokeWidth="8" strokeLinecap="round"/><path d="M154 154 L176 177" stroke={c} strokeWidth="8" strokeLinecap="round"/></>}
         {data.body === "phoenix" && <><path d="M78 115 C18 72 34 28 105 76 C86 92 83 104 78 115Z" fill={b} opacity=".88" stroke="white" strokeOpacity=".3" strokeWidth="2"/><path d="M154 115 C214 72 198 28 127 76 C146 92 149 104 154 115Z" fill={b} opacity=".88" stroke="white" strokeOpacity=".3" strokeWidth="2"/><path d="M113 56 L122 20 L136 58 L124 51" fill={c} stroke="white" strokeOpacity=".4" strokeWidth="2"/><path d="M96 164 C110 199 130 198 145 164" fill={c} opacity=".78"/></>}
+        {data.body === "wolf" && <><path d="M64 90 L55 46 L90 76" fill={c} stroke="white" strokeOpacity=".28" strokeWidth="2"/><path d="M143 76 L176 46 L164 96" fill={c} stroke="white" strokeOpacity=".28" strokeWidth="2"/><path d="M158 137 C206 128 207 164 168 164" fill="none" stroke={c} strokeWidth="13" strokeLinecap="round"/><path d="M78 154 L55 184" stroke={c} strokeWidth="10" strokeLinecap="round"/><path d="M149 154 L170 184" stroke={c} strokeWidth="10" strokeLinecap="round"/></>}
+        {data.body === "flower" && <><circle cx="116" cy="86" r="34" fill={b} opacity=".75"/><circle cx="88" cy="104" r="28" fill={b} opacity=".55"/><circle cx="146" cy="104" r="28" fill={b} opacity=".55"/><path d="M116 117 C101 146 100 167 116 184 C133 167 132 146 116 117Z" fill={c} opacity=".75"/><path d="M86 151 C58 139 49 159 68 177" stroke={c} strokeWidth="9" strokeLinecap="round"/><path d="M146 151 C174 139 183 159 164 177" stroke={c} strokeWidth="9" strokeLinecap="round"/></>}
+
 
         <path d="M55 124 C44 83 76 56 116 58 C158 60 184 91 171 130 C160 162 133 178 99 171 C70 165 60 150 55 124Z" fill={`url(#g-${uid})`} stroke="white" strokeOpacity=".72" strokeWidth="3.2"/>
         {data.body === "boar" && <><ellipse cx="116" cy="131" rx="27" ry="18" fill={b} opacity=".95"/><circle cx="107" cy="130" r="4" fill="#111827"/><circle cx="126" cy="130" r="4" fill="#111827"/><path d="M83 132 Q64 151 86 150" fill="none" stroke="#fff7d6" strokeWidth="7"/><path d="M149 132 Q168 151 146 150" fill="none" stroke="#fff7d6" strokeWidth="7"/></>}
@@ -1802,7 +1892,7 @@ function MythboundTamersJRPGInner() {
   }
   function buildSaveData(g = gameRef.current) {
     const safeScreen = ["battle", "gameover", "starter"].includes(g.screen) ? "world" : g.screen;
-    return { version: 8, savedAt: Date.now(), screen: safeScreen, storyIndex: g.storyIndex, player: g.player, party: g.party, storage: g.storage || [], active: g.active, seen: g.seen, dex: g.dex, clock: g.clock, muted: g.muted };
+    return { version: 9, savedAt: Date.now(), screen: safeScreen, storyIndex: g.storyIndex, player: g.player, party: g.party, storage: g.storage || [], active: g.active, seen: g.seen, dex: g.dex, clock: g.clock, muted: g.muted };
   }
   function hydrateSaveData(data, sourceLabel = "save") {
     const migrated = migrateSave(data || {});
@@ -1814,7 +1904,7 @@ function MythboundTamersJRPGInner() {
     if (!authUser) throw new Error("Sign in first.");
     const display = accountProfile?.display_name || authUser.user_metadata?.display_name || authUser.email?.split("@")[0] || `Tamer-${authUser.id.slice(0, 6)}`;
     const syncedAt = new Date().toISOString();
-    const payload = { id: authUser.id, player_code: authUser.id, display_name: display, party_snapshot: saveData.party || [], dex_caught: Object.keys(saveData.dex?.caught || {}).filter((k) => saveData.dex.caught[k]).length, save_data: saveData, storage_snapshot: saveData.storage || [], inventory_snapshot: saveData.player || {}, save_version: saveData.version || 6, last_save_at: syncedAt, updated_at: syncedAt };
+    const payload = { id: authUser.id, player_code: authUser.id, display_name: display, party_snapshot: saveData.party || [], dex_caught: Object.keys(saveData.dex?.caught || {}).filter((k) => saveData.dex.caught[k]).length, save_data: saveData, storage_snapshot: saveData.storage || [], inventory_snapshot: saveData.player || {}, save_version: saveData.version || 9, saveData: saveData, last_save_at: syncedAt, updated_at: syncedAt };
     const { error } = await supabase.from("mythbound_profiles").upsert(payload, { onConflict: "id" });
     if (error) throw error;
     setAccountProfile((old) => ({ ...(old || {}), ...payload }));
@@ -1852,7 +1942,7 @@ function MythboundTamersJRPGInner() {
   function audio() { if (muted) return null; if (!audioRef.current) audioRef.current = new (window.AudioContext || window.webkitAudioContext)(); if (audioRef.current.state === "suspended") audioRef.current.resume(); return audioRef.current; }
   function beep(freq = 440, dur = 0.1, type = "sine", vol = 0.06) { const ctx = audio(); if (!ctx) return; const o = ctx.createOscillator(), g = ctx.createGain(); o.type = type; o.frequency.setValueAtTime(freq, ctx.currentTime); g.gain.setValueAtTime(vol, ctx.currentTime); g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + dur); o.connect(g); g.connect(ctx.destination); o.start(); o.stop(ctx.currentTime + dur); }
   function sfx(name, type = "Mystic") { if (name === "success") [520,660,880,1040].forEach((n,i)=>setTimeout(()=>beep(n,0.09,"sine",0.05),i*95)); if (name === "evolve") [330,440,660,990,1320].forEach((n,i)=>setTimeout(()=>beep(n,0.12,"triangle",0.06),i*120)); if (name === "fail") beep(130,0.18,"square",0.04); if (name === "move") beep(280,0.025,"sine",0.018); if (name === "capture") { beep(420,0.1,"triangle",0.05); setTimeout(()=>beep(620,0.1,"triangle",0.05),120); } if (name === "heal") { beep(620,0.12,"sine",0.04); setTimeout(()=>beep(820,0.14,"sine",0.04),90); } if (name === "attack") beep(type === "Volt" ? 880 : type === "Flame" ? 520 : type === "Aqua" ? 390 : type === "Verdant" ? 450 : type === "Stone" ? 190 : type === "Air" ? 700 : type === "Shadow" ? 240 : 300, 0.12, type === "Volt" ? "square" : "sawtooth", 0.05); }
-  function playCry(id) { const isLegend = !!BESTIARY[id]?.legendary; const base = { emberlynx:520, pyrolynx:420, solarynx:360, aquapup:340, tidemast:260, leviamast:220, leafawn:620, florantler:540, gaianhart:470, voltoroo:760, stormaroo:920, thundaroo:980, gloomander:260, lunamander:310, eclipsander:230, ironboar:180, elderboar:145, cloudfinch:700, galegryph:500, pebbkit:210, granitus:120, shadebat:330, noctyra:240, prismite:850, dawnhare:790, nightmoth:250, dracinder:140, regaldrake:110, frostcub:410, glaciermaw:180, polarune:155, cindermole:250, magmole:160, calderox:120, spriggeist:760, starwhale:95, coralisk:420, reefserpent:160, sandillo:260, duneguard:130, mistowl:610, orchidimp:690, thistlefiend:300, aurorabbit:780, crysteel:620, prismhorn:260, toxifrog:360, venomire:210, spirikit:730, phantelope:510, neonsquid:680, ionwyrm:120, echopup:500, howlitzer:300, resonark:190, cuboulder:190, titanursa:105, worldursa:80, bellimp:640, chimegeist:360, ferroach:260, mantitan:180, mechamane:145, solguard:95, umbraclaw:70, thalassor:55, gaialith:65, chronova:880, auroracalf:720, aurorox:260, glacimarch:150, sirenfin:680, melodray:480, drillbug:230, cometitan:120, miragebud:760, dreamorchid:520, goldkit:760, aurumane:520, solarchon:330, stormkid:840, thunderchoir:460, glasswyrm:380, stormglass:165, incensemoth:560, censeraph:240, runeling:720, glyphsage:380, mossgolem:145, ruingrove:90, coinwyrm:620, treasuredrake:210, shelltide:300, reefguard:190, tsunamora:85, kitspark:760, vulpyr:520, kitsunova:900, abyssnake:130, leviacoil:70, glintcrab:640, prismclaw:360, ashchick:820, cinderwing:610, phoenixar:980, }[id] || 440; beep(base, isLegend ? 0.18 : 0.09, isLegend ? "square" : "sawtooth", isLegend ? 0.07 : 0.045); setTimeout(()=>beep(base*1.33, isLegend ? 0.16 : 0.08, "triangle", isLegend ? 0.065 : 0.04),90); if (isLegend) { setTimeout(()=>beep(base*0.66,0.22,"sawtooth",0.055),230); setTimeout(()=>beep(base*1.9,0.18,"sine",0.05),450); } }
+  function playCry(id) { const isLegend = !!BESTIARY[id]?.legendary; const base = { emberlynx:520, pyrolynx:420, solarynx:360, aquapup:340, tidemast:260, leviamast:220, leafawn:620, florantler:540, gaianhart:470, voltoroo:760, stormaroo:920, thundaroo:980, gloomander:260, lunamander:310, eclipsander:230, ironboar:180, elderboar:145, cloudfinch:700, galegryph:500, pebbkit:210, granitus:120, shadebat:330, noctyra:240, prismite:850, dawnhare:790, nightmoth:250, dracinder:140, regaldrake:110, frostcub:410, glaciermaw:180, polarune:155, cindermole:250, magmole:160, calderox:120, spriggeist:760, starwhale:95, coralisk:420, reefserpent:160, sandillo:260, duneguard:130, mistowl:610, orchidimp:690, thistlefiend:300, aurorabbit:780, crysteel:620, prismhorn:260, toxifrog:360, venomire:210, spirikit:730, phantelope:510, neonsquid:680, ionwyrm:120, echopup:500, howlitzer:300, resonark:190, cuboulder:190, titanursa:105, worldursa:80, bellimp:640, chimegeist:360, ferroach:260, mantitan:180, mechamane:145, solguard:95, umbraclaw:70, thalassor:55, gaialith:65, chronova:880, auroracalf:720, aurorox:260, glacimarch:150, sirenfin:680, melodray:480, drillbug:230, cometitan:120, miragebud:760, dreamorchid:520, goldkit:760, aurumane:520, solarchon:330, stormkid:840, thunderchoir:460, glasswyrm:380, stormglass:165, incensemoth:560, censeraph:240, runeling:720, glyphsage:380, mossgolem:145, ruingrove:90, coinwyrm:620, treasuredrake:210, shelltide:300, reefguard:190, tsunamora:85, kitspark:760, vulpyr:520, kitsunova:900, abyssnake:130, leviacoil:70, glintcrab:640, prismclaw:360, ashchick:820, cinderwing:610, phoenixar:980, budbyte:720, florabyte:560, prismbloom:880, wolfrune:390, howlglyph:260, runewarden:180, }[id] || 440; beep(base, isLegend ? 0.18 : 0.09, isLegend ? "square" : "sawtooth", isLegend ? 0.07 : 0.045); setTimeout(()=>beep(base*1.33, isLegend ? 0.16 : 0.08, "triangle", isLegend ? 0.065 : 0.04),90); if (isLegend) { setTimeout(()=>beep(base*0.66,0.22,"sawtooth",0.055),230); setTimeout(()=>beep(base*1.9,0.18,"sine",0.05),450); } }
   function playEvolutionSound(fromMon, toMon, style) {
     const fromType = BESTIARY[fromMon?.id]?.type || "Mystic";
     const toType = BESTIARY[toMon?.id]?.type || fromType;
@@ -4466,7 +4556,7 @@ function AccountScreen({
           storage_snapshot: [],
           inventory_snapshot: {},
           dex_caught: 0,
-          save_version: 6,
+          save_version: 9,
           updated_at: new Date().toISOString()
         };
         await supabase.from("mythbound_profiles").upsert(payload, { onConflict: "id" });
@@ -4523,7 +4613,7 @@ function AccountScreen({
       const save = findValidSave();
       if (!save) throw new Error("No local save was found to upload.");
       await uploadSaveDataToCloud(save, true);
-      setAccountStatus("Local save uploaded to your online account.");
+      setAccountStatus(`Local save uploaded to your online account. ${cloudSaveSummary({ ...(accountProfile || {}), save_data: save, party_snapshot: save.party, storage_snapshot: save.storage, save_version: save.version })}`);
     } catch (e) {
       setAccountStatus(`Upload error: ${e.message}`);
     } finally {
@@ -4534,10 +4624,23 @@ function AccountScreen({
   async function loadCloudSave() {
     try {
       setBusy(true);
-      const profile = await loadAccountProfile(authUser);
-      if (!profile?.save_data) throw new Error("This account has no cloud save yet.");
-      hydrateSaveData(profile.save_data, "cloud save");
-      setAccountStatus("Cloud save loaded on this device.");
+      const profile = (await loadAccountProfile(authUser)) || accountProfile;
+      const recovered = recoverCloudSaveFromProfile(profile);
+      if (!recovered) {
+        throw new Error("This account has no recoverable cloud save yet. If this is your old device, press Upload Local Save first.");
+      }
+      const migrated = migrateSave(recovered);
+      if (!migrated.party.length && migrated.storage?.length) {
+        migrated.party = migrated.storage.slice(0, 6);
+        migrated.storage = migrated.storage.slice(6);
+        migrated.screen = "world";
+      }
+      if (!migrated.party.length && !migrated.storage?.length) {
+        throw new Error("Cloud row exists, but it does not contain party/storage save data. Upload a local save from the old device to repair it.");
+      }
+      hydrateSaveData(migrated, recovered._recoveredFromProfileSnapshot ? "recovered cloud snapshot" : "cloud save");
+      await uploadSaveDataToCloud({ ...migrated, version: 9, savedAt: Date.now() }, false);
+      setAccountStatus(`Cloud save loaded and upgraded for this version. ${cloudSaveSummary(profile)}`);
     } catch (e) {
       setAccountStatus(`Load cloud save error: ${e.message}`);
     } finally {
@@ -4603,7 +4706,7 @@ function AccountScreen({
 
             <div className="grid sm:grid-cols-2 gap-2">
               <Button onClick={uploadLocalSave} disabled={busy} className="rounded-2xl bg-cyan-300 hover:bg-cyan-200 text-slate-950 font-black py-5">Upload Local Save</Button>
-              <Button onClick={loadCloudSave} disabled={busy} className="rounded-2xl bg-lime-300 hover:bg-lime-200 text-slate-950 font-black py-5">Load Cloud Save</Button>
+              <Button onClick={loadCloudSave} disabled={busy} className="rounded-2xl bg-lime-300 hover:bg-lime-200 text-slate-950 font-black py-5">Load / Repair Cloud Save</Button>
             </div>
 
             <Button onClick={signOut} disabled={busy} variant="secondary" className="rounded-2xl w-full font-black">Sign Out</Button>
@@ -4632,6 +4735,7 @@ function AccountScreen({
               <InfoBox label="Status" value={cloudSyncStatus || "Local only"}/>
               <InfoBox label="Last online save" value={formatOnlineSyncStamp(lastCloudSyncAt)}/>
               <InfoBox label="Account" value={authUser ? "Signed in" : "Not signed in"}/>
+              {authUser && <InfoBox label="Cloud Save" value={cloudSaveSummary(accountProfile)}/>} 
             </div>
           </CardContent>
         </Card>
