@@ -1,8 +1,8 @@
 ﻿{
-    "version":  "0.52.0",
-    "versionCode":  52,
-    "notes":  "Repair cloud save loading/migration, recover old Supabase snapshot saves, improve account diagnostics, add new monsters/evolutions, attacks, and unique art styles.",
-    "apkUrl":  "https://github.com/costaskk/Mythbound-Tamers/releases/download/v0.52.0/mythbound-tamers-v0.52.0.apk",
+    "version":  "0.53.0",
+    "versionCode":  53,
+    "notes":  "Fix cloud sync upsert payload, prevent map access before starting a journey, harden starter save persistence, add new monsters/evolutions/attacks, and improve content.",
+    "apkUrl":  "https://github.com/costaskk/Mythbound-Tamers/releases/download/v0.53.0/mythbound-tamers-v0.53.0.apk",
     "mandatory":  false,
     "publishedAt":  "2026-06-02",
     "autoStartNativeUpdate":  false
