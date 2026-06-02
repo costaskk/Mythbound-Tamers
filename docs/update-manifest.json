@@ -1,8 +1,8 @@
 ﻿{
-    "version":  "0.60.0",
-    "versionCode":  60,
-    "notes":  "Make the Mythbound Tamers title stand out more, add a clearer current-area HUD, and dynamically scale every board to fit portrait and landscape screens with minimal dead space.",
-    "apkUrl":  "https://github.com/costaskk/Mythbound-Tamers/releases/download/v0.60.0/mythbound-tamers-v0.60.0.apk",
+    "version":  "0.61.0",
+    "versionCode":  61,
+    "notes":  "Fix viewport crash, pass viewport safely to the board, make the title stand out, and improve dynamic board fitting for portrait and landscape with less dead space.",
+    "apkUrl":  "https://github.com/costaskk/Mythbound-Tamers/releases/download/v0.61.0/mythbound-tamers-v0.61.0.apk",
     "mandatory":  false,
     "publishedAt":  "2026-06-02",
     "autoStartNativeUpdate":  false,

@@ -8,8 +8,8 @@ import { Sparkles, PawPrint, Flame, Droplets, Leaf, Zap, Heart, Map, Backpack, G
 
 const SAVE_KEY = "mythbound_tamers_save_v4";
 const OLD_SAVE_KEYS = ["mythbound_tamers_save_v6", "mythbound_tamers_save_v5", "mythbound_tamers_save_v4", "mythbound_tamers_save_v3", "mythbound_tamers_save_v2", "mythbound_tamers_save"];
-const APP_VERSION = "0.60.0";
-const APP_VERSION_CODE = 60;
+const APP_VERSION = "0.61.0";
+const APP_VERSION_CODE = 61;
 const UPDATE_MANIFEST_URL = import.meta.env.VITE_UPDATE_MANIFEST_URL || "https://costaskk.github.io/Mythbound-Tamers/update-manifest.json";
 const SHINY_RATE = 1 / 192;
 const VALID_SCREENS = new Set(["title","story","starter","world","party","pc","shop","dex","account","multiplayer","objectives","help","atlas","update","battle","gameover"]);
@@ -1961,7 +1961,7 @@ function MythboundTamersJRPGInner() {
   }
   function buildSaveData(g = gameRef.current) {
     const safeScreen = ["battle", "gameover", "starter"].includes(g.screen) ? "world" : g.screen;
-    return { version: 16, savedAt: Date.now(), screen: safeScreen, storyIndex: g.storyIndex, player: g.player, party: g.party, storage: g.storage || [], active: g.active, seen: g.seen, dex: g.dex, clock: g.clock, muted: g.muted };
+    return { version: 17, savedAt: Date.now(), screen: safeScreen, storyIndex: g.storyIndex, player: g.player, party: g.party, storage: g.storage || [], active: g.active, seen: g.seen, dex: g.dex, clock: g.clock, muted: g.muted };
   }
   function hydrateSaveData(data, sourceLabel = "save") {
     const migrated = migrateSave(data || {});
@@ -1972,7 +1972,7 @@ function MythboundTamersJRPGInner() {
     if (!supabase) throw new Error("Supabase env variables are missing.");
     if (!authUser) throw new Error("Sign in first.");
     const migrated = migrateSave(saveData || {});
-    const cleanSave = JSON.parse(JSON.stringify({ ...migrated, version: 16, savedAt: Date.now() }));
+    const cleanSave = JSON.parse(JSON.stringify({ ...migrated, version: 17, savedAt: Date.now() }));
     const display = accountProfile?.display_name || authUser.user_metadata?.display_name || authUser.email?.split("@")[0] || `Tamer-${authUser.id.slice(0, 6)}`;
     const syncedAt = new Date().toISOString();
 
@@ -1988,7 +1988,7 @@ function MythboundTamersJRPGInner() {
       inventory_snapshot: cleanSave.player || {},
       dex_caught: Object.keys(cleanSave.dex?.caught || {}).filter((k) => cleanSave.dex.caught[k]).length,
       save_data: cleanSave,
-      save_version: cleanSave.version || 16,
+      save_version: cleanSave.version || 17,
       last_save_at: syncedAt,
       updated_at: syncedAt
     };
@@ -2718,7 +2718,7 @@ function playCry(id) { const isLegend = !!BESTIARY[id]?.legendary; const base = 
     }
     setScreen(next);
   }
-  return <div className="h-[100dvh] max-h-[100dvh] bg-slate-950 text-white p-1 sm:p-3 landscape:p-0 overflow-hidden relative"><div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(34,211,238,.16),transparent_28%),radial-gradient(circle_at_80%_15%,rgba(217,70,239,.13),transparent_25%),radial-gradient(circle_at_55%_85%,rgba(132,204,22,.11),transparent_28%)]"/><div className="relative max-w-7xl mx-auto grid lg:grid-cols-[1fr_350px] gap-4"><Card className="rounded-2xl sm:rounded-3xl landscape:rounded-none overflow-hidden bg-slate-900/80 border-white/10 shadow-2xl shadow-cyan-500/10 h-[calc(100dvh-0.5rem)] sm:h-[calc(100dvh-1.5rem)] landscape:h-[100dvh]"><CardContent className="p-0 h-full overflow-hidden"><div className="h-full overflow-y-scroll overscroll-contain touch-pan-y pb-56 sm:pb-10" style={{ WebkitOverflowScrolling: "touch" }}><AnimatePresence mode="wait">{screen === "title" && <TitleScreen startStory={startStory} loadGame={loadGame} hasSave={hasSave}/>} {screen === "story" && <StoryScreen item={STORY[storyIndex]} nextStory={nextStory} index={storyIndex} total={STORY.length}/>} {screen === "starter" && <StarterScreen chooseStarter={chooseStarter}/>} {screen === "world" && party.length > 0 && <WorldScreen map={currentAreaMap(player)} area={currentAreaData(player)} player={player} move={move} party={party} storage={storage} seen={seen} dex={dex} setScreen={setScreen} saveGame={saveGame} clock={clock} onObjectiveClick={setObjectiveModal} objectiveMapFocus={objectiveMapFocus} clearObjectiveFocus={() => setObjectiveMapFocus(null)}/>} {screen === "party" && <PartyScreen party={party} active={active} setActive={setActive} setScreen={setScreen} player={player} seen={seen} evolve={evolve} clock={clock} useStatusItem={useStatusItem}/>} {screen === "pc" && <PCStorageScreen party={party} storage={storage} setScreen={setScreen} swapWithStorage={swapWithStorage} withdrawFromStorage={withdrawFromStorage}/>} {screen === "shop" && <ShopScreen player={player} setScreen={setScreen} buyStock={buyStock}/>} {screen === "dex" && <DexScreen dex={dex} setScreen={setScreen}/>} {screen === "account" && <AccountScreen setScreen={setScreen} authUser={authUser} accountProfile={accountProfile} accountStatus={accountStatus} setAccountStatus={setAccountStatus} findValidSave={findValidSave} hydrateSaveData={hydrateSaveData} uploadSaveDataToCloud={uploadSaveDataToCloud} loadAccountProfile={loadAccountProfile} cloudSyncStatus={cloudSyncStatus} lastCloudSyncAt={lastCloudSyncAt}/>} {screen === "multiplayer" && <MultiplayerScreen party={party} setParty={setParty} dex={dex} player={player} setScreen={setScreen} authUser={authUser} accountProfile={accountProfile} saveGame={saveGame}/>} {screen === "objectives" && <ObjectivesScreen setScreen={setScreen} player={player} seen={seen} dex={dex} party={party} storage={storage} clock={clock} onObjectiveClick={setObjectiveModal}/>} {screen === "help" && <HelpScreen setScreen={setScreen}/>} {screen === "update" && <UpdateCenterScreen setScreen={setScreen} availableUpdate={availableUpdate} status={updateStatus} checkUpdates={() => checkAppUpdate({ silent: false })} downloadUpdate={() => downloadAvailableUpdate(availableUpdate)} />} {screen === "atlas" && <AtlasScreen player={player} seen={seen} dex={dex} party={party} setScreen={setScreen}/>} {screen === "battle" && battle && current && <BattleScreen battle={battle} playerMon={current} skills={skills(current)} playerUse={playerUse} capture={capture} selectedCaptureItem={selectedCaptureItem} setSelectedCaptureItem={setSelectedCaptureItem} usePotion={usePotion} useStatusCure={useStatusCureInBattle} usePPItem={usePPItemInBattle} run={run} player={player} party={party} active={active} setActive={setActive} anim={battleAnim} dex={dex} clock={clock} onBattleResultContinue={finishBattleResult}/>} {screen === "gameover" && <GameOver reset={reset}/>} {screen === "world" && party.length === 0 && <StartRequiredScreen setScreen={setScreen} loadGame={loadGame} hasSave={hasSave}/>} {!VALID_SCREENS.has(screen) && <RecoveryScreen reset={reset} setScreen={setScreen} party={party}/>} {screen === "battle" && (!battle || !current) && <RecoveryScreen reset={reset} setScreen={setScreen} party={party} message="Battle data was missing, so the app can safely return to the map."/>}</AnimatePresence></div></CardContent></Card><div className="hidden lg:block"><SidePanel player={player} party={party} active={active} setScreen={requestScreen} reset={reset} saveGame={saveGame} loadGame={loadGame} clearSave={clearSave} hasSave={hasSave} muted={muted} setMuted={setMuted} stats={stats} clock={clock} authUser={authUser} accountProfile={accountProfile} cloudSyncStatus={cloudSyncStatus} lastCloudSyncAt={lastCloudSyncAt} storage={storage} seen={seen} dex={dex} onObjectiveClick={setObjectiveModal}/></div></div><MobileNav setScreen={requestScreen} saveGame={saveGame} muted={muted} setMuted={setMuted} authUser={authUser}/><AnimatePresence>{cinematic && <CinematicOverlay cinematic={cinematic}/>}</AnimatePresence><AnimatePresence>{evolutionScene && <EvolutionOverlay scene={evolutionScene}/>}</AnimatePresence><AnimatePresence>{toast && <motion.div initial={{ y: 30, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 30, opacity: 0 }} className="fixed bottom-5 left-1/2 -translate-x-1/2 px-5 py-3 rounded-2xl bg-slate-900 border border-cyan-300/30 shadow-xl text-cyan-100 font-bold z-50">{toast}</motion.div>}</AnimatePresence><AnimatePresence>{npc && <NpcModal npc={npc} close={() => { if (npc.reward) npc.reward(); setNpc(null); saveGame(false); }}/>}</AnimatePresence><AnimatePresence>{pendingAreaGate && <AreaGateModal gate={pendingAreaGate} enter={confirmAreaGate} stay={cancelAreaGate}/>}</AnimatePresence><AnimatePresence>{objectiveModal && <ObjectiveDetailModal info={objectiveModal} close={() => setObjectiveModal(null)} showOnMap={(target) => { if (!target) return; setObjectiveMapFocus(target); setObjectiveModal(null); setScreen("world"); setToast(`Map target highlighted: ${target.label || "Objective"}`); }}/>}</AnimatePresence><AnimatePresence>{battleResult && <BattleResultModal result={battleResult} onContinue={finishBattleResult} />}</AnimatePresence><AnimatePresence>{updateModalVisible && availableUpdate && <UpdateAvailableModal manifest={availableUpdate} status={updateStatus} nativeReady={nativeUpdaterReady} download={() => downloadAvailableUpdate(availableUpdate)} later={() => setUpdateModalVisible(false)} checkAgain={() => checkAppUpdate({ silent: false })}/>}</AnimatePresence><AnimatePresence>{renameMon && <RenameModal nickname={nickname} setNickname={setNickname} notice={renameNotice} applyNickname={applyNickname} skip={() => { setRenameMon(null); setNickname(""); setRenameNotice(""); setTimeout(() => saveGame(false), 50); }}/>}</AnimatePresence></div>;
+  return <div className="h-[100dvh] max-h-[100dvh] bg-slate-950 text-white p-1 sm:p-3 landscape:p-0 overflow-hidden relative"><div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(34,211,238,.16),transparent_28%),radial-gradient(circle_at_80%_15%,rgba(217,70,239,.13),transparent_25%),radial-gradient(circle_at_55%_85%,rgba(132,204,22,.11),transparent_28%)]"/><div className="relative max-w-7xl mx-auto grid lg:grid-cols-[1fr_350px] gap-4"><Card className="rounded-2xl sm:rounded-3xl landscape:rounded-none overflow-hidden bg-slate-900/80 border-white/10 shadow-2xl shadow-cyan-500/10 h-[calc(100dvh-0.5rem)] sm:h-[calc(100dvh-1.5rem)] landscape:h-[100dvh]"><CardContent className="p-0 h-full overflow-hidden"><div className="h-full overflow-y-scroll overscroll-contain touch-pan-y pb-56 sm:pb-10" style={{ WebkitOverflowScrolling: "touch" }}><AnimatePresence mode="wait">{screen === "title" && <TitleScreen startStory={startStory} loadGame={loadGame} hasSave={hasSave}/>} {screen === "story" && <StoryScreen item={STORY[storyIndex]} nextStory={nextStory} index={storyIndex} total={STORY.length}/>} {screen === "starter" && <StarterScreen chooseStarter={chooseStarter}/>} {screen === "world" && party.length > 0 && <WorldScreen map={currentAreaMap(player)} area={currentAreaData(player)} player={player} move={move} party={party} storage={storage} seen={seen} dex={dex} setScreen={setScreen} saveGame={saveGame} clock={clock} viewport={viewport} onObjectiveClick={setObjectiveModal} objectiveMapFocus={objectiveMapFocus} clearObjectiveFocus={() => setObjectiveMapFocus(null)}/>} {screen === "party" && <PartyScreen party={party} active={active} setActive={setActive} setScreen={setScreen} player={player} seen={seen} evolve={evolve} clock={clock} useStatusItem={useStatusItem}/>} {screen === "pc" && <PCStorageScreen party={party} storage={storage} setScreen={setScreen} swapWithStorage={swapWithStorage} withdrawFromStorage={withdrawFromStorage}/>} {screen === "shop" && <ShopScreen player={player} setScreen={setScreen} buyStock={buyStock}/>} {screen === "dex" && <DexScreen dex={dex} setScreen={setScreen}/>} {screen === "account" && <AccountScreen setScreen={setScreen} authUser={authUser} accountProfile={accountProfile} accountStatus={accountStatus} setAccountStatus={setAccountStatus} findValidSave={findValidSave} hydrateSaveData={hydrateSaveData} uploadSaveDataToCloud={uploadSaveDataToCloud} loadAccountProfile={loadAccountProfile} cloudSyncStatus={cloudSyncStatus} lastCloudSyncAt={lastCloudSyncAt}/>} {screen === "multiplayer" && <MultiplayerScreen party={party} setParty={setParty} dex={dex} player={player} setScreen={setScreen} authUser={authUser} accountProfile={accountProfile} saveGame={saveGame}/>} {screen === "objectives" && <ObjectivesScreen setScreen={setScreen} player={player} seen={seen} dex={dex} party={party} storage={storage} clock={clock} onObjectiveClick={setObjectiveModal}/>} {screen === "help" && <HelpScreen setScreen={setScreen}/>} {screen === "update" && <UpdateCenterScreen setScreen={setScreen} availableUpdate={availableUpdate} status={updateStatus} checkUpdates={() => checkAppUpdate({ silent: false })} downloadUpdate={() => downloadAvailableUpdate(availableUpdate)} />} {screen === "atlas" && <AtlasScreen player={player} seen={seen} dex={dex} party={party} setScreen={setScreen}/>} {screen === "battle" && battle && current && <BattleScreen battle={battle} playerMon={current} skills={skills(current)} playerUse={playerUse} capture={capture} selectedCaptureItem={selectedCaptureItem} setSelectedCaptureItem={setSelectedCaptureItem} usePotion={usePotion} useStatusCure={useStatusCureInBattle} usePPItem={usePPItemInBattle} run={run} player={player} party={party} active={active} setActive={setActive} anim={battleAnim} dex={dex} clock={clock} onBattleResultContinue={finishBattleResult}/>} {screen === "gameover" && <GameOver reset={reset}/>} {screen === "world" && party.length === 0 && <StartRequiredScreen setScreen={setScreen} loadGame={loadGame} hasSave={hasSave}/>} {!VALID_SCREENS.has(screen) && <RecoveryScreen reset={reset} setScreen={setScreen} party={party}/>} {screen === "battle" && (!battle || !current) && <RecoveryScreen reset={reset} setScreen={setScreen} party={party} message="Battle data was missing, so the app can safely return to the map."/>}</AnimatePresence></div></CardContent></Card><div className="hidden lg:block"><SidePanel player={player} party={party} active={active} setScreen={requestScreen} reset={reset} saveGame={saveGame} loadGame={loadGame} clearSave={clearSave} hasSave={hasSave} muted={muted} setMuted={setMuted} stats={stats} clock={clock} authUser={authUser} accountProfile={accountProfile} cloudSyncStatus={cloudSyncStatus} lastCloudSyncAt={lastCloudSyncAt} storage={storage} seen={seen} dex={dex} onObjectiveClick={setObjectiveModal}/></div></div><MobileNav setScreen={requestScreen} saveGame={saveGame} muted={muted} setMuted={setMuted} authUser={authUser}/><AnimatePresence>{cinematic && <CinematicOverlay cinematic={cinematic}/>}</AnimatePresence><AnimatePresence>{evolutionScene && <EvolutionOverlay scene={evolutionScene}/>}</AnimatePresence><AnimatePresence>{toast && <motion.div initial={{ y: 30, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 30, opacity: 0 }} className="fixed bottom-5 left-1/2 -translate-x-1/2 px-5 py-3 rounded-2xl bg-slate-900 border border-cyan-300/30 shadow-xl text-cyan-100 font-bold z-50">{toast}</motion.div>}</AnimatePresence><AnimatePresence>{npc && <NpcModal npc={npc} close={() => { if (npc.reward) npc.reward(); setNpc(null); saveGame(false); }}/>}</AnimatePresence><AnimatePresence>{pendingAreaGate && <AreaGateModal gate={pendingAreaGate} enter={confirmAreaGate} stay={cancelAreaGate}/>}</AnimatePresence><AnimatePresence>{objectiveModal && <ObjectiveDetailModal info={objectiveModal} close={() => setObjectiveModal(null)} showOnMap={(target) => { if (!target) return; setObjectiveMapFocus(target); setObjectiveModal(null); setScreen("world"); setToast(`Map target highlighted: ${target.label || "Objective"}`); }}/>}</AnimatePresence><AnimatePresence>{battleResult && <BattleResultModal result={battleResult} onContinue={finishBattleResult} />}</AnimatePresence><AnimatePresence>{updateModalVisible && availableUpdate && <UpdateAvailableModal manifest={availableUpdate} status={updateStatus} nativeReady={nativeUpdaterReady} download={() => downloadAvailableUpdate(availableUpdate)} later={() => setUpdateModalVisible(false)} checkAgain={() => checkAppUpdate({ silent: false })}/>}</AnimatePresence><AnimatePresence>{renameMon && <RenameModal nickname={nickname} setNickname={setNickname} notice={renameNotice} applyNickname={applyNickname} skip={() => { setRenameMon(null); setNickname(""); setRenameNotice(""); setTimeout(() => saveGame(false), 50); }}/>}</AnimatePresence></div>;
 }
 
 
@@ -3236,7 +3236,8 @@ function tileDetails(tile, clock, area = null) {
   return { name, ...base, pool, timed };
 }
 
-function WorldScreen({ map, area, player, move, party, storage, seen, dex, setScreen, saveGame, clock, onObjectiveClick, objectiveMapFocus, clearObjectiveFocus }) {
+function WorldScreen({ map, area, player, move, party, storage, seen, dex, setScreen, saveGame, clock, viewport: viewportProp, onObjectiveClick, objectiveMapFocus, clearObjectiveFocus }) {
+  const viewport = viewportProp || { w: typeof window !== "undefined" ? window.innerWidth : 390, h: typeof window !== "undefined" ? window.innerHeight : 780 };
   const [selectedTile, setSelectedTile] = useState(null);
   const [mapZoom, setMapZoom] = useState(1);
   const pinchRef = useRef(null);
@@ -3281,20 +3282,22 @@ function WorldScreen({ map, area, player, move, party, storage, seen, dex, setSc
   const mapRows = map.length;
   const mapCols = Math.max(...map.map((row) => row.length));
   const isLandscapeView = viewport.w > viewport.h;
+  const isTinyLandscape = isLandscapeView && viewport.h < 520;
   const boardGap = isLandscapeView ? 3 : 4;
-  const reservedTop = isLandscapeView ? 82 : 126;
-  const reservedBottom = isLandscapeView ? 72 : 118;
-  const boardFitWidth = Math.max(280, Math.min(viewport.w - (isLandscapeView ? 14 : 16), isLandscapeView ? viewport.w - 12 : 760));
-  const boardFitHeight = Math.max(260, viewport.h - reservedTop - reservedBottom);
+  const bottomMenuAllowance = isLandscapeView ? 62 : (viewport.w < 640 ? 96 : 24);
+  const headerAllowance = isLandscapeView ? 112 : 168;
+  const boardFitWidth = Math.max(280, Math.min(viewport.w - (isLandscapeView ? 8 : 10), isLandscapeView ? viewport.w - 8 : 820));
+  const boardFitHeight = Math.max(250, viewport.h - headerAllowance - bottomMenuAllowance);
   const fitTileW = Math.floor((boardFitWidth - Math.max(0, mapCols - 1) * boardGap) / Math.max(1, mapCols));
   const fitTileH = Math.floor((boardFitHeight - Math.max(0, mapRows - 1) * boardGap) / Math.max(1, mapRows));
-  const tileW = Math.max(34, Math.min(116, Math.round(fitTileW * mapZoom)));
-  const tileH = Math.max(34, Math.min(116, Math.round(fitTileH * mapZoom)));
+  const baseFit = Math.max(32, Math.min(fitTileW, fitTileH));
+  const tileW = Math.max(32, Math.min(126, Math.round(baseFit * mapZoom)));
+  const tileH = Math.max(32, Math.min(126, Math.round(baseFit * mapZoom)));
   const tileVisual = Math.min(tileW, tileH);
   const mapPixelWidth = mapCols * tileW + Math.max(0, mapCols - 1) * boardGap;
   const mapPixelHeight = mapRows * tileH + Math.max(0, mapRows - 1) * boardGap;
-  const boardViewportHeight = Math.max(260, Math.min(boardFitHeight, mapPixelHeight + 12));
-  const clampZoom = (value) => Math.max(0.72, Math.min(1.85, value));
+  const boardViewportHeight = Math.max(240, Math.min(boardFitHeight, Math.max(mapPixelHeight + 10, boardFitHeight)));
+  const clampZoom = (value) => Math.max(0.66, Math.min(1.85, value));
   const touchDistance = (touches) => {
     const [a, b] = touches;
     return Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY);
@@ -3309,40 +3312,46 @@ function WorldScreen({ map, area, player, move, party, storage, seen, dex, setSc
     setMapZoom(clampZoom(next));
   };
   return <motion.div key="world" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className={`min-h-[calc(100dvh-92px)] landscape:min-h-[100dvh] p-1 sm:p-2 landscape:p-1 bg-gradient-to-br ${area?.bg || "from-slate-950 via-emerald-950 to-slate-950"}`}>
-    <div className="relative mb-1.5 rounded-[1.35rem] sm:rounded-[1.8rem] overflow-hidden border border-cyan-200/30 bg-slate-950/88 shadow-2xl shadow-cyan-500/20">
-      <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_10%_18%,rgba(103,232,249,.32),transparent_28%),radial-gradient(circle_at_86%_22%,rgba(217,70,239,.22),transparent_34%),linear-gradient(90deg,rgba(2,6,23,.98),rgba(8,47,73,.80),rgba(30,27,75,.86))]" />
+    <div className="relative mb-1 rounded-[1.35rem] sm:rounded-[1.8rem] overflow-hidden border border-cyan-200/30 bg-slate-950/88 shadow-2xl shadow-cyan-500/20">
+      <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_10%_18%,rgba(103,232,249,.34),transparent_28%),radial-gradient(circle_at_86%_22%,rgba(217,70,239,.24),transparent_34%),linear-gradient(90deg,rgba(2,6,23,.98),rgba(8,47,73,.78),rgba(30,27,75,.88))]" />
       <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-gradient-to-b from-cyan-200 via-fuchsia-300 to-lime-200"/>
-      <div className="relative px-2.5 py-2 sm:px-4 sm:py-3 landscape:py-1.5">
-        <div className="flex items-center justify-between gap-2">
+      <div className="relative px-2 py-1.5 sm:px-4 sm:py-3 landscape:py-1.5">
+        <div className="flex items-center justify-between gap-1.5">
           <div className="flex items-center gap-2 min-w-0">
-            <div className="w-12 h-12 sm:w-14 sm:h-14 landscape:w-10 landscape:h-10 rounded-2xl bg-gradient-to-br from-cyan-200 via-cyan-300 to-fuchsia-200 text-slate-950 flex items-center justify-center shadow-xl shadow-cyan-300/35 shrink-0 ring-2 ring-white/30">
+            <div className="w-12 h-12 sm:w-14 sm:h-14 landscape:w-9 landscape:h-9 rounded-2xl bg-gradient-to-br from-cyan-200 via-cyan-300 to-fuchsia-200 text-slate-950 flex items-center justify-center shadow-xl shadow-cyan-300/40 shrink-0 ring-2 ring-white/30">
               <Map className="w-6 h-6 sm:w-7 sm:h-7 landscape:w-5 landscape:h-5"/>
             </div>
             <div className="min-w-0">
-              <div className="text-[18px] sm:text-2xl landscape:text-base font-black tracking-[0.16em] sm:tracking-[0.22em] text-white leading-[0.95] drop-shadow-[0_2px_10px_rgba(34,211,238,.45)]">MYTHBOUND</div>
-              <div className="text-[18px] sm:text-2xl landscape:text-base font-black tracking-[0.18em] sm:tracking-[0.24em] text-cyan-100 leading-[0.95] drop-shadow-[0_2px_10px_rgba(34,211,238,.45)]">TAMERS</div>
-              <div className="text-[8px] sm:text-[10px] landscape:hidden uppercase tracking-[0.18em] text-lime-100 font-black mt-1">Monster-taming RPG</div>
+              <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
+                <span className="text-[17px] sm:text-2xl landscape:text-[13px] font-black tracking-[0.15em] sm:tracking-[0.22em] text-white leading-[0.95] drop-shadow-[0_2px_10px_rgba(34,211,238,.55)]">MYTHBOUND</span>
+                <span className="text-[17px] sm:text-2xl landscape:text-[13px] font-black tracking-[0.16em] sm:tracking-[0.24em] text-cyan-100 leading-[0.95] drop-shadow-[0_2px_10px_rgba(34,211,238,.55)]">TAMERS</span>
+              </div>
+              <div className="text-[8px] sm:text-[10px] landscape:text-[7px] uppercase tracking-[0.18em] text-lime-100 font-black mt-0.5">Monster-taming RPG</div>
             </div>
           </div>
-          <div className="flex items-center gap-1.5 shrink-0">
-            <Button onClick={() => setScreen("objectives")} variant="secondary" className="rounded-xl font-black px-2.5 py-2 sm:px-3 sm:py-2 text-[10px] sm:text-xs bg-cyan-300 text-slate-950 hover:bg-cyan-200 border-cyan-100 shadow-lg shadow-cyan-300/20"><Sparkles className="w-3.5 h-3.5 mr-1"/>Goals</Button>
+          <div className="flex items-center gap-1 shrink-0">
+            <Button onClick={() => setScreen("objectives")} variant="secondary" className="rounded-xl font-black px-2 py-1.5 sm:px-3 sm:py-2 landscape:px-2 landscape:py-1 text-[10px] sm:text-xs bg-cyan-300 text-slate-950 hover:bg-cyan-200 border-cyan-100 shadow-lg shadow-cyan-300/20"><Sparkles className="w-3.5 h-3.5 mr-1"/>Goals</Button>
             <Button onClick={() => setMapZoom((z)=>clampZoom(z - 0.15))} variant="secondary" className="rounded-xl font-black px-2 py-1 text-[10px] sm:text-xs">−</Button>
             <Button onClick={() => setMapZoom(1)} variant="secondary" className="rounded-xl font-black px-2 py-1 text-[10px] sm:text-xs">{Math.round(mapZoom * 100)}%</Button>
             <Button onClick={() => setMapZoom((z)=>clampZoom(z + 0.15))} variant="secondary" className="rounded-xl font-black px-2 py-1 text-[10px] sm:text-xs">+</Button>
           </div>
         </div>
-        <div className="mt-2 landscape:mt-1 flex items-center justify-between gap-2">
-          <div className="min-w-0 flex-1 rounded-2xl bg-white/8 border border-cyan-200/20 px-3 py-1.5 landscape:py-1 shadow-inner">
-            <div className="text-[8px] sm:text-[10px] landscape:text-[7px] uppercase tracking-[0.24em] text-cyan-100/90 font-black">Current Area</div>
-            <div className="text-xl sm:text-3xl landscape:text-base font-black text-white truncate leading-tight">{area?.name || "Luminara Wilds"}</div>
-            <div className="text-[10px] sm:text-xs landscape:text-[8px] text-cyan-100/90 font-bold truncate">Catch • Train • Evolve • Explore routes • Battle bosses</div>
+        <div className="mt-1.5 landscape:mt-1 flex items-center justify-between gap-2">
+          <div className="min-w-0 flex-1 rounded-2xl bg-white/8 border border-cyan-200/20 px-2.5 py-1.5 landscape:py-1 shadow-inner">
+            <div className="flex items-center gap-2 min-w-0">
+              <div className="min-w-0 flex-1">
+                <div className="text-[8px] sm:text-[10px] landscape:text-[7px] uppercase tracking-[0.22em] text-cyan-100/90 font-black">Current Area</div>
+                <div className="text-lg sm:text-3xl landscape:text-sm font-black text-white truncate leading-tight">{area?.name || "Luminara Wilds"}</div>
+              </div>
+              <Badge className="bg-slate-900/80 text-cyan-100 border border-cyan-300/25 px-2 py-1 text-[10px] landscape:text-[8px] shrink-0"><TimeIcon className="w-3 h-3 mr-1"/>{timeString(clock)}</Badge>
+            </div>
+            <div className="text-[9px] sm:text-xs landscape:text-[7px] text-cyan-100/90 font-bold truncate">Catch • Train • Evolve • Explore routes • Battle bosses</div>
           </div>
-          <Badge className="bg-slate-900/80 text-cyan-100 border border-cyan-300/25 px-2 py-1.5 text-[10px] sm:text-xs landscape:text-[9px] shrink-0"><TimeIcon className="w-3 h-3 mr-1"/>{timeString(clock)}</Badge>
         </div>
       </div>
     </div>
 
-{objectiveFocusOnMap && <div className="mb-2 rounded-2xl bg-cyan-300/12 border border-cyan-200/30 p-2 flex flex-wrap items-center justify-between gap-2 shadow-xl shadow-cyan-500/10">
+{objectiveFocusOnMap && <div className="mb-1 rounded-2xl bg-cyan-300/12 border border-cyan-200/30 p-1.5 landscape:p-1 flex flex-wrap items-center justify-between gap-2 shadow-xl shadow-cyan-500/10">
       <div className="flex items-center gap-3">
         <div className="w-10 h-10 rounded-2xl bg-cyan-200 text-slate-950 flex items-center justify-center font-black text-xl">{objectiveFocusOnMap.icon || "✦"}</div>
         <div><div className="text-xs uppercase tracking-wider text-cyan-200 font-black">Objective Map Target</div><div className="font-black text-white">{objectiveFocusOnMap.label}</div><div className="text-xs text-slate-300">{objectiveFocusOnMap.mode === "gate" ? "This highlighted tile is the gate toward the objective area." : "This highlighted tile is the objective target."}</div></div>
@@ -3352,7 +3361,7 @@ function WorldScreen({ map, area, player, move, party, storage, seen, dex, setSc
 
     <div className="relative">
       <div
-        className="overflow-auto rounded-[1.35rem] sm:rounded-[2rem] bg-black/35 border border-white/10 shadow-2xl p-1.5 sm:p-2 overscroll-contain"
+        className="overflow-auto rounded-[1.35rem] sm:rounded-[2rem] bg-black/35 border border-white/10 shadow-2xl p-1 sm:p-1.5 overscroll-contain"
         style={{ touchAction: "pan-x pan-y", height: boardViewportHeight, maxHeight: boardViewportHeight }}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
@@ -3364,13 +3373,15 @@ function WorldScreen({ map, area, player, move, party, storage, seen, dex, setSc
         }}
       >
         <div
-          className="mx-auto"
-          style={{ width: mapPixelWidth, minWidth: mapPixelWidth, height: mapPixelHeight, minHeight: mapPixelHeight }}
+          className="mx-auto flex items-center justify-center"
+          style={{ width: mapPixelWidth, minWidth: mapPixelWidth, height: Math.max(mapPixelHeight, boardViewportHeight - 10), minHeight: mapPixelHeight }}
         >
           <div
             className="grid"
             style={{
               gap: boardGap,
+              width: mapPixelWidth,
+              height: mapPixelHeight,
               gridTemplateColumns: `repeat(${mapCols}, ${tileW}px)`,
               gridAutoRows: `${tileH}px`,
             }}
@@ -4755,7 +4766,7 @@ function AccountScreen({
           storage_snapshot: [],
           inventory_snapshot: {},
           dex_caught: 0,
-          save_version: 16,
+          save_version: 17,
           updated_at: new Date().toISOString()
         };
         await supabase.from("mythbound_profiles").upsert(payload, { onConflict: "id" });
@@ -4838,7 +4849,7 @@ function AccountScreen({
         throw new Error("Cloud row exists, but it does not contain party/storage save data. Upload a local save from the old device to repair it.");
       }
       hydrateSaveData(migrated, recovered._recoveredFromProfileSnapshot ? "recovered cloud snapshot" : "cloud save");
-      await uploadSaveDataToCloud({ ...migrated, version: 16, savedAt: Date.now() }, false);
+      await uploadSaveDataToCloud({ ...migrated, version: 17, savedAt: Date.now() }, false);
       setAccountStatus(`Cloud save loaded and upgraded for this version. ${cloudSaveSummary(profile)}`);
     } catch (e) {
       setAccountStatus(`Load cloud save error: ${e.message}`);
