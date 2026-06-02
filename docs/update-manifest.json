@@ -1,8 +1,8 @@
 ﻿{
-    "version":  "0.54.0",
-    "versionCode":  54,
-    "notes":  "Add manual cloud upload success/failure confirmation, improve capture throw targeting, improve area-gate tile icons/art, implement native in-app updater flow, and add new monsters/evolutions/obtain methods.",
-    "apkUrl":  "https://github.com/costaskk/Mythbound-Tamers/releases/download/v0.54.0/mythbound-tamers-v0.54.0.apk",
+    "version":  "0.55.0",
+    "versionCode":  55,
+    "notes":  "Make battle UI more compact so monsters dominate the stage, enlarge battle scene, add more monsters/evolutions/creative obtain methods, and keep updater/release files current.",
+    "apkUrl":  "https://github.com/costaskk/Mythbound-Tamers/releases/download/v0.55.0/mythbound-tamers-v0.55.0.apk",
     "mandatory":  false,
     "publishedAt":  "2026-06-02",
     "autoStartNativeUpdate":  false,
