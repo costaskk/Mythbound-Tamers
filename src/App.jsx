@@ -8,8 +8,8 @@ import {Sparkles, PawPrint, Flame, Droplets, Leaf, Zap, Heart, Map, Backpack, Ga
 
 const SAVE_KEY = "mythbound_tamers_save_v4";
 const OLD_SAVE_KEYS = ["mythbound_tamers_save_v6", "mythbound_tamers_save_v5", "mythbound_tamers_save_v4", "mythbound_tamers_save_v3", "mythbound_tamers_save_v2", "mythbound_tamers_save"];
-const APP_VERSION = "0.64.0";
-const APP_VERSION_CODE = 64;
+const APP_VERSION = "0.65.0";
+const APP_VERSION_CODE = 65;
 const UPDATE_MANIFEST_URL = import.meta.env.VITE_UPDATE_MANIFEST_URL || "https://costaskk.github.io/Mythbound-Tamers/update-manifest.json";
 const SHINY_RATE = 1 / 192;
 const VALID_SCREENS = new Set(["title","story","starter","world","party","pc","shop","dex","account","multiplayer","friends","objectives","help","atlas","update","battle","gameover"]);
@@ -1961,7 +1961,7 @@ function MythboundTamersJRPGInner() {
   }
   function buildSaveData(g = gameRef.current) {
     const safeScreen = ["battle", "gameover", "starter"].includes(g.screen) ? "world" : g.screen;
-    return { version: 20, savedAt: Date.now(), screen: safeScreen, storyIndex: g.storyIndex, player: g.player, party: g.party, storage: g.storage || [], active: g.active, seen: g.seen, dex: g.dex, clock: g.clock, muted: g.muted };
+    return { version: 21, savedAt: Date.now(), screen: safeScreen, storyIndex: g.storyIndex, player: g.player, party: g.party, storage: g.storage || [], active: g.active, seen: g.seen, dex: g.dex, clock: g.clock, muted: g.muted };
   }
   function hydrateSaveData(data, sourceLabel = "save") {
     const migrated = migrateSave(data || {});
@@ -1972,7 +1972,7 @@ function MythboundTamersJRPGInner() {
     if (!supabase) throw new Error("Supabase env variables are missing.");
     if (!authUser) throw new Error("Sign in first.");
     const migrated = migrateSave(saveData || {});
-    const cleanSave = JSON.parse(JSON.stringify({ ...migrated, version: 20, savedAt: Date.now() }));
+    const cleanSave = JSON.parse(JSON.stringify({ ...migrated, version: 21, savedAt: Date.now() }));
     const display = accountProfile?.display_name || authUser.user_metadata?.display_name || authUser.email?.split("@")[0] || `Tamer-${authUser.id.slice(0, 6)}`;
     const syncedAt = new Date().toISOString();
 
@@ -1988,7 +1988,7 @@ function MythboundTamersJRPGInner() {
       inventory_snapshot: cleanSave.player || {},
       dex_caught: Object.keys(cleanSave.dex?.caught || {}).filter((k) => cleanSave.dex.caught[k]).length,
       save_data: cleanSave,
-      save_version: cleanSave.version || 20,
+      save_version: cleanSave.version || 21,
       last_save_at: syncedAt,
       updated_at: syncedAt
     };
@@ -3286,28 +3286,39 @@ function WorldScreen({ map, area, player, move, party, storage, seen, dex, setSc
   const mapRows = map.length;
   const mapCols = Math.max(...map.map((row) => row.length));
   const isLandscapeView = viewport.w > viewport.h;
-  const isTinyLandscape = isLandscapeView && viewport.h < 520;
+  const targetAspect = isLandscapeView ? (3200 / 1440) : (1440 / 3200);
+  const actualAspect = Math.max(0.25, viewport.w / Math.max(1, viewport.h));
+  const aspectCloseness = Math.max(0, 1 - Math.min(1, Math.abs(actualAspect - targetAspect) / targetAspect));
   const boardGap = isLandscapeView ? 3 : 4;
-  const bottomMenuAllowance = isLandscapeView ? 62 : (viewport.w < 640 ? 96 : 24);
-  const headerAllowance = isLandscapeView ? 112 : 168;
-  const boardFitWidth = Math.max(280, Math.min(viewport.w - (isLandscapeView ? 8 : 10), isLandscapeView ? viewport.w - 8 : 820));
-  const boardFitHeight = Math.max(250, viewport.h - headerAllowance - bottomMenuAllowance);
 
-  // Orientation-aware board shaping:
-  // portrait keeps taller cells; landscape widens cells and lowers height so the board fills the screen
-  // instead of leaving dead space or requiring unnecessary vertical scroll.
-  const rawTileW = (boardFitWidth - Math.max(0, mapCols - 1) * boardGap) / Math.max(1, mapCols);
-  const rawTileH = (boardFitHeight - Math.max(0, mapRows - 1) * boardGap) / Math.max(1, mapRows);
-  const landscapeBoost = isLandscapeView ? 1.08 : 1;
-  const portraitBoost = !isLandscapeView ? 1.04 : 1;
-  const tileW = Math.max(30, Math.min(132, Math.floor(rawTileW * mapZoom * landscapeBoost)));
-  const tileH = Math.max(30, Math.min(132, Math.floor(rawTileH * mapZoom * portraitBoost)));
+  // 1440x3200 portrait and 3200x1440 landscape friendly layout:
+  // reserve only the visible HUD/menu space, then reshape the map cells so the FULL board fits
+  // at 100% zoom without vertical/horizontal scrolling.
+  const headerAllowance = isLandscapeView ? Math.max(78, Math.min(108, viewport.h * 0.105)) : Math.max(132, Math.min(176, viewport.h * 0.055));
+  const bottomMenuAllowance = isLandscapeView ? Math.max(52, Math.min(76, viewport.h * 0.06)) : Math.max(92, Math.min(118, viewport.h * 0.035));
+  const sidePadding = isLandscapeView ? 8 : 10;
+  const boardFitWidth = Math.max(280, Math.min(viewport.w - sidePadding, isLandscapeView ? viewport.w - 8 : Math.min(920, viewport.w - 10)));
+  const boardFitHeight = Math.max(260, viewport.h - headerAllowance - bottomMenuAllowance);
+
+  const exactTileW = (boardFitWidth - Math.max(0, mapCols - 1) * boardGap) / Math.max(1, mapCols);
+  const exactTileH = (boardFitHeight - Math.max(0, mapRows - 1) * boardGap) / Math.max(1, mapRows);
+
+  // When close to the target phone ratios, allow more dramatic non-square shaping:
+  // portrait = tall tiles, landscape = wide tiles. Other devices still get safe proportional shaping.
+  const portraitShape = !isLandscapeView ? 1 + aspectCloseness * 0.18 : 1;
+  const landscapeShape = isLandscapeView ? 1 + aspectCloseness * 0.20 : 1;
+  const tileW = Math.max(24, Math.min(180, Math.floor(exactTileW * mapZoom * landscapeShape)));
+  const tileH = Math.max(24, Math.min(180, Math.floor(exactTileH * mapZoom * portraitShape)));
   const tileVisual = Math.min(tileW, tileH);
   const mapPixelWidth = mapCols * tileW + Math.max(0, mapCols - 1) * boardGap;
   const mapPixelHeight = mapRows * tileH + Math.max(0, mapRows - 1) * boardGap;
-  const boardViewportHeight = Math.max(220, Math.min(boardFitHeight, Math.max(mapPixelHeight + 8, boardFitHeight)));
-  const boardViewportWidth = Math.max(280, Math.min(boardFitWidth, Math.max(mapPixelWidth + 8, boardFitWidth)));
-  const clampZoom = (value) => Math.max(0.62, Math.min(1.85, value));
+
+  // At 100% this matches the board size, so the whole board is visible. If the user zooms in,
+  // the same container becomes scrollable intentionally.
+  const boardViewportWidth = Math.max(280, Math.min(boardFitWidth, mapPixelWidth + 8));
+  const boardViewportHeight = Math.max(240, Math.min(boardFitHeight, mapPixelHeight + 8));
+  const boardScaleMode = `${Math.round(viewport.w)}×${Math.round(viewport.h)} · ${isLandscapeView ? "landscape" : "portrait"}`;
+  const clampZoom = (value) => Math.max(0.58, Math.min(1.85, value));
   const touchDistance = (touches) => {
     const [a, b] = touches;
     return Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY);
@@ -3379,21 +3390,21 @@ function WorldScreen({ map, area, player, move, party, storage, seen, dex, setSc
     if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate(20);
   };
   return <motion.div key="world" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className={`min-h-[calc(100dvh-92px)] landscape:min-h-[100dvh] p-1 sm:p-2 landscape:p-1 bg-gradient-to-br ${area?.bg || "from-slate-950 via-emerald-950 to-slate-950"}`}>
-    <div className="relative mb-1 rounded-[1.35rem] sm:rounded-[1.8rem] overflow-hidden border border-cyan-200/30 bg-slate-950/88 shadow-2xl shadow-cyan-500/20">
-      <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_10%_18%,rgba(103,232,249,.34),transparent_28%),radial-gradient(circle_at_86%_22%,rgba(217,70,239,.24),transparent_34%),linear-gradient(90deg,rgba(2,6,23,.98),rgba(8,47,73,.78),rgba(30,27,75,.88))]" />
+    <div className="sticky top-1 z-30 relative mb-1 rounded-[1.35rem] sm:rounded-[1.8rem] overflow-hidden border border-cyan-200/35 bg-slate-950/92 shadow-2xl shadow-cyan-500/25">
+      <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_8%_16%,rgba(103,232,249,.38),transparent_28%),radial-gradient(circle_at_84%_18%,rgba(217,70,239,.24),transparent_34%),linear-gradient(90deg,rgba(2,6,23,.99),rgba(8,47,73,.82),rgba(30,27,75,.88))]" />
       <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-gradient-to-b from-cyan-200 via-fuchsia-300 to-lime-200"/>
       <div className="relative px-2 py-1 sm:px-4 sm:py-2.5 landscape:py-1">
         <div className="flex items-center justify-between gap-1.5">
           <div className="flex items-center gap-2 min-w-0">
-            <div className="w-12 h-12 sm:w-14 sm:h-14 landscape:w-9 landscape:h-9 rounded-2xl bg-gradient-to-br from-cyan-200 via-cyan-300 to-fuchsia-200 text-slate-950 flex items-center justify-center shadow-xl shadow-cyan-300/40 shrink-0 ring-2 ring-white/30">
+            <motion.div animate={{ boxShadow:["0 0 18px rgba(103,232,249,.35)","0 0 34px rgba(217,70,239,.32)","0 0 18px rgba(103,232,249,.35)"] }} transition={{ duration:2.6, repeat:Infinity }} className="w-12 h-12 sm:w-14 sm:h-14 landscape:w-9 landscape:h-9 rounded-2xl bg-gradient-to-br from-cyan-200 via-cyan-300 to-fuchsia-200 text-slate-950 flex items-center justify-center shrink-0 ring-2 ring-white/35">
               <Map className="w-6 h-6 sm:w-7 sm:h-7 landscape:w-5 landscape:h-5"/>
-            </div>
+            </motion.div>
             <div className="min-w-0">
-              <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
-                <span className="text-[17px] sm:text-2xl landscape:text-[13px] font-black tracking-[0.15em] sm:tracking-[0.22em] text-white leading-[0.95] drop-shadow-[0_2px_10px_rgba(34,211,238,.55)]">MYTHBOUND</span>
-                <span className="text-[17px] sm:text-2xl landscape:text-[13px] font-black tracking-[0.16em] sm:tracking-[0.24em] text-cyan-100 leading-[0.95] drop-shadow-[0_2px_10px_rgba(34,211,238,.55)]">TAMERS</span>
+              <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+                <span className="text-[18px] sm:text-3xl landscape:text-[15px] font-black tracking-[0.15em] sm:tracking-[0.24em] text-white leading-[0.9] drop-shadow-[0_2px_12px_rgba(34,211,238,.70)]">MYTHBOUND</span>
+                <span className="text-[18px] sm:text-3xl landscape:text-[15px] font-black tracking-[0.16em] sm:tracking-[0.26em] text-cyan-100 leading-[0.9] drop-shadow-[0_2px_12px_rgba(34,211,238,.70)]">TAMERS</span>
               </div>
-              <div className="text-[8px] sm:text-[10px] landscape:text-[7px] uppercase tracking-[0.18em] text-lime-100 font-black mt-0.5">Monster-taming RPG</div>
+              <div className="text-[8px] sm:text-[10px] landscape:text-[7px] uppercase tracking-[0.20em] text-lime-100 font-black mt-0.5">Monster-taming RPG · catch, train, evolve</div>
             </div>
           </div>
           <div className="flex items-center gap-1 shrink-0">
@@ -3403,17 +3414,18 @@ function WorldScreen({ map, area, player, move, party, storage, seen, dex, setSc
             <Button onClick={() => setMapZoom((z)=>clampZoom(z + 0.15))} variant="secondary" className="rounded-xl font-black px-2 py-1 text-[10px] sm:text-xs">+</Button>
           </div>
         </div>
-        <div className="mt-1 landscape:mt-0.5 flex items-center justify-between gap-2">
-          <div className="min-w-0 flex-1 rounded-2xl bg-white/8 border border-cyan-200/20 px-2.5 py-1 landscape:py-0.5 shadow-inner">
+        <div className="mt-1 landscape:mt-0.5 grid grid-cols-[1fr_auto] gap-2 items-center">
+          <div className="min-w-0 rounded-2xl bg-white/9 border border-cyan-200/25 px-2.5 py-1 landscape:py-0.5 shadow-inner">
             <div className="flex items-center gap-2 min-w-0">
               <div className="min-w-0 flex-1">
                 <div className="text-[8px] sm:text-[10px] landscape:text-[7px] uppercase tracking-[0.22em] text-cyan-100/90 font-black">Current Area</div>
                 <div className="text-lg sm:text-3xl landscape:text-sm font-black text-white truncate leading-tight">{area?.name || "Luminara Wilds"}</div>
               </div>
-              <Badge className="bg-slate-900/80 text-cyan-100 border border-cyan-300/25 px-2 py-1 text-[10px] landscape:text-[8px] shrink-0"><TimeIcon className="w-3 h-3 mr-1"/>{timeString(clock)}</Badge>
+              <Badge className="bg-slate-900/85 text-cyan-100 border border-cyan-300/25 px-2 py-1 text-[10px] landscape:text-[8px] shrink-0"><TimeIcon className="w-3 h-3 mr-1"/>{timeString(clock)}</Badge>
             </div>
             <div className="text-[9px] sm:text-xs landscape:text-[7px] text-cyan-100/90 font-bold truncate">Tap board to move • Swipe the paw • Hold a tile to inspect</div>
           </div>
+          <Badge className="hidden sm:inline-flex bg-fuchsia-300/15 text-fuchsia-100 border border-fuchsia-200/25 px-2 py-1 text-[9px] landscape:text-[7px] font-black">{boardScaleMode}</Badge>
         </div>
       </div>
     </div>
@@ -3428,8 +3440,8 @@ function WorldScreen({ map, area, player, move, party, storage, seen, dex, setSc
 
     <div className="relative">
       <div
-        className="overflow-auto rounded-[1.35rem] sm:rounded-[2rem] bg-black/35 border border-white/10 shadow-2xl p-1 sm:p-1.5 overscroll-contain"
-        style={{ touchAction: "pan-x pan-y", height: boardViewportHeight, maxHeight: boardViewportHeight, width: "100%", maxWidth: boardViewportWidth }}
+        className={`${mapZoom > 1.01 ? "overflow-auto" : "overflow-hidden"} rounded-[1.35rem] sm:rounded-[2rem] bg-black/35 border border-white/10 shadow-2xl p-1 sm:p-1.5 overscroll-contain mx-auto`}
+        style={{ touchAction: "pan-x pan-y", height: boardViewportHeight, maxHeight: boardViewportHeight, width: boardViewportWidth, maxWidth: "100%" }}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={() => { pinchRef.current = null; }}
@@ -3467,7 +3479,7 @@ function WorldScreen({ map, area, player, move, party, storage, seen, dex, setSc
                 onClick={()=>tapTile(t, x, y)}
                 key={`${x}-${y}`}
                 className={`relative rounded-xl border flex items-center justify-center font-black shrink-0 overflow-hidden transition shadow-lg ${tileGlow(t)} ${tileClass(t)} ${isAreaGate ? "ring-1 ring-cyan-200 shadow-md shadow-cyan-300/20" : ""} ${isObjectiveTile ? "ring-4 ring-yellow-200 shadow-2xl shadow-yellow-300/50 z-20" : ""} ${isSelected ? "ring-2 ring-white ring-offset-2 ring-offset-slate-950 z-10" : ""}`}
-                style={{ width: tileW, height: tileH, borderRadius: Math.max(10, Math.min(22, Math.round(tileVisual * 0.24))), fontSize: Math.max(10, Math.min(18, Math.round(tileVisual * 0.34))) }}
+                style={{ width: tileW, height: tileH, borderRadius: Math.max(10, Math.min(24, Math.round(tileVisual * 0.26))), fontSize: Math.max(9, Math.min(20, Math.round(tileVisual * 0.36))) }}
                 aria-label={`${TILE_NAMES[t] || "Unknown tile"} at ${x + 1}, ${y + 1}`}
               >
                 <span className={`absolute inset-0 bg-gradient-to-br ${tileOverlay(t)} pointer-events-none`}/><span className="relative z-10 opacity-95 pointer-events-none leading-none drop-shadow-[0_2px_4px_rgba(0,0,0,.65)]">{label(t)}</span>{isAreaGate && <><span className="absolute right-1 top-1 px-1 py-[1px] rounded-full bg-cyan-100 text-[7px] leading-none text-slate-950 border border-slate-950 shadow-sm z-20">GO</span><motion.span animate={{ opacity:[0.18,0.65,0.18], scale:[0.85,1.22,0.85] }} transition={{ duration:1.5, repeat:Infinity }} className="absolute inset-[5px] rounded-lg border border-cyan-100/50 pointer-events-none z-10"/></>}
@@ -3520,7 +3532,7 @@ function TileInfoPopup({ selected, tile, x, y, close }) {
     initial={{ opacity: 0, y: -18, scale: 0.96 }}
     animate={{ opacity: 1, y: 0, scale: 1 }}
     exit={{ opacity: 0, y: -18, scale: 0.96 }}
-    className="fixed left-2 right-2 top-[104px] sm:top-[128px] landscape:top-[78px] z-50 mx-auto max-w-md landscape:max-w-sm rounded-2xl sm:rounded-3xl bg-slate-950/95 border border-cyan-200/30 shadow-2xl shadow-cyan-500/20 backdrop-blur-xl p-3 sm:p-4 landscape:p-2.5"
+    className="fixed left-2 right-2 top-[118px] sm:top-[144px] landscape:top-[82px] z-50 mx-auto max-w-md landscape:max-w-sm rounded-2xl sm:rounded-3xl bg-slate-950/95 border border-cyan-200/30 shadow-2xl shadow-cyan-500/20 backdrop-blur-xl p-3 sm:p-4 landscape:p-2.5"
   >
     <div className="flex items-start justify-between gap-3">
       <div>
@@ -5259,7 +5271,7 @@ function AccountScreen({
           storage_snapshot: [],
           inventory_snapshot: {},
           dex_caught: 0,
-          save_version: 20,
+          save_version: 21,
           updated_at: new Date().toISOString()
         };
         await supabase.from("mythbound_profiles").upsert(payload, { onConflict: "id" });
@@ -5342,7 +5354,7 @@ function AccountScreen({
         throw new Error("Cloud row exists, but it does not contain party/storage save data. Upload a local save from the old device to repair it.");
       }
       hydrateSaveData(migrated, recovered._recoveredFromProfileSnapshot ? "recovered cloud snapshot" : "cloud save");
-      await uploadSaveDataToCloud({ ...migrated, version: 20, savedAt: Date.now() }, false);
+      await uploadSaveDataToCloud({ ...migrated, version: 21, savedAt: Date.now() }, false);
       setAccountStatus(`Cloud save loaded and upgraded for this version. ${cloudSaveSummary(profile)}`);
     } catch (e) {
       setAccountStatus(`Load cloud save error: ${e.message}`);
