@@ -1,8 +1,8 @@
 ﻿{
-    "version":  "0.59.0",
-    "versionCode":  59,
-    "notes":  "Improve board header and area-title readability on mobile/landscape, clarify the monster-taming RPG identity, add a lightweight synthesized adventure background tune, and keep Happi line/content updates.",
-    "apkUrl":  "https://github.com/costaskk/Mythbound-Tamers/releases/download/v0.59.0/mythbound-tamers-v0.59.0.apk",
+    "version":  "0.60.0",
+    "versionCode":  60,
+    "notes":  "Make the Mythbound Tamers title stand out more, add a clearer current-area HUD, and dynamically scale every board to fit portrait and landscape screens with minimal dead space.",
+    "apkUrl":  "https://github.com/costaskk/Mythbound-Tamers/releases/download/v0.60.0/mythbound-tamers-v0.60.0.apk",
     "mandatory":  false,
     "publishedAt":  "2026-06-02",
     "autoStartNativeUpdate":  false,

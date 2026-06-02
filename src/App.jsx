@@ -8,8 +8,8 @@ import { Sparkles, PawPrint, Flame, Droplets, Leaf, Zap, Heart, Map, Backpack, G
 
 const SAVE_KEY = "mythbound_tamers_save_v4";
 const OLD_SAVE_KEYS = ["mythbound_tamers_save_v6", "mythbound_tamers_save_v5", "mythbound_tamers_save_v4", "mythbound_tamers_save_v3", "mythbound_tamers_save_v2", "mythbound_tamers_save"];
-const APP_VERSION = "0.59.0";
-const APP_VERSION_CODE = 59;
+const APP_VERSION = "0.60.0";
+const APP_VERSION_CODE = 60;
 const UPDATE_MANIFEST_URL = import.meta.env.VITE_UPDATE_MANIFEST_URL || "https://costaskk.github.io/Mythbound-Tamers/update-manifest.json";
 const SHINY_RATE = 1 / 192;
 const VALID_SCREENS = new Set(["title","story","starter","world","party","pc","shop","dex","account","multiplayer","objectives","help","atlas","update","battle","gameover"]);
@@ -1836,6 +1836,7 @@ function MythboundTamersJRPGInner() {
   const [updateStatus, setUpdateStatus] = useState("Checking for updates...");
   const [updateModalVisible, setUpdateModalVisible] = useState(false);
   const [nativeUpdaterReady, setNativeUpdaterReady] = useState(false);
+  const [viewport, setViewport] = useState(() => ({ w: typeof window !== "undefined" ? window.innerWidth : 390, h: typeof window !== "undefined" ? window.innerHeight : 780 }));
 
   const keyCooldown = useRef(false), audioRef = useRef(null), bgmTimerRef = useRef(null), bgmStepRef = useRef(0), gameRef = useRef({});
   const lastCinematicTileRef = useRef(null);
@@ -1854,6 +1855,17 @@ function MythboundTamersJRPGInner() {
   }, [screen, battle, party.length, active]);
 
   useEffect(() => { setHasSave(Boolean(findValidSave())); }, []);
+  useEffect(() => {
+    const updateViewport = () => setViewport({ w: window.innerWidth || 390, h: window.innerHeight || 780 });
+    updateViewport();
+    window.addEventListener("resize", updateViewport);
+    window.addEventListener("orientationchange", updateViewport);
+    return () => {
+      window.removeEventListener("resize", updateViewport);
+      window.removeEventListener("orientationchange", updateViewport);
+    };
+  }, []);
+  
   useEffect(() => { if (!toast) return; const t = setTimeout(() => setToast(null), 2400); return () => clearTimeout(t); }, [toast]);
   useEffect(() => {
     const musicScreens = ["title", "story", "world", "objectives", "atlas", "shop", "party", "dex", "pc"];
@@ -1949,7 +1961,7 @@ function MythboundTamersJRPGInner() {
   }
   function buildSaveData(g = gameRef.current) {
     const safeScreen = ["battle", "gameover", "starter"].includes(g.screen) ? "world" : g.screen;
-    return { version: 15, savedAt: Date.now(), screen: safeScreen, storyIndex: g.storyIndex, player: g.player, party: g.party, storage: g.storage || [], active: g.active, seen: g.seen, dex: g.dex, clock: g.clock, muted: g.muted };
+    return { version: 16, savedAt: Date.now(), screen: safeScreen, storyIndex: g.storyIndex, player: g.player, party: g.party, storage: g.storage || [], active: g.active, seen: g.seen, dex: g.dex, clock: g.clock, muted: g.muted };
   }
   function hydrateSaveData(data, sourceLabel = "save") {
     const migrated = migrateSave(data || {});
@@ -1960,7 +1972,7 @@ function MythboundTamersJRPGInner() {
     if (!supabase) throw new Error("Supabase env variables are missing.");
     if (!authUser) throw new Error("Sign in first.");
     const migrated = migrateSave(saveData || {});
-    const cleanSave = JSON.parse(JSON.stringify({ ...migrated, version: 15, savedAt: Date.now() }));
+    const cleanSave = JSON.parse(JSON.stringify({ ...migrated, version: 16, savedAt: Date.now() }));
     const display = accountProfile?.display_name || authUser.user_metadata?.display_name || authUser.email?.split("@")[0] || `Tamer-${authUser.id.slice(0, 6)}`;
     const syncedAt = new Date().toISOString();
 
@@ -1976,7 +1988,7 @@ function MythboundTamersJRPGInner() {
       inventory_snapshot: cleanSave.player || {},
       dex_caught: Object.keys(cleanSave.dex?.caught || {}).filter((k) => cleanSave.dex.caught[k]).length,
       save_data: cleanSave,
-      save_version: cleanSave.version || 15,
+      save_version: cleanSave.version || 16,
       last_save_at: syncedAt,
       updated_at: syncedAt
     };
@@ -3268,9 +3280,20 @@ function WorldScreen({ map, area, player, move, party, storage, seen, dex, setSc
   const objectiveFocusOnMap = objectiveTargetForCurrentMap(objectiveMapFocus, area?.id || player.area || "luminara");
   const mapRows = map.length;
   const mapCols = Math.max(...map.map((row) => row.length));
-  const tileSize = Math.round(42 * mapZoom);
-  const mapPixelWidth = mapCols * tileSize + Math.max(0, mapCols - 1) * 4;
-  const mapPixelHeight = mapRows * tileSize + Math.max(0, mapRows - 1) * 4;
+  const isLandscapeView = viewport.w > viewport.h;
+  const boardGap = isLandscapeView ? 3 : 4;
+  const reservedTop = isLandscapeView ? 82 : 126;
+  const reservedBottom = isLandscapeView ? 72 : 118;
+  const boardFitWidth = Math.max(280, Math.min(viewport.w - (isLandscapeView ? 14 : 16), isLandscapeView ? viewport.w - 12 : 760));
+  const boardFitHeight = Math.max(260, viewport.h - reservedTop - reservedBottom);
+  const fitTileW = Math.floor((boardFitWidth - Math.max(0, mapCols - 1) * boardGap) / Math.max(1, mapCols));
+  const fitTileH = Math.floor((boardFitHeight - Math.max(0, mapRows - 1) * boardGap) / Math.max(1, mapRows));
+  const tileW = Math.max(34, Math.min(116, Math.round(fitTileW * mapZoom)));
+  const tileH = Math.max(34, Math.min(116, Math.round(fitTileH * mapZoom)));
+  const tileVisual = Math.min(tileW, tileH);
+  const mapPixelWidth = mapCols * tileW + Math.max(0, mapCols - 1) * boardGap;
+  const mapPixelHeight = mapRows * tileH + Math.max(0, mapRows - 1) * boardGap;
+  const boardViewportHeight = Math.max(260, Math.min(boardFitHeight, mapPixelHeight + 12));
   const clampZoom = (value) => Math.max(0.72, Math.min(1.85, value));
   const touchDistance = (touches) => {
     const [a, b] = touches;
@@ -3285,27 +3308,36 @@ function WorldScreen({ map, area, player, move, party, storage, seen, dex, setSc
     const next = pinchRef.current.zoom * (touchDistance(e.touches) / Math.max(1, pinchRef.current.distance));
     setMapZoom(clampZoom(next));
   };
-  return <motion.div key="world" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className={`min-h-[calc(100dvh-92px)] sm:min-h-[calc(100dvh-96px)] landscape:min-h-[calc(100dvh-16px)] p-1 sm:p-2 bg-gradient-to-br ${area?.bg || "from-slate-950 via-emerald-950 to-slate-950"}`}>
-    <div className="relative mb-1.5 sm:mb-2 rounded-[1.25rem] sm:rounded-[1.65rem] overflow-hidden border border-cyan-200/25 bg-slate-950/82 shadow-2xl shadow-cyan-500/15">
-      <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_12%_20%,rgba(34,211,238,.22),transparent_30%),radial-gradient(circle_at_90%_20%,rgba(217,70,239,.18),transparent_32%),linear-gradient(90deg,rgba(15,23,42,.96),rgba(8,47,73,.74),rgba(15,23,42,.92))]" />
-      <div className="relative grid grid-cols-[1fr_auto] gap-2 px-2.5 py-2 sm:px-4 sm:py-3 landscape:py-1.5">
-        <div className="min-w-0 flex items-center gap-2.5">
-          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-cyan-300 text-slate-950 flex items-center justify-center shadow-lg shadow-cyan-300/30 shrink-0"><Map className="w-5 h-5 sm:w-6 sm:h-6"/></div>
-          <div className="min-w-0">
-            <div className="flex flex-wrap items-center gap-1.5">
-              <span className="text-[8px] sm:text-[10px] uppercase tracking-[0.28em] text-cyan-100 font-black leading-none">Mythbound Tamers</span>
-              <span className="hidden sm:inline-flex text-[9px] uppercase tracking-[0.18em] text-lime-100/90 font-black">Monster-taming RPG</span>
+  return <motion.div key="world" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className={`min-h-[calc(100dvh-92px)] landscape:min-h-[100dvh] p-1 sm:p-2 landscape:p-1 bg-gradient-to-br ${area?.bg || "from-slate-950 via-emerald-950 to-slate-950"}`}>
+    <div className="relative mb-1.5 rounded-[1.35rem] sm:rounded-[1.8rem] overflow-hidden border border-cyan-200/30 bg-slate-950/88 shadow-2xl shadow-cyan-500/20">
+      <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_10%_18%,rgba(103,232,249,.32),transparent_28%),radial-gradient(circle_at_86%_22%,rgba(217,70,239,.22),transparent_34%),linear-gradient(90deg,rgba(2,6,23,.98),rgba(8,47,73,.80),rgba(30,27,75,.86))]" />
+      <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-gradient-to-b from-cyan-200 via-fuchsia-300 to-lime-200"/>
+      <div className="relative px-2.5 py-2 sm:px-4 sm:py-3 landscape:py-1.5">
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2 min-w-0">
+            <div className="w-12 h-12 sm:w-14 sm:h-14 landscape:w-10 landscape:h-10 rounded-2xl bg-gradient-to-br from-cyan-200 via-cyan-300 to-fuchsia-200 text-slate-950 flex items-center justify-center shadow-xl shadow-cyan-300/35 shrink-0 ring-2 ring-white/30">
+              <Map className="w-6 h-6 sm:w-7 sm:h-7 landscape:w-5 landscape:h-5"/>
             </div>
-            <div className="text-xl sm:text-3xl landscape:text-lg font-black text-white truncate leading-tight max-w-[53vw] sm:max-w-[62vw]">{area?.name || "Luminara Wilds"}</div>
-            <div className="text-[10px] sm:text-xs landscape:text-[9px] text-cyan-100/90 font-bold truncate">Catch • Train • Evolve • Explore routes • Battle bosses</div>
+            <div className="min-w-0">
+              <div className="text-[18px] sm:text-2xl landscape:text-base font-black tracking-[0.16em] sm:tracking-[0.22em] text-white leading-[0.95] drop-shadow-[0_2px_10px_rgba(34,211,238,.45)]">MYTHBOUND</div>
+              <div className="text-[18px] sm:text-2xl landscape:text-base font-black tracking-[0.18em] sm:tracking-[0.24em] text-cyan-100 leading-[0.95] drop-shadow-[0_2px_10px_rgba(34,211,238,.45)]">TAMERS</div>
+              <div className="text-[8px] sm:text-[10px] landscape:hidden uppercase tracking-[0.18em] text-lime-100 font-black mt-1">Monster-taming RPG</div>
+            </div>
+          </div>
+          <div className="flex items-center gap-1.5 shrink-0">
+            <Button onClick={() => setScreen("objectives")} variant="secondary" className="rounded-xl font-black px-2.5 py-2 sm:px-3 sm:py-2 text-[10px] sm:text-xs bg-cyan-300 text-slate-950 hover:bg-cyan-200 border-cyan-100 shadow-lg shadow-cyan-300/20"><Sparkles className="w-3.5 h-3.5 mr-1"/>Goals</Button>
+            <Button onClick={() => setMapZoom((z)=>clampZoom(z - 0.15))} variant="secondary" className="rounded-xl font-black px-2 py-1 text-[10px] sm:text-xs">−</Button>
+            <Button onClick={() => setMapZoom(1)} variant="secondary" className="rounded-xl font-black px-2 py-1 text-[10px] sm:text-xs">{Math.round(mapZoom * 100)}%</Button>
+            <Button onClick={() => setMapZoom((z)=>clampZoom(z + 0.15))} variant="secondary" className="rounded-xl font-black px-2 py-1 text-[10px] sm:text-xs">+</Button>
           </div>
         </div>
-        <div className="flex items-center justify-end gap-1.5 shrink-0">
-          <Button onClick={() => setScreen("objectives")} variant="secondary" className="rounded-xl font-black px-2.5 py-2 sm:px-3 sm:py-2 text-[10px] sm:text-xs bg-cyan-300 text-slate-950 hover:bg-cyan-200 border-cyan-100 shadow-lg shadow-cyan-300/20"><Sparkles className="w-3.5 h-3.5 mr-1"/>Goals</Button>
-          <Badge className="hidden md:inline-flex bg-slate-800 text-cyan-100 border border-cyan-300/20 px-2 py-1 text-[10px]"><TimeIcon className="w-3 h-3 mr-1"/>{timeString(clock)}</Badge>
-          <Button onClick={() => setMapZoom((z)=>clampZoom(z - 0.15))} variant="secondary" className="rounded-xl font-black px-2 py-1 text-[10px] sm:text-xs">−</Button>
-          <Button onClick={() => setMapZoom(1)} variant="secondary" className="rounded-xl font-black px-2 py-1 text-[10px] sm:text-xs">{Math.round(mapZoom * 100)}%</Button>
-          <Button onClick={() => setMapZoom((z)=>clampZoom(z + 0.15))} variant="secondary" className="rounded-xl font-black px-2 py-1 text-[10px] sm:text-xs">+</Button>
+        <div className="mt-2 landscape:mt-1 flex items-center justify-between gap-2">
+          <div className="min-w-0 flex-1 rounded-2xl bg-white/8 border border-cyan-200/20 px-3 py-1.5 landscape:py-1 shadow-inner">
+            <div className="text-[8px] sm:text-[10px] landscape:text-[7px] uppercase tracking-[0.24em] text-cyan-100/90 font-black">Current Area</div>
+            <div className="text-xl sm:text-3xl landscape:text-base font-black text-white truncate leading-tight">{area?.name || "Luminara Wilds"}</div>
+            <div className="text-[10px] sm:text-xs landscape:text-[8px] text-cyan-100/90 font-bold truncate">Catch • Train • Evolve • Explore routes • Battle bosses</div>
+          </div>
+          <Badge className="bg-slate-900/80 text-cyan-100 border border-cyan-300/25 px-2 py-1.5 text-[10px] sm:text-xs landscape:text-[9px] shrink-0"><TimeIcon className="w-3 h-3 mr-1"/>{timeString(clock)}</Badge>
         </div>
       </div>
     </div>
@@ -3320,8 +3352,8 @@ function WorldScreen({ map, area, player, move, party, storage, seen, dex, setSc
 
     <div className="relative">
       <div
-        className="overflow-auto rounded-[1.35rem] sm:rounded-[2rem] bg-black/35 border border-white/10 shadow-2xl p-1.5 sm:p-3 overscroll-contain max-h-[calc(100dvh-146px)] sm:max-h-[calc(100dvh-138px)] landscape:max-h-[calc(100dvh-82px)] xl:max-h-[calc(100dvh-118px)] min-h-[calc(100dvh-220px)] landscape:min-h-[calc(100dvh-100px)]"
-        style={{ touchAction: "pan-x pan-y" }}
+        className="overflow-auto rounded-[1.35rem] sm:rounded-[2rem] bg-black/35 border border-white/10 shadow-2xl p-1.5 sm:p-2 overscroll-contain"
+        style={{ touchAction: "pan-x pan-y", height: boardViewportHeight, maxHeight: boardViewportHeight }}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={() => { pinchRef.current = null; }}
@@ -3333,13 +3365,14 @@ function WorldScreen({ map, area, player, move, party, storage, seen, dex, setSc
       >
         <div
           className="mx-auto"
-          style={{ width: mapPixelWidth, minWidth: mapPixelWidth, height: mapPixelHeight }}
+          style={{ width: mapPixelWidth, minWidth: mapPixelWidth, height: mapPixelHeight, minHeight: mapPixelHeight }}
         >
           <div
-            className="grid gap-1"
+            className="grid"
             style={{
-              gridTemplateColumns: `repeat(${mapCols}, ${tileSize}px)`,
-              gridAutoRows: `${tileSize}px`,
+              gap: boardGap,
+              gridTemplateColumns: `repeat(${mapCols}, ${tileW}px)`,
+              gridAutoRows: `${tileH}px`,
             }}
           >
             {map.map((row,y)=>row.padEnd(mapCols, "W").split("").map((t,x)=>{
@@ -3352,7 +3385,7 @@ function WorldScreen({ map, area, player, move, party, storage, seen, dex, setSc
                 onClick={()=>setSelectedTile({ tile:t, x, y })}
                 key={`${x}-${y}`}
                 className={`relative rounded-xl border flex items-center justify-center font-black shrink-0 overflow-hidden transition shadow-lg ${tileGlow(t)} ${tileClass(t)} ${isAreaGate ? "ring-1 ring-cyan-200 shadow-md shadow-cyan-300/20" : ""} ${isObjectiveTile ? "ring-4 ring-yellow-200 shadow-2xl shadow-yellow-300/50 z-20" : ""} ${isSelected ? "ring-2 ring-white ring-offset-2 ring-offset-slate-950 z-10" : ""}`}
-                style={{ width: tileSize, height: tileSize, fontSize: Math.max(10, Math.min(16, Math.round(tileSize * 0.34))) }}
+                style={{ width: tileW, height: tileH, borderRadius: Math.max(12, Math.min(24, Math.round(tileVisual * 0.22))), fontSize: Math.max(10, Math.min(18, Math.round(tileVisual * 0.34))) }}
                 aria-label={`${TILE_NAMES[t] || "Unknown tile"} at ${x + 1}, ${y + 1}`}
               >
                 <span className={`absolute inset-0 bg-gradient-to-br ${tileOverlay(t)} pointer-events-none`}/><span className="relative z-10 opacity-95 pointer-events-none leading-none drop-shadow-[0_2px_4px_rgba(0,0,0,.65)]">{label(t)}</span>{isAreaGate && <><span className="absolute right-1 top-1 px-1 py-[1px] rounded-full bg-cyan-100 text-[7px] leading-none text-slate-950 border border-slate-950 shadow-sm z-20">GO</span><motion.span animate={{ opacity:[0.18,0.65,0.18], scale:[0.85,1.22,0.85] }} transition={{ duration:1.5, repeat:Infinity }} className="absolute inset-[5px] rounded-lg border border-cyan-100/50 pointer-events-none z-10"/></>}
@@ -3398,7 +3431,7 @@ function TileInfoPopup({ selected, tile, x, y, close }) {
     initial={{ opacity: 0, y: -18, scale: 0.96 }}
     animate={{ opacity: 1, y: 0, scale: 1 }}
     exit={{ opacity: 0, y: -18, scale: 0.96 }}
-    className="fixed left-2 right-2 top-[64px] sm:top-[78px] landscape:top-[52px] z-50 mx-auto max-w-md landscape:max-w-sm rounded-2xl sm:rounded-3xl bg-slate-950/95 border border-cyan-200/30 shadow-2xl shadow-cyan-500/20 backdrop-blur-xl p-3 sm:p-4 landscape:p-2.5"
+    className="fixed left-2 right-2 top-[104px] sm:top-[128px] landscape:top-[78px] z-50 mx-auto max-w-md landscape:max-w-sm rounded-2xl sm:rounded-3xl bg-slate-950/95 border border-cyan-200/30 shadow-2xl shadow-cyan-500/20 backdrop-blur-xl p-3 sm:p-4 landscape:p-2.5"
   >
     <div className="flex items-start justify-between gap-3">
       <div>
@@ -4722,7 +4755,7 @@ function AccountScreen({
           storage_snapshot: [],
           inventory_snapshot: {},
           dex_caught: 0,
-          save_version: 15,
+          save_version: 16,
           updated_at: new Date().toISOString()
         };
         await supabase.from("mythbound_profiles").upsert(payload, { onConflict: "id" });
@@ -4805,7 +4838,7 @@ function AccountScreen({
         throw new Error("Cloud row exists, but it does not contain party/storage save data. Upload a local save from the old device to repair it.");
       }
       hydrateSaveData(migrated, recovered._recoveredFromProfileSnapshot ? "recovered cloud snapshot" : "cloud save");
-      await uploadSaveDataToCloud({ ...migrated, version: 15, savedAt: Date.now() }, false);
+      await uploadSaveDataToCloud({ ...migrated, version: 16, savedAt: Date.now() }, false);
       setAccountStatus(`Cloud save loaded and upgraded for this version. ${cloudSaveSummary(profile)}`);
     } catch (e) {
       setAccountStatus(`Load cloud save error: ${e.message}`);
