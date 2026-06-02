@@ -1,8 +1,8 @@
 ﻿{
-    "version":  "0.61.0",
-    "versionCode":  61,
-    "notes":  "Fix viewport crash, pass viewport safely to the board, make the title stand out, and improve dynamic board fitting for portrait and landscape with less dead space.",
-    "apkUrl":  "https://github.com/costaskk/Mythbound-Tamers/releases/download/v0.61.0/mythbound-tamers-v0.61.0.apk",
+    "version":  "0.62.0",
+    "versionCode":  62,
+    "notes":  "Add logged-in friends, discoverable/hidden online presence, friend requests, online status, and direct trade/battle invitations.",
+    "apkUrl":  "https://github.com/costaskk/Mythbound-Tamers/releases/download/v0.62.0/mythbound-tamers-v0.62.0.apk",
     "mandatory":  false,
     "publishedAt":  "2026-06-02",
     "autoStartNativeUpdate":  false,

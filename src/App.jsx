@@ -4,15 +4,15 @@ import { createClient } from "@supabase/supabase-js";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Sparkles, PawPrint, Flame, Droplets, Leaf, Zap, Heart, Map, Backpack, Gamepad2, RotateCcw, Save, Upload, Volume2, VolumeX, Swords, Shield, Star, BookOpen, Wind, Mountain, Moon, BadgeCheck, Sun, CloudSun, Pencil } from "lucide-react";
+import {Sparkles, PawPrint, Flame, Droplets, Leaf, Zap, Heart, Map, Backpack, Gamepad2, RotateCcw, Save, Upload, Volume2, VolumeX, Swords, Shield, Star, BookOpen, Wind, Mountain, Moon, BadgeCheck, Sun, CloudSun, Pencil, Users} from "lucide-react";
 
 const SAVE_KEY = "mythbound_tamers_save_v4";
 const OLD_SAVE_KEYS = ["mythbound_tamers_save_v6", "mythbound_tamers_save_v5", "mythbound_tamers_save_v4", "mythbound_tamers_save_v3", "mythbound_tamers_save_v2", "mythbound_tamers_save"];
-const APP_VERSION = "0.61.0";
-const APP_VERSION_CODE = 61;
+const APP_VERSION = "0.62.0";
+const APP_VERSION_CODE = 62;
 const UPDATE_MANIFEST_URL = import.meta.env.VITE_UPDATE_MANIFEST_URL || "https://costaskk.github.io/Mythbound-Tamers/update-manifest.json";
 const SHINY_RATE = 1 / 192;
-const VALID_SCREENS = new Set(["title","story","starter","world","party","pc","shop","dex","account","multiplayer","objectives","help","atlas","update","battle","gameover"]);
+const VALID_SCREENS = new Set(["title","story","starter","world","party","pc","shop","dex","account","multiplayer","friends","objectives","help","atlas","update","battle","gameover"]);
 
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || import.meta.env.VITE_SUPABASE_ANON_PUBLIC_KEY;
@@ -1961,7 +1961,7 @@ function MythboundTamersJRPGInner() {
   }
   function buildSaveData(g = gameRef.current) {
     const safeScreen = ["battle", "gameover", "starter"].includes(g.screen) ? "world" : g.screen;
-    return { version: 17, savedAt: Date.now(), screen: safeScreen, storyIndex: g.storyIndex, player: g.player, party: g.party, storage: g.storage || [], active: g.active, seen: g.seen, dex: g.dex, clock: g.clock, muted: g.muted };
+    return { version: 18, savedAt: Date.now(), screen: safeScreen, storyIndex: g.storyIndex, player: g.player, party: g.party, storage: g.storage || [], active: g.active, seen: g.seen, dex: g.dex, clock: g.clock, muted: g.muted };
   }
   function hydrateSaveData(data, sourceLabel = "save") {
     const migrated = migrateSave(data || {});
@@ -1972,7 +1972,7 @@ function MythboundTamersJRPGInner() {
     if (!supabase) throw new Error("Supabase env variables are missing.");
     if (!authUser) throw new Error("Sign in first.");
     const migrated = migrateSave(saveData || {});
-    const cleanSave = JSON.parse(JSON.stringify({ ...migrated, version: 17, savedAt: Date.now() }));
+    const cleanSave = JSON.parse(JSON.stringify({ ...migrated, version: 18, savedAt: Date.now() }));
     const display = accountProfile?.display_name || authUser.user_metadata?.display_name || authUser.email?.split("@")[0] || `Tamer-${authUser.id.slice(0, 6)}`;
     const syncedAt = new Date().toISOString();
 
@@ -1988,7 +1988,7 @@ function MythboundTamersJRPGInner() {
       inventory_snapshot: cleanSave.player || {},
       dex_caught: Object.keys(cleanSave.dex?.caught || {}).filter((k) => cleanSave.dex.caught[k]).length,
       save_data: cleanSave,
-      save_version: cleanSave.version || 17,
+      save_version: cleanSave.version || 18,
       last_save_at: syncedAt,
       updated_at: syncedAt
     };
@@ -2709,7 +2709,7 @@ function playCry(id) { const isLegend = !!BESTIARY[id]?.legendary; const base = 
   function reset() { setScreen("title"); setStoryIndex(0); setPlayer(freshPlayer()); setParty([]); setStorage([]); setActive(0); setBattle(null); setNpc(null); setSeen(freshSeen()); setDex(freshDex()); setClock(freshClock()); setBattleAnim({ player: "idle", enemy: "idle", fx: null, text: null }); }
   const current = party[active]; const stats = dexStats(dex); const TimeIcon = timeIcon(clock);
   const hasStartedGame = party.length > 0 || storage.length > 0 || Object.keys(dex?.seen || {}).length > 0 || Object.keys(dex?.caught || {}).length > 0;
-  const gameScreens = new Set(["world", "party", "pc", "shop", "dex", "atlas", "multiplayer", "objectives"]);
+  const gameScreens = new Set(["world", "party", "pc", "shop", "dex", "atlas", "multiplayer", "friends", "objectives"]);
   function requestScreen(next) {
     if (gameScreens.has(next) && !hasStartedGame) {
       setToast("Start a New Journey or load a save before opening the map.");
@@ -2718,7 +2718,7 @@ function playCry(id) { const isLegend = !!BESTIARY[id]?.legendary; const base = 
     }
     setScreen(next);
   }
-  return <div className="h-[100dvh] max-h-[100dvh] bg-slate-950 text-white p-1 sm:p-3 landscape:p-0 overflow-hidden relative"><div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(34,211,238,.16),transparent_28%),radial-gradient(circle_at_80%_15%,rgba(217,70,239,.13),transparent_25%),radial-gradient(circle_at_55%_85%,rgba(132,204,22,.11),transparent_28%)]"/><div className="relative max-w-7xl mx-auto grid lg:grid-cols-[1fr_350px] gap-4"><Card className="rounded-2xl sm:rounded-3xl landscape:rounded-none overflow-hidden bg-slate-900/80 border-white/10 shadow-2xl shadow-cyan-500/10 h-[calc(100dvh-0.5rem)] sm:h-[calc(100dvh-1.5rem)] landscape:h-[100dvh]"><CardContent className="p-0 h-full overflow-hidden"><div className="h-full overflow-y-scroll overscroll-contain touch-pan-y pb-56 sm:pb-10" style={{ WebkitOverflowScrolling: "touch" }}><AnimatePresence mode="wait">{screen === "title" && <TitleScreen startStory={startStory} loadGame={loadGame} hasSave={hasSave}/>} {screen === "story" && <StoryScreen item={STORY[storyIndex]} nextStory={nextStory} index={storyIndex} total={STORY.length}/>} {screen === "starter" && <StarterScreen chooseStarter={chooseStarter}/>} {screen === "world" && party.length > 0 && <WorldScreen map={currentAreaMap(player)} area={currentAreaData(player)} player={player} move={move} party={party} storage={storage} seen={seen} dex={dex} setScreen={setScreen} saveGame={saveGame} clock={clock} viewport={viewport} onObjectiveClick={setObjectiveModal} objectiveMapFocus={objectiveMapFocus} clearObjectiveFocus={() => setObjectiveMapFocus(null)}/>} {screen === "party" && <PartyScreen party={party} active={active} setActive={setActive} setScreen={setScreen} player={player} seen={seen} evolve={evolve} clock={clock} useStatusItem={useStatusItem}/>} {screen === "pc" && <PCStorageScreen party={party} storage={storage} setScreen={setScreen} swapWithStorage={swapWithStorage} withdrawFromStorage={withdrawFromStorage}/>} {screen === "shop" && <ShopScreen player={player} setScreen={setScreen} buyStock={buyStock}/>} {screen === "dex" && <DexScreen dex={dex} setScreen={setScreen}/>} {screen === "account" && <AccountScreen setScreen={setScreen} authUser={authUser} accountProfile={accountProfile} accountStatus={accountStatus} setAccountStatus={setAccountStatus} findValidSave={findValidSave} hydrateSaveData={hydrateSaveData} uploadSaveDataToCloud={uploadSaveDataToCloud} loadAccountProfile={loadAccountProfile} cloudSyncStatus={cloudSyncStatus} lastCloudSyncAt={lastCloudSyncAt}/>} {screen === "multiplayer" && <MultiplayerScreen party={party} setParty={setParty} dex={dex} player={player} setScreen={setScreen} authUser={authUser} accountProfile={accountProfile} saveGame={saveGame}/>} {screen === "objectives" && <ObjectivesScreen setScreen={setScreen} player={player} seen={seen} dex={dex} party={party} storage={storage} clock={clock} onObjectiveClick={setObjectiveModal}/>} {screen === "help" && <HelpScreen setScreen={setScreen}/>} {screen === "update" && <UpdateCenterScreen setScreen={setScreen} availableUpdate={availableUpdate} status={updateStatus} checkUpdates={() => checkAppUpdate({ silent: false })} downloadUpdate={() => downloadAvailableUpdate(availableUpdate)} />} {screen === "atlas" && <AtlasScreen player={player} seen={seen} dex={dex} party={party} setScreen={setScreen}/>} {screen === "battle" && battle && current && <BattleScreen battle={battle} playerMon={current} skills={skills(current)} playerUse={playerUse} capture={capture} selectedCaptureItem={selectedCaptureItem} setSelectedCaptureItem={setSelectedCaptureItem} usePotion={usePotion} useStatusCure={useStatusCureInBattle} usePPItem={usePPItemInBattle} run={run} player={player} party={party} active={active} setActive={setActive} anim={battleAnim} dex={dex} clock={clock} onBattleResultContinue={finishBattleResult}/>} {screen === "gameover" && <GameOver reset={reset}/>} {screen === "world" && party.length === 0 && <StartRequiredScreen setScreen={setScreen} loadGame={loadGame} hasSave={hasSave}/>} {!VALID_SCREENS.has(screen) && <RecoveryScreen reset={reset} setScreen={setScreen} party={party}/>} {screen === "battle" && (!battle || !current) && <RecoveryScreen reset={reset} setScreen={setScreen} party={party} message="Battle data was missing, so the app can safely return to the map."/>}</AnimatePresence></div></CardContent></Card><div className="hidden lg:block"><SidePanel player={player} party={party} active={active} setScreen={requestScreen} reset={reset} saveGame={saveGame} loadGame={loadGame} clearSave={clearSave} hasSave={hasSave} muted={muted} setMuted={setMuted} stats={stats} clock={clock} authUser={authUser} accountProfile={accountProfile} cloudSyncStatus={cloudSyncStatus} lastCloudSyncAt={lastCloudSyncAt} storage={storage} seen={seen} dex={dex} onObjectiveClick={setObjectiveModal}/></div></div><MobileNav setScreen={requestScreen} saveGame={saveGame} muted={muted} setMuted={setMuted} authUser={authUser}/><AnimatePresence>{cinematic && <CinematicOverlay cinematic={cinematic}/>}</AnimatePresence><AnimatePresence>{evolutionScene && <EvolutionOverlay scene={evolutionScene}/>}</AnimatePresence><AnimatePresence>{toast && <motion.div initial={{ y: 30, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 30, opacity: 0 }} className="fixed bottom-5 left-1/2 -translate-x-1/2 px-5 py-3 rounded-2xl bg-slate-900 border border-cyan-300/30 shadow-xl text-cyan-100 font-bold z-50">{toast}</motion.div>}</AnimatePresence><AnimatePresence>{npc && <NpcModal npc={npc} close={() => { if (npc.reward) npc.reward(); setNpc(null); saveGame(false); }}/>}</AnimatePresence><AnimatePresence>{pendingAreaGate && <AreaGateModal gate={pendingAreaGate} enter={confirmAreaGate} stay={cancelAreaGate}/>}</AnimatePresence><AnimatePresence>{objectiveModal && <ObjectiveDetailModal info={objectiveModal} close={() => setObjectiveModal(null)} showOnMap={(target) => { if (!target) return; setObjectiveMapFocus(target); setObjectiveModal(null); setScreen("world"); setToast(`Map target highlighted: ${target.label || "Objective"}`); }}/>}</AnimatePresence><AnimatePresence>{battleResult && <BattleResultModal result={battleResult} onContinue={finishBattleResult} />}</AnimatePresence><AnimatePresence>{updateModalVisible && availableUpdate && <UpdateAvailableModal manifest={availableUpdate} status={updateStatus} nativeReady={nativeUpdaterReady} download={() => downloadAvailableUpdate(availableUpdate)} later={() => setUpdateModalVisible(false)} checkAgain={() => checkAppUpdate({ silent: false })}/>}</AnimatePresence><AnimatePresence>{renameMon && <RenameModal nickname={nickname} setNickname={setNickname} notice={renameNotice} applyNickname={applyNickname} skip={() => { setRenameMon(null); setNickname(""); setRenameNotice(""); setTimeout(() => saveGame(false), 50); }}/>}</AnimatePresence></div>;
+  return <div className="h-[100dvh] max-h-[100dvh] bg-slate-950 text-white p-1 sm:p-3 landscape:p-0 overflow-hidden relative"><div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(34,211,238,.16),transparent_28%),radial-gradient(circle_at_80%_15%,rgba(217,70,239,.13),transparent_25%),radial-gradient(circle_at_55%_85%,rgba(132,204,22,.11),transparent_28%)]"/><div className="relative max-w-7xl mx-auto grid lg:grid-cols-[1fr_350px] gap-4"><Card className="rounded-2xl sm:rounded-3xl landscape:rounded-none overflow-hidden bg-slate-900/80 border-white/10 shadow-2xl shadow-cyan-500/10 h-[calc(100dvh-0.5rem)] sm:h-[calc(100dvh-1.5rem)] landscape:h-[100dvh]"><CardContent className="p-0 h-full overflow-hidden"><div className="h-full overflow-y-scroll overscroll-contain touch-pan-y pb-56 sm:pb-10" style={{ WebkitOverflowScrolling: "touch" }}><AnimatePresence mode="wait">{screen === "title" && <TitleScreen startStory={startStory} loadGame={loadGame} hasSave={hasSave}/>} {screen === "story" && <StoryScreen item={STORY[storyIndex]} nextStory={nextStory} index={storyIndex} total={STORY.length}/>} {screen === "starter" && <StarterScreen chooseStarter={chooseStarter}/>} {screen === "world" && party.length > 0 && <WorldScreen map={currentAreaMap(player)} area={currentAreaData(player)} player={player} move={move} party={party} storage={storage} seen={seen} dex={dex} setScreen={setScreen} saveGame={saveGame} clock={clock} viewport={viewport} onObjectiveClick={setObjectiveModal} objectiveMapFocus={objectiveMapFocus} clearObjectiveFocus={() => setObjectiveMapFocus(null)}/>} {screen === "party" && <PartyScreen party={party} active={active} setActive={setActive} setScreen={setScreen} player={player} seen={seen} evolve={evolve} clock={clock} useStatusItem={useStatusItem}/>} {screen === "pc" && <PCStorageScreen party={party} storage={storage} setScreen={setScreen} swapWithStorage={swapWithStorage} withdrawFromStorage={withdrawFromStorage}/>} {screen === "shop" && <ShopScreen player={player} setScreen={setScreen} buyStock={buyStock}/>} {screen === "dex" && <DexScreen dex={dex} setScreen={setScreen}/>} {screen === "account" && <AccountScreen setScreen={setScreen} authUser={authUser} accountProfile={accountProfile} accountStatus={accountStatus} setAccountStatus={setAccountStatus} findValidSave={findValidSave} hydrateSaveData={hydrateSaveData} uploadSaveDataToCloud={uploadSaveDataToCloud} loadAccountProfile={loadAccountProfile} cloudSyncStatus={cloudSyncStatus} lastCloudSyncAt={lastCloudSyncAt}/>} {screen === "multiplayer" && <MultiplayerScreen party={party} setParty={setParty} dex={dex} player={player} setScreen={setScreen} authUser={authUser} accountProfile={accountProfile} saveGame={saveGame}/>} {screen === "friends" && <FriendsScreen party={party} dex={dex} player={player} setScreen={setScreen} authUser={authUser} accountProfile={accountProfile}/>} {screen === "objectives" && <ObjectivesScreen setScreen={setScreen} player={player} seen={seen} dex={dex} party={party} storage={storage} clock={clock} onObjectiveClick={setObjectiveModal}/>} {screen === "help" && <HelpScreen setScreen={setScreen}/>} {screen === "update" && <UpdateCenterScreen setScreen={setScreen} availableUpdate={availableUpdate} status={updateStatus} checkUpdates={() => checkAppUpdate({ silent: false })} downloadUpdate={() => downloadAvailableUpdate(availableUpdate)} />} {screen === "atlas" && <AtlasScreen player={player} seen={seen} dex={dex} party={party} setScreen={setScreen}/>} {screen === "battle" && battle && current && <BattleScreen battle={battle} playerMon={current} skills={skills(current)} playerUse={playerUse} capture={capture} selectedCaptureItem={selectedCaptureItem} setSelectedCaptureItem={setSelectedCaptureItem} usePotion={usePotion} useStatusCure={useStatusCureInBattle} usePPItem={usePPItemInBattle} run={run} player={player} party={party} active={active} setActive={setActive} anim={battleAnim} dex={dex} clock={clock} onBattleResultContinue={finishBattleResult}/>} {screen === "gameover" && <GameOver reset={reset}/>} {screen === "world" && party.length === 0 && <StartRequiredScreen setScreen={setScreen} loadGame={loadGame} hasSave={hasSave}/>} {!VALID_SCREENS.has(screen) && <RecoveryScreen reset={reset} setScreen={setScreen} party={party}/>} {screen === "battle" && (!battle || !current) && <RecoveryScreen reset={reset} setScreen={setScreen} party={party} message="Battle data was missing, so the app can safely return to the map."/>}</AnimatePresence></div></CardContent></Card><div className="hidden lg:block"><SidePanel player={player} party={party} active={active} setScreen={requestScreen} reset={reset} saveGame={saveGame} loadGame={loadGame} clearSave={clearSave} hasSave={hasSave} muted={muted} setMuted={setMuted} stats={stats} clock={clock} authUser={authUser} accountProfile={accountProfile} cloudSyncStatus={cloudSyncStatus} lastCloudSyncAt={lastCloudSyncAt} storage={storage} seen={seen} dex={dex} onObjectiveClick={setObjectiveModal}/></div></div><MobileNav setScreen={requestScreen} saveGame={saveGame} muted={muted} setMuted={setMuted} authUser={authUser}/><AnimatePresence>{cinematic && <CinematicOverlay cinematic={cinematic}/>}</AnimatePresence><AnimatePresence>{evolutionScene && <EvolutionOverlay scene={evolutionScene}/>}</AnimatePresence><AnimatePresence>{toast && <motion.div initial={{ y: 30, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 30, opacity: 0 }} className="fixed bottom-5 left-1/2 -translate-x-1/2 px-5 py-3 rounded-2xl bg-slate-900 border border-cyan-300/30 shadow-xl text-cyan-100 font-bold z-50">{toast}</motion.div>}</AnimatePresence><AnimatePresence>{npc && <NpcModal npc={npc} close={() => { if (npc.reward) npc.reward(); setNpc(null); saveGame(false); }}/>}</AnimatePresence><AnimatePresence>{pendingAreaGate && <AreaGateModal gate={pendingAreaGate} enter={confirmAreaGate} stay={cancelAreaGate}/>}</AnimatePresence><AnimatePresence>{objectiveModal && <ObjectiveDetailModal info={objectiveModal} close={() => setObjectiveModal(null)} showOnMap={(target) => { if (!target) return; setObjectiveMapFocus(target); setObjectiveModal(null); setScreen("world"); setToast(`Map target highlighted: ${target.label || "Objective"}`); }}/>}</AnimatePresence><AnimatePresence>{battleResult && <BattleResultModal result={battleResult} onContinue={finishBattleResult} />}</AnimatePresence><AnimatePresence>{updateModalVisible && availableUpdate && <UpdateAvailableModal manifest={availableUpdate} status={updateStatus} nativeReady={nativeUpdaterReady} download={() => downloadAvailableUpdate(availableUpdate)} later={() => setUpdateModalVisible(false)} checkAgain={() => checkAppUpdate({ silent: false })}/>}</AnimatePresence><AnimatePresence>{renameMon && <RenameModal nickname={nickname} setNickname={setNickname} notice={renameNotice} applyNickname={applyNickname} skip={() => { setRenameMon(null); setNickname(""); setRenameNotice(""); setTimeout(() => saveGame(false), 50); }}/>}</AnimatePresence></div>;
 }
 
 
@@ -3917,7 +3917,7 @@ function BattleResultModal({ result, onContinue }) {
     </motion.div>
   </motion.div>;
 }
-function SidePanel({ player, party, active, setScreen, reset, saveGame, loadGame, clearSave, hasSave, muted, setMuted, stats, clock, authUser, accountProfile, cloudSyncStatus, lastCloudSyncAt, storage, seen, dex, onObjectiveClick }) { const TimeIcon = timeIcon(clock); return <div className="space-y-4"><Card className="bg-slate-900/80 border-white/10 rounded-3xl shadow-xl"><CardContent className="p-5"><h2 className="text-2xl font-black bg-gradient-to-r from-cyan-200 to-fuchsia-200 text-transparent bg-clip-text mb-4">Tamer Console</h2><div className="p-3 rounded-2xl bg-white/5 border border-white/10 mb-3 flex items-center gap-2"><TimeIcon className="w-5 h-5 text-cyan-200"/><div className="font-black">{timeString(clock)}</div></div><div className="grid grid-cols-2 gap-2 text-sm"><InfoBox label="Coins" value={player.money || 0}/><InfoBox label="Capsules" value={totalCaptureItems(player)}/><InfoBox label="PC" value={(storage || []).length}/><InfoBox label="Dex" value={`${stats.caught}/${stats.total}`}/></div><div className="mt-3 grid grid-cols-3 gap-2 text-xs"><InfoBox label="Pearl" value={player.items?.["Tide Pearl"]||0}/><InfoBox label="Moon" value={player.items?.["Moon Shard"]||0}/><InfoBox label="Fossil" value={player.items?.["Sun Fossil"]||0}/></div><div className="mt-4 p-3 rounded-2xl bg-white/5 border border-white/10"><div className="text-slate-400 text-xs uppercase tracking-wider">Login / Cloud</div><div className="font-bold text-cyan-100">{authUser ? `Signed in as ${accountProfile?.display_name || authUser.email?.split("@")[0] || "Tamer"}` : "Not signed in"}</div><div className="text-xs text-slate-400 mt-1">{cloudSyncStatus}</div><div className="text-xs text-slate-500 mt-1">Last online save: {formatOnlineSyncStamp(lastCloudSyncAt || accountProfile?.last_save_at)}</div></div><div className="mt-4"><Button onClick={()=>setScreen("objectives")} className="w-full rounded-2xl bg-cyan-300 hover:bg-cyan-200 text-slate-950 font-black"><Sparkles className="w-4 h-4 mr-2"/>Open Objectives</Button></div><div className="mt-4 grid grid-cols-2 gap-2"><Button onClick={()=>setScreen("party")} variant="secondary" className="rounded-xl"><PawPrint className="w-4 h-4 mr-2"/>Party</Button><Button onClick={()=>setScreen("pc")} variant="secondary" className="rounded-xl"><Backpack className="w-4 h-4 mr-2"/>PC</Button><Button onClick={()=>setScreen("shop")} variant="secondary" className="rounded-xl"><Star className="w-4 h-4 mr-2"/>Shop</Button><Button onClick={()=>setScreen("objectives")} variant="secondary" className="rounded-xl"><Sparkles className="w-4 h-4 mr-2"/>Goals</Button><Button onClick={()=>setScreen("dex")} variant="secondary" className="rounded-xl"><BookOpen className="w-4 h-4 mr-2"/>Dex</Button><Button onClick={()=>saveGame()} variant="secondary" className="rounded-xl"><Save className="w-4 h-4 mr-2"/>Save</Button><Button onClick={loadGame} disabled={!hasSave} variant="secondary" className="rounded-xl disabled:opacity-40"><Upload className="w-4 h-4 mr-2"/>Load</Button><Button onClick={()=>setMuted(!muted)} variant="secondary" className="rounded-xl">{muted?<VolumeX className="w-4 h-4 mr-2"/>:<Volume2 className="w-4 h-4 mr-2"/>}{muted?"Muted":"Sound"}</Button><Button onClick={reset} variant="secondary" className="rounded-xl"><RotateCcw className="w-4 h-4 mr-2"/>New</Button><Button onClick={()=>setScreen("account")} variant="secondary" className="rounded-xl col-span-2"><Upload className="w-4 h-4 mr-2"/>{authUser ? `Account: ${accountProfile?.display_name || authUser.email?.split("@")[0] || "Signed in"}` : "Account / Cloud Save"}</Button><Button onClick={()=>setScreen("multiplayer")} variant="secondary" className="rounded-xl col-span-2"><Gamepad2 className="w-4 h-4 mr-2"/>Multiplayer Hub</Button><Button onClick={clearSave} disabled={!hasSave} variant="secondary" className="rounded-xl col-span-2 disabled:opacity-40">Clear Save</Button></div></CardContent></Card><Card className="bg-slate-900/80 border-white/10 rounded-3xl"><CardContent className="p-5"><h3 className="text-xl font-black mb-3">Lead Mythling</h3>{party[active]?<div className="flex gap-3 items-center"><MonsterModel mon={party[active]} size="small"/><div><div className="font-black">{displayName(party[active])}</div><div className="text-sm text-slate-300">{party[active].name} · Lv.{party[active].level}</div><TypeBadge type={party[active].type}/></div></div>:<p className="text-slate-300">No mythling yet.</p>}</CardContent></Card></div>; }
+function SidePanel({ player, party, active, setScreen, reset, saveGame, loadGame, clearSave, hasSave, muted, setMuted, stats, clock, authUser, accountProfile, cloudSyncStatus, lastCloudSyncAt, storage, seen, dex, onObjectiveClick }) { const TimeIcon = timeIcon(clock); return <div className="space-y-4"><Card className="bg-slate-900/80 border-white/10 rounded-3xl shadow-xl"><CardContent className="p-5"><h2 className="text-2xl font-black bg-gradient-to-r from-cyan-200 to-fuchsia-200 text-transparent bg-clip-text mb-4">Tamer Console</h2><div className="p-3 rounded-2xl bg-white/5 border border-white/10 mb-3 flex items-center gap-2"><TimeIcon className="w-5 h-5 text-cyan-200"/><div className="font-black">{timeString(clock)}</div></div><div className="grid grid-cols-2 gap-2 text-sm"><InfoBox label="Coins" value={player.money || 0}/><InfoBox label="Capsules" value={totalCaptureItems(player)}/><InfoBox label="PC" value={(storage || []).length}/><InfoBox label="Dex" value={`${stats.caught}/${stats.total}`}/></div><div className="mt-3 grid grid-cols-3 gap-2 text-xs"><InfoBox label="Pearl" value={player.items?.["Tide Pearl"]||0}/><InfoBox label="Moon" value={player.items?.["Moon Shard"]||0}/><InfoBox label="Fossil" value={player.items?.["Sun Fossil"]||0}/></div><div className="mt-4 p-3 rounded-2xl bg-white/5 border border-white/10"><div className="text-slate-400 text-xs uppercase tracking-wider">Login / Cloud</div><div className="font-bold text-cyan-100">{authUser ? `Signed in as ${accountProfile?.display_name || authUser.email?.split("@")[0] || "Tamer"}` : "Not signed in"}</div><div className="text-xs text-slate-400 mt-1">{cloudSyncStatus}</div><div className="text-xs text-slate-500 mt-1">Last online save: {formatOnlineSyncStamp(lastCloudSyncAt || accountProfile?.last_save_at)}</div></div><div className="mt-4"><Button onClick={()=>setScreen("objectives")} className="w-full rounded-2xl bg-cyan-300 hover:bg-cyan-200 text-slate-950 font-black"><Sparkles className="w-4 h-4 mr-2"/>Open Objectives</Button></div><div className="mt-4 grid grid-cols-2 gap-2"><Button onClick={()=>setScreen("party")} variant="secondary" className="rounded-xl"><PawPrint className="w-4 h-4 mr-2"/>Party</Button><Button onClick={()=>setScreen("pc")} variant="secondary" className="rounded-xl"><Backpack className="w-4 h-4 mr-2"/>PC</Button><Button onClick={()=>setScreen("shop")} variant="secondary" className="rounded-xl"><Star className="w-4 h-4 mr-2"/>Shop</Button><Button onClick={()=>setScreen("objectives")} variant="secondary" className="rounded-xl"><Sparkles className="w-4 h-4 mr-2"/>Goals</Button><Button onClick={()=>setScreen("friends")} variant="secondary" className="rounded-xl"><Users className="w-4 h-4 mr-2"/>Friends</Button><Button onClick={()=>setScreen("dex")} variant="secondary" className="rounded-xl"><BookOpen className="w-4 h-4 mr-2"/>Dex</Button><Button onClick={()=>saveGame()} variant="secondary" className="rounded-xl"><Save className="w-4 h-4 mr-2"/>Save</Button><Button onClick={loadGame} disabled={!hasSave} variant="secondary" className="rounded-xl disabled:opacity-40"><Upload className="w-4 h-4 mr-2"/>Load</Button><Button onClick={()=>setMuted(!muted)} variant="secondary" className="rounded-xl">{muted?<VolumeX className="w-4 h-4 mr-2"/>:<Volume2 className="w-4 h-4 mr-2"/>}{muted?"Muted":"Sound"}</Button><Button onClick={reset} variant="secondary" className="rounded-xl"><RotateCcw className="w-4 h-4 mr-2"/>New</Button><Button onClick={()=>setScreen("account")} variant="secondary" className="rounded-xl col-span-2"><Upload className="w-4 h-4 mr-2"/>{authUser ? `Account: ${accountProfile?.display_name || authUser.email?.split("@")[0] || "Signed in"}` : "Account / Cloud Save"}</Button><Button onClick={()=>setScreen("multiplayer")} variant="secondary" className="rounded-xl col-span-2"><Gamepad2 className="w-4 h-4 mr-2"/>Multiplayer Hub</Button><Button onClick={clearSave} disabled={!hasSave} variant="secondary" className="rounded-xl col-span-2 disabled:opacity-40">Clear Save</Button></div></CardContent></Card><Card className="bg-slate-900/80 border-white/10 rounded-3xl"><CardContent className="p-5"><h3 className="text-xl font-black mb-3">Lead Mythling</h3>{party[active]?<div className="flex gap-3 items-center"><MonsterModel mon={party[active]} size="small"/><div><div className="font-black">{displayName(party[active])}</div><div className="text-sm text-slate-300">{party[active].name} · Lv.{party[active].level}</div><TypeBadge type={party[active].type}/></div></div>:<p className="text-slate-300">No mythling yet.</p>}</CardContent></Card></div>; }
 function InfoBox({ label, value }) { return <div className="p-3 rounded-2xl bg-white/5 border border-white/10"><div className="text-slate-400 text-xs uppercase tracking-wider">{label}</div><div className="text-2xl font-black">{value}</div></div>; }
 
 function ObjectiveDetailModal({ info, close, showOnMap }) {
@@ -4199,6 +4199,398 @@ function StyledSelect({ value, onChange, children, disabled = false, className =
     <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-cyan-200">⌄</div>
   </div>;
 }
+
+function onlineFresh(row) {
+  const t = Date.parse(row?.last_seen || row?.updated_at || 0);
+  return Number.isFinite(t) && Date.now() - t < 2.5 * 60 * 1000;
+}
+function friendDisplayName(row, fallback = "Tamer") {
+  return row?.display_name || row?.player_code || row?.email || fallback;
+}
+function pairFriendId(friendship, me) {
+  if (!friendship) return null;
+  return friendship.requester_id === me ? friendship.addressee_id : friendship.requester_id;
+}
+function friendshipStatusLabel(row, me) {
+  if (!row) return "";
+  if (row.status === "accepted") return "Friends";
+  return row.requester_id === me ? "Request sent" : "Wants to be friends";
+}
+
+function FriendsScreen({ party, dex, player, setScreen, authUser, accountProfile }) {
+  const [statusMode, setStatusMode] = useState("online");
+  const [discoverable, setDiscoverable] = useState(true);
+  const [query, setQuery] = useState("");
+  const [notice, setNotice] = useState("");
+  const [results, setResults] = useState([]);
+  const [friends, setFriends] = useState([]);
+  const [profiles, setProfiles] = useState({});
+  const [invites, setInvites] = useState([]);
+  const [mode, setMode] = useState("trade");
+  const [loading, setLoading] = useState(false);
+
+  const me = authUser?.id;
+  const display = accountProfile?.display_name || authUser?.email?.split("@")[0] || "Tamer";
+  const profile = {
+    playerId: display,
+    party: party.map(m => ({
+      uid: m.uid, id: m.id, nickname: m.nickname || "", name: displayName(m), level: m.level, type: m.type,
+      gender: m.gender || "—", hp: m.hp, maxHp: m.maxHp, atk: m.atk, def: m.def, spd: m.spd,
+      xp: m.xp || 0, nextXp: m.nextXp || 1, status: m.status || null
+    })),
+    dexCaught: Object.keys(dex?.caught || {}).filter(k => dex.caught[k]).length
+  };
+
+  async function ensureReady() {
+    if (!supabase) throw new Error("Supabase is not configured.");
+    if (!me) throw new Error("Sign in from Account before using Friends.");
+  }
+
+  async function upsertPresence(nextStatus = statusMode, nextDiscoverable = discoverable) {
+    await ensureReady();
+    const now = new Date().toISOString();
+    const payload = {
+      user_id: me,
+      display_name: display,
+      player_code: accountProfile?.player_code || me,
+      status: nextStatus,
+      discoverable: Boolean(nextDiscoverable),
+      last_seen: now,
+      updated_at: now
+    };
+    const { error } = await supabase.from("mythbound_presence").upsert(payload, { onConflict: "user_id" });
+    if (error) throw error;
+  }
+
+  async function fetchProfiles(ids) {
+    const clean = [...new Set((ids || []).filter(Boolean))];
+    if (!clean.length) return {};
+    const { data, error } = await supabase.from("mythbound_presence").select("*").in("user_id", clean);
+    if (error) throw error;
+    const map = {};
+    (data || []).forEach(p => { map[p.user_id] = p; });
+    setProfiles(old => ({ ...old, ...map }));
+    return map;
+  }
+
+  async function refreshAll(show = false) {
+    if (!supabase || !me) return;
+    setLoading(true);
+    try {
+      await upsertPresence();
+      const { data: fr, error: frErr } = await supabase
+        .from("mythbound_friends")
+        .select("*")
+        .or(`requester_id.eq.${me},addressee_id.eq.${me}`)
+        .order("updated_at", { ascending: false });
+      if (frErr) throw frErr;
+      setFriends(fr || []);
+      const ids = (fr || []).flatMap(f => [f.requester_id, f.addressee_id]).filter(id => id !== me);
+      await fetchProfiles(ids);
+
+      const { data: inv, error: invErr } = await supabase
+        .from("mythbound_invites")
+        .select("*")
+        .or(`from_id.eq.${me},to_id.eq.${me}`)
+        .neq("status", "expired")
+        .order("created_at", { ascending: false })
+        .limit(30);
+      if (invErr) throw invErr;
+      setInvites(inv || []);
+      await fetchProfiles((inv || []).flatMap(i => [i.from_id, i.to_id]).filter(id => id !== me));
+      if (show) setNotice("Friends, status, and invites refreshed.");
+    } catch (e) {
+      setNotice(`Friends error: ${e.message}`);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    if (!supabase || !me) return;
+    refreshAll(false);
+    const timer = setInterval(() => upsertPresence().catch(() => {}), 45000);
+    const channel = supabase.channel(`mythbound-friends-${me}`)
+      .on("postgres_changes", { event: "*", schema: "public", table: "mythbound_invites" }, () => refreshAll(false))
+      .on("postgres_changes", { event: "*", schema: "public", table: "mythbound_friends" }, () => refreshAll(false))
+      .subscribe();
+    return () => {
+      clearInterval(timer);
+      try { supabase.removeChannel(channel); } catch {}
+    };
+  }, [me]);
+
+  async function changeStatus(nextStatus, nextDiscoverable = discoverable) {
+    setStatusMode(nextStatus);
+    setDiscoverable(nextDiscoverable);
+    try {
+      await upsertPresence(nextStatus, nextDiscoverable);
+      setNotice(nextStatus === "offline" || !nextDiscoverable ? "You are hidden from discovery." : `Status set to ${nextStatus}.`);
+    } catch (e) { setNotice(`Status error: ${e.message}`); }
+  }
+
+  async function searchTamers() {
+    setLoading(true);
+    try {
+      await ensureReady();
+      await upsertPresence();
+      const q = query.trim();
+      let req = supabase.from("mythbound_presence").select("*").eq("discoverable", true).neq("user_id", me).limit(20);
+      if (q) req = req.or(`display_name.ilike.%${q}%,player_code.ilike.%${q}%`);
+      const { data, error } = await req.order("last_seen", { ascending: false });
+      if (error) throw error;
+      setResults(data || []);
+      setNotice((data || []).length ? `Found ${(data || []).length} discoverable tamers.` : "No discoverable tamers found.");
+    } catch (e) {
+      setNotice(`Search error: ${e.message}`);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function friendshipWith(id) {
+    return friends.find(f => (f.requester_id === me && f.addressee_id === id) || (f.requester_id === id && f.addressee_id === me));
+  }
+
+  async function sendFriendRequest(id) {
+    try {
+      await ensureReady();
+      if (!id || id === me) throw new Error("Choose another tamer.");
+      const existing = friendshipWith(id);
+      if (existing?.status === "accepted") throw new Error("You are already friends.");
+      const payload = { requester_id: me, addressee_id: id, status: "pending", updated_at: new Date().toISOString() };
+      const { error } = await supabase.from("mythbound_friends").upsert(payload, { onConflict: "requester_id,addressee_id" });
+      if (error) throw error;
+      setNotice("Friend request sent.");
+      refreshAll(false);
+    } catch (e) { setNotice(`Friend request error: ${e.message}`); }
+  }
+
+  async function acceptFriend(row) {
+    try {
+      await ensureReady();
+      const { error } = await supabase.from("mythbound_friends").update({ status: "accepted", updated_at: new Date().toISOString() }).eq("id", row.id);
+      if (error) throw error;
+      setNotice("Friend added.");
+      refreshAll(false);
+    } catch (e) { setNotice(`Accept error: ${e.message}`); }
+  }
+
+  async function removeFriend(row) {
+    try {
+      await ensureReady();
+      const { error } = await supabase.from("mythbound_friends").delete().eq("id", row.id);
+      if (error) throw error;
+      setNotice("Friend removed/request cleared.");
+      refreshAll(false);
+    } catch (e) { setNotice(`Remove error: ${e.message}`); }
+  }
+
+  async function ensureOnlineSession() {
+    if (!supabase) throw new Error("Supabase is not configured.");
+    const { data } = await supabase.auth.getSession();
+    if (data?.session?.access_token) return data.session;
+    throw new Error("Sign in before sending an invite.");
+  }
+
+  async function workerCall(path, body = {}) {
+    if (!MYTHBOUND_WORKER_URL) throw new Error("Missing VITE_MYTHBOUND_WORKER_URL in .env.local.");
+    const session = await ensureOnlineSession();
+    const res = await fetch(`${MYTHBOUND_WORKER_URL}${path}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Authorization": `Bearer ${session.access_token}` },
+      body: JSON.stringify({ ...body, playerName: display, snapshot: profile })
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok || data.error) throw new Error(data.error || `Worker request failed: ${res.status}`);
+    return data;
+  }
+
+  async function inviteFriend(friendId, inviteMode = mode) {
+    try {
+      await ensureReady();
+      if (!friendId) throw new Error("Choose a friend.");
+      if (!MYTHBOUND_WORKER_URL) throw new Error("Worker URL missing. Add VITE_MYTHBOUND_WORKER_URL.");
+      const data = await workerCall("/room/create", { mode: inviteMode });
+      const roomCode = data.room?.room_code || data.room?.code;
+      if (!roomCode) throw new Error("Room created but no room code was returned.");
+      const payload = {
+        from_id: me,
+        to_id: friendId,
+        mode: inviteMode,
+        room_code: roomCode,
+        status: "pending",
+        message: `${display} invited you to ${inviteMode}.`,
+        created_at: new Date().toISOString()
+      };
+      const { error } = await supabase.from("mythbound_invites").insert(payload);
+      if (error) throw error;
+      setNotice(`${inviteMode === "trade" ? "Trade" : "Battle"} invite sent with room ${roomCode}.`);
+      refreshAll(false);
+    } catch (e) { setNotice(`Invite error: ${e.message}`); }
+  }
+
+  async function acceptInvite(invite) {
+    try {
+      await ensureReady();
+      const { error } = await supabase.from("mythbound_invites").update({ status: "accepted", responded_at: new Date().toISOString() }).eq("id", invite.id);
+      if (error) throw error;
+      localStorage.setItem("mythbound_pending_invite_room", JSON.stringify({ roomCode: invite.room_code, mode: invite.mode }));
+      setNotice(`Invite accepted. Opening Online hub for room ${invite.room_code}.`);
+      setScreen("multiplayer");
+    } catch (e) { setNotice(`Accept invite error: ${e.message}`); }
+  }
+
+  async function declineInvite(invite) {
+    try {
+      await ensureReady();
+      const { error } = await supabase.from("mythbound_invites").update({ status: "declined", responded_at: new Date().toISOString() }).eq("id", invite.id);
+      if (error) throw error;
+      setNotice("Invite declined.");
+      refreshAll(false);
+    } catch (e) { setNotice(`Decline error: ${e.message}`); }
+  }
+
+  const acceptedFriends = friends.filter(f => f.status === "accepted");
+  const pendingRequests = friends.filter(f => f.status === "pending");
+  const incomingRequests = pendingRequests.filter(f => f.addressee_id === me);
+  const outgoingRequests = pendingRequests.filter(f => f.requester_id === me);
+  const incomingInvites = invites.filter(i => i.to_id === me && i.status === "pending");
+  const sentInvites = invites.filter(i => i.from_id === me && i.status === "pending");
+
+  if (!authUser) {
+    return <motion.div key="friends" initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} className="min-h-full p-4 sm:p-6 bg-gradient-to-br from-slate-950 via-cyan-950 to-slate-950">
+      <Card className="rounded-[2rem] bg-slate-900/90 border-cyan-200/20 max-w-3xl mx-auto"><CardContent className="p-6 text-center">
+        <Users className="w-16 h-16 mx-auto mb-3 text-cyan-200"/>
+        <h2 className="text-4xl font-black text-white mb-2">Friends require sign-in</h2>
+        <p className="text-slate-300 mb-4">Sign in from Account to search tamers, set your status, and send trade or battle invitations.</p>
+        <Button onClick={()=>setScreen("account")} className="rounded-2xl bg-cyan-300 text-slate-950 font-black">Open Account</Button>
+      </CardContent></Card>
+    </motion.div>;
+  }
+
+  const friendCard = (row) => {
+    const fid = pairFriendId(row, me);
+    const p = profiles[fid] || {};
+    const fresh = onlineFresh(p);
+    const hidden = p.status === "offline" || p.discoverable === false;
+    return <div key={row.id} className="rounded-2xl bg-white/7 border border-white/10 p-3">
+      <div className="flex items-center justify-between gap-2">
+        <div className="min-w-0">
+          <div className="font-black text-white truncate">{friendDisplayName(p, fid?.slice(0, 8))}</div>
+          <div className="text-xs text-slate-300">{hidden ? "Hidden/offline" : fresh ? `Online · ${p.status || "online"}` : "Last seen earlier"}</div>
+        </div>
+        <span className={`w-3 h-3 rounded-full shrink-0 ${!hidden && fresh ? "bg-lime-300 shadow-lg shadow-lime-300/40" : "bg-slate-500"}`}/>
+      </div>
+      <div className="grid grid-cols-3 gap-2 mt-3">
+        <Button onClick={()=>inviteFriend(fid, "trade")} className="rounded-xl bg-fuchsia-300 text-slate-950 font-black text-xs">Trade</Button>
+        <Button onClick={()=>inviteFriend(fid, "battle")} className="rounded-xl bg-cyan-300 text-slate-950 font-black text-xs">Battle</Button>
+        <Button onClick={()=>removeFriend(row)} variant="secondary" className="rounded-xl text-xs">Remove</Button>
+      </div>
+    </div>;
+  };
+
+  return <motion.div key="friends" initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} className="min-h-full p-3 sm:p-6 bg-gradient-to-br from-slate-950 via-cyan-950 to-fuchsia-950">
+    <div className="flex justify-between items-start gap-3 mb-4">
+      <div>
+        <div className="text-xs uppercase tracking-[0.36em] text-cyan-100 font-black">Online Tamers</div>
+        <h2 className="text-4xl sm:text-5xl font-black text-white leading-tight">Friends & Invites</h2>
+        <p className="text-slate-200/85 max-w-3xl">Find logged-in tamers, control whether you appear online, and send direct trade or battle invitations.</p>
+      </div>
+      <Button onClick={()=>setScreen("world")} className="rounded-2xl bg-cyan-300 text-slate-950 font-black">Back</Button>
+    </div>
+
+    <div className="grid xl:grid-cols-[360px_1fr] gap-4">
+      <div className="space-y-4">
+        <Card className="rounded-3xl bg-slate-900/88 border-cyan-200/20"><CardContent className="p-4">
+          <h3 className="text-2xl font-black text-white mb-3">Your visibility</h3>
+          <div className="grid grid-cols-3 gap-2">
+            <Button onClick={()=>changeStatus("online", true)} className={`rounded-2xl font-black ${statusMode==="online"&&discoverable?"bg-lime-300 text-slate-950":"bg-slate-800"}`}>Online</Button>
+            <Button onClick={()=>changeStatus("busy", true)} className={`rounded-2xl font-black ${statusMode==="busy"&&discoverable?"bg-yellow-300 text-slate-950":"bg-slate-800"}`}>Busy</Button>
+            <Button onClick={()=>changeStatus("offline", false)} className={`rounded-2xl font-black ${statusMode==="offline"||!discoverable?"bg-slate-300 text-slate-950":"bg-slate-800"}`}>Hidden</Button>
+          </div>
+          <label className="mt-3 flex items-center gap-2 rounded-2xl bg-white/5 border border-white/10 p-3 text-sm font-bold">
+            <input type="checkbox" checked={discoverable} onChange={(e)=>changeStatus(statusMode === "offline" && e.target.checked ? "online" : statusMode, e.target.checked)} />
+            Discoverable in search
+          </label>
+          <Button onClick={()=>refreshAll(true)} disabled={loading} variant="secondary" className="w-full mt-3 rounded-2xl font-black">{loading ? "Refreshing..." : "Refresh"}</Button>
+        </CardContent></Card>
+
+        <Card className="rounded-3xl bg-slate-900/88 border-cyan-200/20"><CardContent className="p-4">
+          <h3 className="text-2xl font-black text-white mb-3">Find tamers</h3>
+          <div className="flex gap-2">
+            <Input value={query} onChange={(e)=>setQuery(e.target.value)} placeholder="Name or player code" className="rounded-2xl bg-slate-950 border-white/10"/>
+            <Button onClick={searchTamers} className="rounded-2xl bg-cyan-300 text-slate-950 font-black">Search</Button>
+          </div>
+          <div className="mt-3 space-y-2 max-h-80 overflow-y-auto pr-1">
+            {results.map(r => {
+              const fr = friendshipWith(r.user_id);
+              return <div key={r.user_id} className="rounded-2xl bg-white/7 border border-white/10 p-3 flex items-center justify-between gap-2">
+                <div className="min-w-0">
+                  <div className="font-black text-white truncate">{friendDisplayName(r)}</div>
+                  <div className="text-xs text-slate-300">{onlineFresh(r) ? `Online · ${r.status}` : "Last seen earlier"}</div>
+                  {fr && <div className="text-[11px] text-cyan-200 font-bold">{friendshipStatusLabel(fr, me)}</div>}
+                </div>
+                <Button onClick={()=>sendFriendRequest(r.user_id)} disabled={fr?.status === "accepted" || fr?.requester_id === me} className="rounded-xl bg-cyan-300 text-slate-950 font-black text-xs disabled:opacity-50">Add</Button>
+              </div>;
+            })}
+          </div>
+        </CardContent></Card>
+      </div>
+
+      <div className="space-y-4">
+        {notice && <div className="rounded-3xl bg-cyan-300/12 border border-cyan-200/30 p-4 text-cyan-50 font-bold">{notice}</div>}
+
+        <Card className="rounded-3xl bg-slate-900/88 border-cyan-200/20"><CardContent className="p-4">
+          <div className="flex items-center justify-between gap-2 mb-3">
+            <h3 className="text-2xl font-black text-white">Incoming invitations</h3>
+            <div className="flex gap-2"><Button onClick={()=>setMode("trade")} className={`rounded-xl ${mode==="trade"?"bg-fuchsia-300 text-slate-950":"bg-slate-800"}`}>Trade</Button><Button onClick={()=>setMode("battle")} className={`rounded-xl ${mode==="battle"?"bg-cyan-300 text-slate-950":"bg-slate-800"}`}>Battle</Button></div>
+          </div>
+          <div className="grid md:grid-cols-2 gap-3">
+            {incomingInvites.length ? incomingInvites.map(inv => {
+              const from = profiles[inv.from_id] || {};
+              return <div key={inv.id} className="rounded-2xl bg-white/7 border border-white/10 p-3">
+                <div className="font-black text-white">{friendDisplayName(from, "Friend")}</div>
+                <div className="text-sm text-slate-300">Invited you to {inv.mode}. Room: <b>{inv.room_code}</b></div>
+                <div className="grid grid-cols-2 gap-2 mt-3"><Button onClick={()=>acceptInvite(inv)} className="rounded-xl bg-lime-300 text-slate-950 font-black">Accept</Button><Button onClick={()=>declineInvite(inv)} variant="secondary" className="rounded-xl">Decline</Button></div>
+              </div>;
+            }) : <div className="text-slate-400">No pending invites.</div>}
+          </div>
+        </CardContent></Card>
+
+        <Card className="rounded-3xl bg-slate-900/88 border-cyan-200/20"><CardContent className="p-4">
+          <h3 className="text-2xl font-black text-white mb-3">Friends</h3>
+          <div className="grid md:grid-cols-2 gap-3">
+            {acceptedFriends.length ? acceptedFriends.map(friendCard) : <div className="text-slate-400">No friends yet. Search for discoverable tamers.</div>}
+          </div>
+        </CardContent></Card>
+
+        {(incomingRequests.length || outgoingRequests.length || sentInvites.length) ? <Card className="rounded-3xl bg-slate-900/88 border-cyan-200/20"><CardContent className="p-4">
+          <h3 className="text-2xl font-black text-white mb-3">Requests</h3>
+          <div className="space-y-2">
+            {incomingRequests.map(row => {
+              const p = profiles[row.requester_id] || {};
+              return <div key={row.id} className="rounded-2xl bg-white/7 border border-white/10 p-3 flex items-center justify-between gap-2">
+                <div><b>{friendDisplayName(p)}</b><div className="text-xs text-slate-300">Friend request</div></div>
+                <div className="flex gap-2"><Button onClick={()=>acceptFriend(row)} className="rounded-xl bg-lime-300 text-slate-950 font-black text-xs">Accept</Button><Button onClick={()=>removeFriend(row)} variant="secondary" className="rounded-xl text-xs">Ignore</Button></div>
+              </div>;
+            })}
+            {outgoingRequests.map(row => {
+              const p = profiles[row.addressee_id] || {};
+              return <div key={row.id} className="rounded-2xl bg-white/7 border border-white/10 p-3 flex items-center justify-between"><div><b>{friendDisplayName(p)}</b><div className="text-xs text-slate-300">Request sent</div></div><Button onClick={()=>removeFriend(row)} variant="secondary" className="rounded-xl text-xs">Cancel</Button></div>;
+            })}
+            {sentInvites.map(inv => {
+              const p = profiles[inv.to_id] || {};
+              return <div key={inv.id} className="rounded-2xl bg-white/7 border border-white/10 p-3"><b>{friendDisplayName(p)}</b><div className="text-xs text-slate-300">Pending {inv.mode} invite · room {inv.room_code}</div></div>;
+            })}
+          </div>
+        </CardContent></Card> : null}
+      </div>
+    </div>
+  </motion.div>;
+}
+
+
 function MultiplayerScreen({ party, setParty, dex, player, setScreen, authUser, accountProfile, saveGame }) {
   const [roomCode, setRoomCode] = useState("");
   const [joinCode, setJoinCode] = useState("");
@@ -4226,6 +4618,18 @@ function MultiplayerScreen({ party, setParty, dex, player, setScreen, authUser, 
   };
 
   useEffect(()=>{ if (!localStorage.getItem("mythbound_player_id")) localStorage.setItem("mythbound_player_id", playerName); }, [playerName]);
+  useEffect(() => {
+    try {
+      const pending = JSON.parse(localStorage.getItem("mythbound_pending_invite_room") || "null");
+      if (pending?.roomCode) {
+        setJoinCode(String(pending.roomCode).toUpperCase());
+        setMode(pending.mode === "battle" ? "battle" : "trade");
+        setOnlineStatus(`Invite ready. Press Join Secure Room to enter ${String(pending.roomCode).toUpperCase()}.`);
+        localStorage.removeItem("mythbound_pending_invite_room");
+      }
+    } catch {}
+  }, []);
+  
 
   function activeCode() {
     return (onlineRoom?.room_code || roomCode || joinCode || "").trim().toUpperCase();
@@ -4766,7 +5170,7 @@ function AccountScreen({
           storage_snapshot: [],
           inventory_snapshot: {},
           dex_caught: 0,
-          save_version: 17,
+          save_version: 18,
           updated_at: new Date().toISOString()
         };
         await supabase.from("mythbound_profiles").upsert(payload, { onConflict: "id" });
@@ -4849,7 +5253,7 @@ function AccountScreen({
         throw new Error("Cloud row exists, but it does not contain party/storage save data. Upload a local save from the old device to repair it.");
       }
       hydrateSaveData(migrated, recovered._recoveredFromProfileSnapshot ? "recovered cloud snapshot" : "cloud save");
-      await uploadSaveDataToCloud({ ...migrated, version: 17, savedAt: Date.now() }, false);
+      await uploadSaveDataToCloud({ ...migrated, version: 18, savedAt: Date.now() }, false);
       setAccountStatus(`Cloud save loaded and upgraded for this version. ${cloudSaveSummary(profile)}`);
     } catch (e) {
       setAccountStatus(`Load cloud save error: ${e.message}`);
@@ -4995,6 +5399,7 @@ function MobileNav({ setScreen, saveGame, muted, setMuted, authUser }) {
       <Button onClick={()=>setScreen("pc")} variant="secondary" className={navButton}><Backpack className="w-5 h-5 mb-1"/>PC</Button>
       <Button onClick={()=>setScreen("shop")} variant="secondary" className={navButton}><Star className="w-5 h-5 mb-1"/>Shop</Button>
       <Button onClick={()=>setScreen("multiplayer")} variant="secondary" className={navButton}><Gamepad2 className="w-5 h-5 mb-1"/>Online</Button>
+      <Button onClick={()=>setScreen("friends")} variant="secondary" className={navButton}><Users className="w-5 h-5 mb-1"/>Friends</Button>
       <Button onClick={()=>setScreen("account")} variant="secondary" className={navButton}><Upload className="w-5 h-5 mb-1"/>{authUser ? "Acct ✓" : "Acct"}</Button>
       <Button onClick={()=>setScreen("objectives")} variant="secondary" className={navButton}><Sparkles className="w-5 h-5 mb-1"/>Goals</Button><Button onClick={()=>setScreen("atlas")} variant="secondary" className={navButton}><Map className="w-5 h-5 mb-1"/>World</Button><Button onClick={()=>setScreen("update")} variant="secondary" className={navButton}><Upload className="w-5 h-5 mb-1"/>Update</Button>
       <Button onClick={()=>saveGame()} variant="secondary" className={navButton}><Save className="w-5 h-5 mb-1"/>Save</Button>
