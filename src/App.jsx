@@ -8,8 +8,8 @@ import {Sparkles, PawPrint, Flame, Droplets, Leaf, Zap, Heart, Map, Backpack, Ga
 
 const SAVE_KEY = "mythbound_tamers_save_v4";
 const OLD_SAVE_KEYS = ["mythbound_tamers_save_v6", "mythbound_tamers_save_v5", "mythbound_tamers_save_v4", "mythbound_tamers_save_v3", "mythbound_tamers_save_v2", "mythbound_tamers_save"];
-const APP_VERSION = "0.63.0";
-const APP_VERSION_CODE = 63;
+const APP_VERSION = "0.64.0";
+const APP_VERSION_CODE = 64;
 const UPDATE_MANIFEST_URL = import.meta.env.VITE_UPDATE_MANIFEST_URL || "https://costaskk.github.io/Mythbound-Tamers/update-manifest.json";
 const SHINY_RATE = 1 / 192;
 const VALID_SCREENS = new Set(["title","story","starter","world","party","pc","shop","dex","account","multiplayer","friends","objectives","help","atlas","update","battle","gameover"]);
@@ -1961,7 +1961,7 @@ function MythboundTamersJRPGInner() {
   }
   function buildSaveData(g = gameRef.current) {
     const safeScreen = ["battle", "gameover", "starter"].includes(g.screen) ? "world" : g.screen;
-    return { version: 19, savedAt: Date.now(), screen: safeScreen, storyIndex: g.storyIndex, player: g.player, party: g.party, storage: g.storage || [], active: g.active, seen: g.seen, dex: g.dex, clock: g.clock, muted: g.muted };
+    return { version: 20, savedAt: Date.now(), screen: safeScreen, storyIndex: g.storyIndex, player: g.player, party: g.party, storage: g.storage || [], active: g.active, seen: g.seen, dex: g.dex, clock: g.clock, muted: g.muted };
   }
   function hydrateSaveData(data, sourceLabel = "save") {
     const migrated = migrateSave(data || {});
@@ -1972,7 +1972,7 @@ function MythboundTamersJRPGInner() {
     if (!supabase) throw new Error("Supabase env variables are missing.");
     if (!authUser) throw new Error("Sign in first.");
     const migrated = migrateSave(saveData || {});
-    const cleanSave = JSON.parse(JSON.stringify({ ...migrated, version: 19, savedAt: Date.now() }));
+    const cleanSave = JSON.parse(JSON.stringify({ ...migrated, version: 20, savedAt: Date.now() }));
     const display = accountProfile?.display_name || authUser.user_metadata?.display_name || authUser.email?.split("@")[0] || `Tamer-${authUser.id.slice(0, 6)}`;
     const syncedAt = new Date().toISOString();
 
@@ -1988,7 +1988,7 @@ function MythboundTamersJRPGInner() {
       inventory_snapshot: cleanSave.player || {},
       dex_caught: Object.keys(cleanSave.dex?.caught || {}).filter((k) => cleanSave.dex.caught[k]).length,
       save_data: cleanSave,
-      save_version: cleanSave.version || 19,
+      save_version: cleanSave.version || 20,
       last_save_at: syncedAt,
       updated_at: syncedAt
     };
@@ -3241,6 +3241,10 @@ function WorldScreen({ map, area, player, move, party, storage, seen, dex, setSc
   const [selectedTile, setSelectedTile] = useState(null);
   const [mapZoom, setMapZoom] = useState(1);
   const pinchRef = useRef(null);
+  const tileHoldRef = useRef(null);
+  const longPressedRef = useRef(false);
+  const swipeRef = useRef(null);
+  const swipeHandledRef = useRef(false);
   const tileClass = (t) => ({
     W:"bg-slate-800 border-slate-700", G:"bg-emerald-700/80 border-emerald-500/40", C:"bg-cyan-500/80 border-cyan-200",
     N:"bg-amber-500/80 border-amber-200", R:"bg-rose-500/80 border-rose-200", K:"bg-purple-500/80 border-purple-200",
@@ -3317,6 +3321,63 @@ function WorldScreen({ map, area, player, move, party, storage, seen, dex, setSc
     const next = pinchRef.current.zoom * (touchDistance(e.touches) / Math.max(1, pinchRef.current.distance));
     setMapZoom(clampZoom(next));
   };
+  const stepTowardTile = (x, y) => {
+    const dx = x - player.x;
+    const dy = y - player.y;
+    if (dx === 0 && dy === 0) return false;
+    if (Math.abs(dx) >= Math.abs(dy)) move(Math.sign(dx), 0);
+    else move(0, Math.sign(dy));
+    if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate(14);
+    return true;
+  };
+  const startTileHold = (e, t, x, y) => {
+    if (e.pointerType === "mouse" && e.button !== 0) return;
+    longPressedRef.current = false;
+    if (tileHoldRef.current) clearTimeout(tileHoldRef.current);
+    tileHoldRef.current = setTimeout(() => {
+      longPressedRef.current = true;
+      setSelectedTile({ tile: t, x, y });
+      if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate([18, 18, 18]);
+    }, 420);
+  };
+  const clearTileHold = () => {
+    if (tileHoldRef.current) clearTimeout(tileHoldRef.current);
+    tileHoldRef.current = null;
+  };
+  const tapTile = (t, x, y) => {
+    clearTileHold();
+    if (swipeHandledRef.current) return;
+    if (longPressedRef.current) {
+      longPressedRef.current = false;
+      return;
+    }
+    const didMove = stepTowardTile(x, y);
+    if (!didMove) setSelectedTile({ tile: t, x, y });
+  };
+  const startPlayerSwipe = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    swipeRef.current = { x: e.clientX, y: e.clientY };
+    e.currentTarget.setPointerCapture?.(e.pointerId);
+  };
+  const endPlayerSwipe = (e) => {
+    if (!swipeRef.current) return;
+    e.preventDefault();
+    e.stopPropagation();
+    const dx = e.clientX - swipeRef.current.x;
+    const dy = e.clientY - swipeRef.current.y;
+    swipeRef.current = null;
+    clearTileHold();
+    swipeHandledRef.current = true;
+    setTimeout(() => { swipeHandledRef.current = false; }, 140);
+    if (Math.hypot(dx, dy) < 22) {
+      setSelectedTile({ tile: tileAt(player.x, player.y), x: player.x, y: player.y });
+      return;
+    }
+    if (Math.abs(dx) >= Math.abs(dy)) move(Math.sign(dx), 0);
+    else move(0, Math.sign(dy));
+    if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate(20);
+  };
   return <motion.div key="world" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className={`min-h-[calc(100dvh-92px)] landscape:min-h-[100dvh] p-1 sm:p-2 landscape:p-1 bg-gradient-to-br ${area?.bg || "from-slate-950 via-emerald-950 to-slate-950"}`}>
     <div className="relative mb-1 rounded-[1.35rem] sm:rounded-[1.8rem] overflow-hidden border border-cyan-200/30 bg-slate-950/88 shadow-2xl shadow-cyan-500/20">
       <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_10%_18%,rgba(103,232,249,.34),transparent_28%),radial-gradient(circle_at_86%_22%,rgba(217,70,239,.24),transparent_34%),linear-gradient(90deg,rgba(2,6,23,.98),rgba(8,47,73,.78),rgba(30,27,75,.88))]" />
@@ -3351,7 +3412,7 @@ function WorldScreen({ map, area, player, move, party, storage, seen, dex, setSc
               </div>
               <Badge className="bg-slate-900/80 text-cyan-100 border border-cyan-300/25 px-2 py-1 text-[10px] landscape:text-[8px] shrink-0"><TimeIcon className="w-3 h-3 mr-1"/>{timeString(clock)}</Badge>
             </div>
-            <div className="text-[9px] sm:text-xs landscape:text-[7px] text-cyan-100/90 font-bold truncate">Catch • Train • Evolve • Explore routes • Battle bosses</div>
+            <div className="text-[9px] sm:text-xs landscape:text-[7px] text-cyan-100/90 font-bold truncate">Tap board to move • Swipe the paw • Hold a tile to inspect</div>
           </div>
         </div>
       </div>
@@ -3399,7 +3460,11 @@ function WorldScreen({ map, area, player, move, party, storage, seen, dex, setSc
               const isObjectiveTile = objectiveFocusOnMap?.displayTile && t === objectiveFocusOnMap.displayTile;
               return <button
                 type="button"
-                onClick={()=>setSelectedTile({ tile:t, x, y })}
+                onPointerDown={(e)=>startTileHold(e, t, x, y)}
+                onPointerUp={clearTileHold}
+                onPointerLeave={clearTileHold}
+                onPointerCancel={clearTileHold}
+                onClick={()=>tapTile(t, x, y)}
                 key={`${x}-${y}`}
                 className={`relative rounded-xl border flex items-center justify-center font-black shrink-0 overflow-hidden transition shadow-lg ${tileGlow(t)} ${tileClass(t)} ${isAreaGate ? "ring-1 ring-cyan-200 shadow-md shadow-cyan-300/20" : ""} ${isObjectiveTile ? "ring-4 ring-yellow-200 shadow-2xl shadow-yellow-300/50 z-20" : ""} ${isSelected ? "ring-2 ring-white ring-offset-2 ring-offset-slate-950 z-10" : ""}`}
                 style={{ width: tileW, height: tileH, borderRadius: Math.max(10, Math.min(22, Math.round(tileVisual * 0.24))), fontSize: Math.max(10, Math.min(18, Math.round(tileVisual * 0.34))) }}
@@ -3407,7 +3472,14 @@ function WorldScreen({ map, area, player, move, party, storage, seen, dex, setSc
               >
                 <span className={`absolute inset-0 bg-gradient-to-br ${tileOverlay(t)} pointer-events-none`}/><span className="relative z-10 opacity-95 pointer-events-none leading-none drop-shadow-[0_2px_4px_rgba(0,0,0,.65)]">{label(t)}</span>{isAreaGate && <><span className="absolute right-1 top-1 px-1 py-[1px] rounded-full bg-cyan-100 text-[7px] leading-none text-slate-950 border border-slate-950 shadow-sm z-20">GO</span><motion.span animate={{ opacity:[0.18,0.65,0.18], scale:[0.85,1.22,0.85] }} transition={{ duration:1.5, repeat:Infinity }} className="absolute inset-[5px] rounded-lg border border-cyan-100/50 pointer-events-none z-10"/></>}
                 {isObjectiveTile && <motion.div animate={{ y:[0,-4,0], scale:[1,1.08,1] }} transition={{ duration:1.1, repeat:Infinity }} className="absolute left-1/2 -translate-x-1/2 top-0.5 z-30 rounded-full bg-yellow-200 text-slate-950 text-[10px] px-1.5 py-0.5 border border-slate-950 shadow-lg pointer-events-none">{objectiveFocusOnMap.icon || "★"}</motion.div>}
-                {here&&<motion.div layoutId="player" className="absolute inset-[3px] rounded-lg bg-gradient-to-br from-cyan-200 to-fuchsia-300 shadow-lg shadow-cyan-400/40 flex items-center justify-center text-slate-950"><PawPrint className="w-5 h-5"/></motion.div>}
+                {here&&<motion.div
+                  layoutId="player"
+                  onPointerDown={startPlayerSwipe}
+                  onPointerUp={endPlayerSwipe}
+                  onPointerCancel={() => { swipeRef.current = null; }}
+                  className="absolute inset-[3px] rounded-lg bg-gradient-to-br from-cyan-200 to-fuchsia-300 shadow-lg shadow-cyan-400/40 flex items-center justify-center text-slate-950 cursor-grab active:cursor-grabbing touch-none z-30"
+                  title="Swipe this paw to move"
+                ><PawPrint className="w-5 h-5 pointer-events-none"/></motion.div>}
               </button>
             }))}
           </div>
@@ -3472,13 +3544,19 @@ function TileInfoPopup({ selected, tile, x, y, close }) {
 }
 
 function MobileMovePad({ move }) {
+  const [hidden, setHidden] = useState(() => {
+    try { return localStorage.getItem("mythbound_dpad_hidden") === "1"; } catch { return false; }
+  });
   const readPadPos = () => {
-    if (typeof window === "undefined") return { x: 16, y: 250 };
+    const w = typeof window !== "undefined" ? window.innerWidth : 390;
+    const h = typeof window !== "undefined" ? window.innerHeight : 800;
     try {
       const saved = JSON.parse(localStorage.getItem("mythbound_dpad_pos") || "null");
-      if (saved && Number.isFinite(saved.x) && Number.isFinite(saved.y)) return saved;
+      if (saved && Number.isFinite(saved.x) && Number.isFinite(saved.y)) {
+        return { x: Math.max(8, Math.min(w - 146, saved.x)), y: Math.max(68, Math.min(h - 170, saved.y)) };
+      }
     } catch {}
-    return { x: Math.max(12, window.innerWidth - 205), y: Math.max(90, window.innerHeight - 390) };
+    return { x: Math.max(10, w - 152), y: Math.max(92, h - 282) };
   };
   const [pos, setPos] = useState(readPadPos);
   const dragRef = useRef(null);
@@ -3489,19 +3567,16 @@ function MobileMovePad({ move }) {
   const clampPos = (x, y) => {
     const w = typeof window !== "undefined" ? window.innerWidth : 390;
     const h = typeof window !== "undefined" ? window.innerHeight : 800;
-    return { x: Math.max(8, Math.min(w - 184, x)), y: Math.max(74, Math.min(h - 205, y)) };
+    return { x: Math.max(8, Math.min(w - 146, x)), y: Math.max(68, Math.min(h - 170, y)) };
   };
   const startDrag = (e) => {
     e.preventDefault();
-    dragRef.current = { startX: e.clientX, startY: e.clientY, x: pos.x, y: pos.y, moved: false };
+    dragRef.current = { startX: e.clientX, startY: e.clientY, x: pos.x, y: pos.y };
     e.currentTarget.setPointerCapture?.(e.pointerId);
   };
   const moveDrag = (e) => {
     if (!dragRef.current) return;
-    const dx = e.clientX - dragRef.current.startX;
-    const dy = e.clientY - dragRef.current.startY;
-    if (Math.abs(dx) + Math.abs(dy) > 3) dragRef.current.moved = true;
-    const next = clampPos(dragRef.current.x + dx, dragRef.current.y + dy);
+    const next = clampPos(dragRef.current.x + (e.clientX - dragRef.current.startX), dragRef.current.y + (e.clientY - dragRef.current.startY));
     setPos(next);
   };
   const endDrag = () => {
@@ -3509,10 +3584,18 @@ function MobileMovePad({ move }) {
     try { localStorage.setItem("mythbound_dpad_pos", JSON.stringify(pos)); } catch {}
     dragRef.current = null;
   };
-  const buttonClass = "rounded-2xl w-14 h-14 text-2xl font-black bg-slate-900/95 border border-cyan-200/30 shadow-lg shadow-cyan-500/10 active:scale-95";
-  return <div className="lg:hidden fixed z-50 rounded-3xl bg-slate-950/72 border border-white/10 backdrop-blur-xl p-2 shadow-2xl select-none touch-none" style={{ left: pos.x, top: pos.y }}>
-    <div onPointerDown={startDrag} onPointerMove={moveDrag} onPointerUp={endDrag} onPointerCancel={endDrag} className="cursor-move text-[10px] uppercase tracking-wider text-cyan-100 text-center mb-1 font-black rounded-xl py-1 bg-cyan-300/10 border border-cyan-200/10">
-      Drag Move Pad
+  const toggleHidden = () => {
+    const next = !hidden;
+    setHidden(next);
+    try { localStorage.setItem("mythbound_dpad_hidden", next ? "1" : "0"); } catch {}
+  };
+  if (hidden) {
+    return <button onClick={toggleHidden} className="lg:hidden fixed right-3 bottom-[calc(env(safe-area-inset-bottom)+92px)] z-50 rounded-full bg-cyan-300 text-slate-950 font-black px-4 py-3 shadow-2xl shadow-cyan-300/30 border-2 border-white/50">Move</button>;
+  }
+  const buttonClass = "rounded-xl w-10 h-10 text-xl font-black bg-slate-900/95 border border-cyan-200/30 shadow-lg shadow-cyan-500/10 active:scale-95 flex items-center justify-center";
+  return <div className="lg:hidden fixed z-50 rounded-2xl bg-slate-950/72 border border-white/10 backdrop-blur-xl p-1.5 shadow-2xl select-none touch-none" style={{ left: pos.x, top: pos.y }}>
+    <div onPointerDown={startDrag} onPointerMove={moveDrag} onPointerUp={endDrag} onPointerCancel={endDrag} className="cursor-move text-[8px] uppercase tracking-wider text-cyan-100 text-center mb-1 font-black rounded-lg py-0.5 bg-cyan-300/10 border border-cyan-200/10 flex items-center justify-between gap-1 px-1">
+      <span>Drag</span><button type="button" onClick={(e)=>{e.stopPropagation(); toggleHidden();}} className="text-[10px] bg-white/10 rounded-md px-1">×</button>
     </div>
     <div className="grid grid-cols-3 gap-1">
       <div />
@@ -5176,7 +5259,7 @@ function AccountScreen({
           storage_snapshot: [],
           inventory_snapshot: {},
           dex_caught: 0,
-          save_version: 19,
+          save_version: 20,
           updated_at: new Date().toISOString()
         };
         await supabase.from("mythbound_profiles").upsert(payload, { onConflict: "id" });
@@ -5259,7 +5342,7 @@ function AccountScreen({
         throw new Error("Cloud row exists, but it does not contain party/storage save data. Upload a local save from the old device to repair it.");
       }
       hydrateSaveData(migrated, recovered._recoveredFromProfileSnapshot ? "recovered cloud snapshot" : "cloud save");
-      await uploadSaveDataToCloud({ ...migrated, version: 19, savedAt: Date.now() }, false);
+      await uploadSaveDataToCloud({ ...migrated, version: 20, savedAt: Date.now() }, false);
       setAccountStatus(`Cloud save loaded and upgraded for this version. ${cloudSaveSummary(profile)}`);
     } catch (e) {
       setAccountStatus(`Load cloud save error: ${e.message}`);
