@@ -1,8 +1,8 @@
-{
-  "version": "0.40.0",
-  "versionCode": 40,
-  "notes": "Added auto update popup, update center improvements, new monsters, and gameplay fixes.",
-  "apkUrl": "https://github.com/costaskk/Mythbound-Tamers/releases/download/v0.40.0/mythbound-tamers-v0.40.0.apk",
-  "mandatory": false,
-  "publishedAt": "2026-06-02"
+﻿{
+    "version":  "0.41.0",
+    "versionCode":  41,
+    "notes":  "New monsters, UI improvements, objective guidance, and updater fixes.",
+    "apkUrl":  "https://github.com/costaskk/Mythbound-Tamers/releases/download/v0.41.0/mythbound-tamers-v0.41.0.apk",
+    "mandatory":  false,
+    "publishedAt":  "2026-06-02"
 }

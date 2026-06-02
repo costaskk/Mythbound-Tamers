@@ -8,9 +8,8 @@ import { Sparkles, PawPrint, Flame, Droplets, Leaf, Zap, Heart, Map, Backpack, G
 
 const SAVE_KEY = "mythbound_tamers_save_v4";
 const OLD_SAVE_KEYS = ["mythbound_tamers_save_v3", "mythbound_tamers_save_v2"];
-const APP_VERSION = "0.40.0";
-const DEFAULT_UPDATE_MANIFEST_URL = "https://costaskk.github.io/Mythbound-Tamers/update-manifest.json";
-const UPDATE_MANIFEST_URL = import.meta.env.VITE_UPDATE_MANIFEST_URL || DEFAULT_UPDATE_MANIFEST_URL;
+const APP_VERSION = "0.41.0";
+const UPDATE_MANIFEST_URL = import.meta.env.VITE_UPDATE_MANIFEST_URL || "";
 const SHINY_RATE = 1 / 192;
 const VALID_SCREENS = new Set(["title","story","starter","world","party","pc","shop","dex","account","multiplayer","help","atlas","update","battle","gameover"]);
 
@@ -21,60 +20,6 @@ const supabase = SUPABASE_URL && SUPABASE_ANON_KEY ? createClient(SUPABASE_URL, 
 }) : null;
 
 const MYTHBOUND_WORKER_URL = (import.meta.env.VITE_MYTHBOUND_WORKER_URL || "").replace(/\/$/, "");
-
-
-function compareVersions(a = "0.0.0", b = "0.0.0") {
-  const pa = String(a).replace(/^v/i, "").split(".").map((n) => parseInt(n, 10) || 0);
-  const pb = String(b).replace(/^v/i, "").split(".").map((n) => parseInt(n, 10) || 0);
-  const len = Math.max(pa.length, pb.length, 3);
-  for (let i = 0; i < len; i += 1) {
-    const da = pa[i] || 0;
-    const db = pb[i] || 0;
-    if (da > db) return 1;
-    if (da < db) return -1;
-  }
-  return 0;
-}
-function normalizeUpdateManifest(data) {
-  if (!data || typeof data !== "object") return null;
-  const apkUrl = data.apkUrl || data.apk_url || data.downloadUrl || data.download_url || data.url || "";
-  return {
-    version: String(data.version || data.versionName || data.tag || ""),
-    versionCode: Number(data.versionCode || data.version_code || 0),
-    notes: data.notes || data.changelog || data.description || "No update notes were provided.",
-    apkUrl,
-    webUrl: data.webUrl || data.releaseUrl || data.release_url || data.html_url || apkUrl,
-    mandatory: Boolean(data.mandatory || data.required),
-    publishedAt: data.publishedAt || data.published_at || data.date || "",
-  };
-}
-function isUpdateNewer(manifest) {
-  if (!manifest) return false;
-  if (manifest.versionCode && Number(import.meta.env.VITE_APP_VERSION_CODE || 0) > 0) {
-    return manifest.versionCode > Number(import.meta.env.VITE_APP_VERSION_CODE || 0);
-  }
-  return manifest.version && compareVersions(manifest.version, APP_VERSION) > 0;
-}
-function startApkInstallFromUrl(url) {
-  if (!url) return false;
-  try {
-    const a = document.createElement("a");
-    a.href = url;
-    a.target = "_blank";
-    a.rel = "noopener noreferrer";
-    a.download = "";
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    setTimeout(() => {
-      try { window.location.href = url; } catch {}
-    }, 650);
-    return true;
-  } catch {
-    try { window.open(url, "_blank"); return true; } catch {}
-  }
-  return false;
-}
 
 
 const CAPTURE_ITEMS = {
@@ -339,13 +284,12 @@ const BESTIARY = {
   noircolt: { name: "Noircolt", type: "Shadow", species: "Noir Colt", cry: "noi-HEE!", stage: 1, evo: { to: "umbrasteed", method: "Reach Lv.28 at night" }, base: [54, 27, 15, 35], skills: ["Night Nip", "Fang Rush", "Mind Fog"], capture: 0.14, body: "deer", colors: ["#020617", "#a78bfa", "#4c1d95"], lore: "A swift shadow-colt that only drinks from moonlit puddles." },
   umbrasteed: { name: "Umbrasteed", type: "Shadow", species: "Umbra Steed", cry: "UMBRA-NEIGH!", stage: 2, base: [98, 48, 28, 56], skills: ["Eclipse Rend", "Shadow Spiral", "Fang Rush"], capture: 0.04, body: "deer", colors: ["#000000", "#c4b5fd", "#581c87"], lore: "An elite mount for moon knights, leaving violet sparks with every hoofbeat." },
 
-  glasscub: { name: "Glasscub", type: "Crystal", species: "Glass Cub", cry: "gling-grr!", stage: 1, evo: { to: "mirrursa", method: "Reach Lv.20 in Prism Ruins" }, base: [55, 20, 20, 18], skills: ["Crystal Shard", "Guard", "Fang Rush"], capture: 0.2, body: "bear", colors: ["#a5f3fc", "#f0abfc", "#0f172a"], lore: "A young cub with mirror-fur that reflects moonlight into tiny rainbows." },
-  mirrursa: { name: "Mirrursa", type: "Crystal", species: "Mirror Bear", cry: "MIRR-URSA!", stage: 2, evo: { to: "prismursa", method: "Reach Lv.34 after Prism Key" }, base: [104, 36, 34, 26], skills: ["Crystal Shard", "Prism Nova", "Fang Rush"], capture: 0.06, body: "bear", colors: ["#67e8f9", "#f5d0fe", "#1e1b4b"], lore: "A reflective guardian that can split a charging enemy into harmless illusions." },
-  prismursa: { name: "Prismursa", type: "Crystal", species: "Prism Bear Regent", cry: "PRISM-URSA!", stage: 3, base: [146, 52, 48, 32], skills: ["Crystal Shard", "Prism Nova", "Continental Slam"], capture: 0.022, body: "bear", colors: ["#22d3ee", "#f0abfc", "#020617"], lore: "A rare third-stage regent whose claws carve pure color into the air." },
-  puddlepip: { name: "Puddlepip", type: "Aqua", species: "Rain Chick", cry: "pip-plip!", stage: 1, evo: { to: "rainroost", method: "Reach Lv.16 at Tideglass Flats" }, base: [38, 16, 11, 30], skills: ["Bubble Bite", "Gust Peck", "Healing Rain"], capture: 0.34, body: "bird", colors: ["#bae6fd", "#38bdf8", "#0f172a"], lore: "A tiny rain bird that hops from puddle to puddle after storms." },
-  rainroost: { name: "Rainroost", type: "Aqua", species: "Storm Rooster", cry: "RAIN-ROOO!", stage: 2, base: [82, 32, 22, 43], skills: ["Bubble Bite", "Sky Dive", "Tidal Crush"], capture: 0.08, body: "bird", colors: ["#0ea5e9", "#e0f2fe", "#1e3a8a"], lore: "Its crest predicts rainfall and shines brighter when thunder is near." },
-  dustrat: { name: "Dustrat", type: "Toxic", species: "Dust Rat", cry: "skrri-dust!", stage: 1, evo: { to: "plaguerat", method: "Reach Lv.18 at night" }, base: [44, 22, 10, 28], skills: ["Toxic Sting", "Fang Rush", "Mind Fog"], capture: 0.3, body: "roo", colors: ["#84cc16", "#57534e", "#1c1917"], lore: "A scrappy alley Mythling that sniffs out spoiled berries before they spread sickness." },
-  plaguerat: { name: "Plaguerat", type: "Toxic", species: "Plague Rat", cry: "PLAGUE-SKRR!", stage: 2, base: [86, 39, 20, 42], skills: ["Toxic Sting", "Fang Rush", "Shadow Spiral"], capture: 0.075, body: "roo", colors: ["#65a30d", "#a855f7", "#020617"], lore: "It carries antidote herbs in its tail even though it looks terrifying." },
+  rimefin: { name: "Rimefin", type: "Ice", species: "Frost Fin", cry: "riiime-fiiin!", stage: 1, evo: { to: "cryoray", method: "Reach Lv.20 in Frostglass Peaks" }, base: [50, 21, 16, 25], skills: ["Frost Peck", "Bubble Bite", "Crystal Shard"], capture: 0.22, body: "whale", colors: ["#dbeafe", "#67e8f9", "#1e3a8a"], lore: "A floating frost-fish that glides over snowfields as if swimming through air." },
+  cryoray: { name: "Cryoray", type: "Ice", species: "Aurora Ray", cry: "CRYO-RAY!", stage: 2, base: [96, 38, 27, 39], skills: ["Frost Lock", "Aurora Verdict", "Prism Nova"], capture: 0.06, body: "whale", colors: ["#93c5fd", "#f0f9ff", "#312e81"], lore: "Its wings shine like an aurora curtain, freezing hostile spells midair." },
+  cactimp: { name: "Cactimp", type: "Toxic", species: "Cactus Imp", cry: "cak-tik!", stage: 1, evo: { to: "needlestalk", method: "Reach Lv.18 in Verdant Canopy" }, base: [46, 23, 18, 17], skills: ["Toxic Sting", "Vine Kick", "Thorn Wall"], capture: 0.25, body: "sprite", colors: ["#84cc16", "#facc15", "#3f6212"], lore: "A prickly little prankster that hides among bright flowers and giggles when discovered." },
+  needlestalk: { name: "Needlestalk", type: "Toxic", species: "Needle Sentinel", cry: "NEEDLE-STALK!", stage: 2, base: [88, 40, 31, 24], skills: ["Toxic Sting", "Worldroot Ram", "Venom Spray"], capture: 0.07, body: "sprite", colors: ["#65a30d", "#fde047", "#14532d"], lore: "A forest sentinel whose needles bloom only when protecting weaker Mythlings." },
+  lanternkid: { name: "Lanternkid", type: "Light", species: "Lantern Child", cry: "lan-lan!", stage: 1, evo: { to: "beaconant", method: "Reach Lv.22 at night with Full Heal in bag" }, base: [42, 19, 15, 31], skills: ["Light Fang", "Lullaby Bell", "Prism Nova"], capture: 0.2, body: "sprite", colors: ["#fef3c7", "#facc15", "#7c2d12"], lore: "A shy lantern spirit that guides lost tamers through stormy midnight roads." },
+  beaconant: { name: "Beaconant", type: "Light", species: "Beacon Phantom", cry: "BEE-CO-NANT!", stage: 2, base: [84, 36, 26, 45], skills: ["Light Fang", "Dawn Judgment", "Dream Pulse"], capture: 0.055, body: "sprite", colors: ["#fde68a", "#ffffff", "#581c87"], lore: "A radiant phantom that turns dark roads into golden paths for worthy tamers." },
 
   dracinder: { name: "Dracinder", type: "Flame", species: "Young Cinder Dragon", cry: "DRAA-cin!", stage: 1, evo: { to: "regaldrake", method: "Finish the main story" }, base: [74, 20, 14, 13], skills: ["Royal Flame", "Guard", "Meteor Claw"], capture: 0.08, body: "dragon", colors: ["#ff453a", "#ffd36a", "#25121a"], lore: "The lost royal Mythling. Its flame can reveal lies and sealed memories." },
   regaldrake: { name: "Regaldrake", type: "Flame", species: "Sky Prism Dragon", cry: "REGAL-DRAY!", stage: 2, base: [108, 32, 22, 20], skills: ["Royal Flame", "Meteor Claw", "Prism Nova"], capture: 0.03, body: "dragon", colors: ["#dc2626", "#fef08a", "#111827"], lore: "The restored royal dragon whose wings reflect every color of the Sky Prism." },
@@ -581,17 +525,17 @@ const ENCOUNTERS = {
   A: ["cloudfinch", "voltoroo", "dawnhare", "mistowl", "lumifox", "snowl", "ionwyrm", "echopup"],
   O: ["leafawn", "spriggeist", "orchidimp", "mistowl", "spirikit", "bellimp"],
   Q: ["pebbkit", "sandillo", "ironboar", "cindermole", "gearmite", "steelfang", "crysteel", "ferroach"],
-  P: ["prismite", "gloomander", "starwhale", "aurorabbit", "lumifox", "gearmite", "crysteel", "glasscub", "mirrursa", "phantelope", "chimegeist", "glimmernewt", "radiantoad", "gemtoad", "opaloracle"],
+  P: ["prismite", "gloomander", "starwhale", "aurorabbit", "lumifox", "gearmite", "crysteel", "phantelope", "chimegeist", "glimmernewt", "radiantoad", "gemtoad", "opaloracle"],
   H: ["frostcub", "aurorabbit", "mistowl", "snowl", "blizzowl", "cuboulder"],
   J: ["leafawn", "orchidimp", "crysteel", "prismite", "spriggeist", "bellimp", "bramblepup", "glimmernewt"],
-  X: ["toxifrog", "venomire", "spirikit", "shadebat", "nightmoth", "chimegeist", "dustrat", "plaguerat"],
+  X: ["toxifrog", "venomire", "spirikit", "shadebat", "nightmoth", "chimegeist"],
   Z: ["neonsquid", "ionwyrm", "voltoroo", "aquapup", "prismite", "sparkitten", "voltiger"],
   E: ["echopup", "bellimp", "mistowl", "shadebat", "neonsquid"],
   Y: ["cuboulder", "sandillo", "ferroach", "cloudfinch", "ironboar", "bramblepup", "thornwolf"],
   U: ["cuboulder", "titanursa", "mantitan", "pebbkit", "crysteel"],
   "6": ["embercrow", "pyreaven", "cindermole", "magmole", "cloudfinch"],
   "7": ["miragecalf", "miragehart", "prismite", "aurorabbit", "mistowl"],
-  "8": ["tidebug", "shellsurge", "coralisk", "aquapup", "neonsquid", "puddlepip", "rainroost"]
+  "8": ["tidebug", "shellsurge", "coralisk", "aquapup", "neonsquid"]
 };
 const TILE_NAMES = {
   G: "Tall Grass", L: "Lake Shore", M: "Rocky Pass", V: "Moon Cave", F: "Ash Field", A: "Wind Hill",
@@ -882,7 +826,7 @@ const AREA_DATA = {
       "W....H...4..HH.W",
       "WWWWWWWWWWWWWWWW"
     ],
-    encounters: { H: ["snowkit","frostlynx","glacira","snowl","blizzowl","frostcub","glaciermaw","aurorabbit"], C: ["prismite","glimmernewt"] },
+    encounters: { H: ["snowkit","frostlynx","glacira","rimefin","cryoray","snowl","blizzowl","frostcub","glaciermaw","aurorabbit"], C: ["prismite","glimmernewt"] },
     description: "A side-route of mirror ice. Ice Mythlings resist freezing and many carry precision status moves."
   },
   verdantCanopy: {
@@ -910,7 +854,7 @@ const AREA_DATA = {
       "W....J...B..JJ.W",
       "WWWWWWWWWWWWWWWW"
     ],
-    encounters: { J: ["mossmunk","cedarmunk","forestwarden","seedpuff","cottonstag","leafawn","florantler","spriggeist"], G: ["bramblepup","thornwolf","orchling"] },
+    encounters: { J: ["mossmunk","cedarmunk","forestwarden","cactimp","needlestalk","seedpuff","cottonstag","leafawn","florantler","spriggeist"], G: ["bramblepup","thornwolf","orchling"] },
     description: "A vertical forest where side quests unlock safer paths and Verdant evolutions."
   },
   orchidCourt: {
@@ -938,7 +882,7 @@ const AREA_DATA = {
       "W....O...B..OO.W",
       "WWWWWWWWWWWWWWWW"
     ],
-    encounters: { O: ["orchling","orchidiva","orchidimp","bellimp","chimegeist","miragecalf","miragehart"], J: ["prismite","glimmernewt","radiantoad"] },
+    encounters: { O: ["orchling","orchidiva","orchidimp","bellimp","chimegeist","lanternkid","beaconant","miragecalf","miragehart"], J: ["prismite","glimmernewt","radiantoad"] },
     description: "A melodic garden full of Mystic performers, sleep moves, and trade-evolution hints."
   },
 
@@ -1284,6 +1228,7 @@ function MonsterModel({ mon, size = "large", flipped = false, faint = false, ani
   return <motion.div animate={{ ...motionAnim, opacity: faint ? 0.45 : 1 }} transition={{ duration: anim === "idle" ? 3 : 0.38, repeat: anim === "idle" && !faint ? Infinity : 0 }} className={`relative ${flipped ? "scale-x-[-1]" : ""}`} style={{ width: 220 * scale, height: 200 * scale }}>
     <div className="absolute inset-0 rounded-full blur-2xl opacity-50" style={{ background: silhouette ? "#000" : a }} />
     {isLegendModel && !silhouette && <motion.div className="absolute inset-[-12px] rounded-full border-4 border-yellow-200/30 z-10 pointer-events-none" animate={{ rotate:360, scale:[0.95,1.05,0.95] }} transition={{ rotate:{duration:7,repeat:Infinity,ease:"linear"}, scale:{duration:1.8,repeat:Infinity} }}/>} 
+    {stage >= 3 && !silhouette && <motion.div className="absolute inset-[-8px] rounded-full border-2 border-white/20 z-10 pointer-events-none" animate={{ opacity:[0.25,0.7,0.25], scale:[0.92,1.08,0.92] }} transition={{ duration:2.2, repeat:Infinity }}/>} 
     {mon.shiny && !silhouette && <div className="absolute inset-0 z-30 pointer-events-none">{[0,1,2,3,4].map((i)=><motion.div key={i} className="absolute text-yellow-100 drop-shadow-lg font-black" style={{left:`${18+i*16}%`, top:`${8+(i%2)*18}%`}} animate={{scale:[0.5,1.25,0.5], opacity:[0.25,1,0.25], rotate:[0,180,360]}} transition={{duration:1.25+i*0.15, repeat:Infinity, delay:i*0.12}}>✦</motion.div>)}</div>}
     {status && <div className="absolute inset-0 z-20 pointer-events-none">
       {(statusGlyphs[status.key] || ["✦","✧","✦"]).map((g, i) => <motion.div
@@ -1341,6 +1286,7 @@ function MythboundTamersJRPGInner() {
   const [cinematic, setCinematic] = useState(null);
   const [pendingAreaGate, setPendingAreaGate] = useState(null);
   const [objectiveModal, setObjectiveModal] = useState(null);
+  const [objectiveMapFocus, setObjectiveMapFocus] = useState(null);
   const [evolutionScene, setEvolutionScene] = useState(null);
   const [seen, setSeen] = useState(freshSeen());
   const [dex, setDex] = useState(freshDex());
@@ -1358,8 +1304,6 @@ function MythboundTamersJRPGInner() {
   const [authUser, setAuthUser] = useState(null);
   const [accountProfile, setAccountProfile] = useState(null);
   const [accountStatus, setAccountStatus] = useState(supabase ? "Sign in or create an account to enable cloud saves." : "Supabase is not configured. Add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY.");
-  const [updatePrompt, setUpdatePrompt] = useState(null);
-  const [autoUpdateStatus, setAutoUpdateStatus] = useState("Update auto-check ready.");
   const keyCooldown = useRef(false), audioRef = useRef(null), gameRef = useRef({});
   const lastCinematicTileRef = useRef(null);
   useEffect(() => { gameRef.current = { screen, storyIndex, player, party, storage, active, battle, seen, dex, clock, muted }; }, [screen, storyIndex, player, party, storage, active, battle, seen, dex, clock, muted]);
@@ -1378,50 +1322,6 @@ function MythboundTamersJRPGInner() {
 
   useEffect(() => { setHasSave(Boolean(findValidSave())); }, []);
   useEffect(() => { if (!toast) return; const t = setTimeout(() => setToast(null), 2400); return () => clearTimeout(t); }, [toast]);
-
-  async function checkForAppUpdate({ silent = false } = {}) {
-    if (!UPDATE_MANIFEST_URL) {
-      if (!silent) setAutoUpdateStatus("No update manifest configured.");
-      return null;
-    }
-    try {
-      if (!silent) setAutoUpdateStatus("Checking for updates...");
-      const res = await fetch(UPDATE_MANIFEST_URL, { cache: "no-store" });
-      if (!res.ok) throw new Error(`Manifest HTTP ${res.status}`);
-      const manifest = normalizeUpdateManifest(await res.json());
-      if (!manifest) throw new Error("Invalid update manifest.");
-      if (isUpdateNewer(manifest)) {
-        setUpdatePrompt(manifest);
-        setAutoUpdateStatus(`Update ${manifest.version || "new version"} available.`);
-        if (!silent) sfx("success");
-        return manifest;
-      }
-      setAutoUpdateStatus(`Latest version installed (${APP_VERSION}).`);
-      if (!silent) setToast("You already have the latest version.");
-      return manifest;
-    } catch (e) {
-      setAutoUpdateStatus(`Update check failed: ${e.message}`);
-      if (!silent) setToast(`Update check failed: ${e.message}`);
-      return null;
-    }
-  }
-  function downloadAndInstallUpdate(manifest = updatePrompt) {
-    const url = manifest?.apkUrl || manifest?.webUrl || manifest?.url;
-    if (!url) {
-      setAutoUpdateStatus("Update manifest has no APK URL.");
-      setToast("No APK URL found in manifest.");
-      return;
-    }
-    setAutoUpdateStatus("Starting APK download. Android may ask you to confirm installation.");
-    setToast("Downloading update APK...");
-    startApkInstallFromUrl(url);
-  }
-  useEffect(() => {
-    const t = setTimeout(() => { checkForAppUpdate({ silent: true }); }, 1800);
-    const interval = setInterval(() => { checkForAppUpdate({ silent: true }); }, 1000 * 60 * 60 * 6);
-    return () => { clearTimeout(t); clearInterval(interval); };
-  }, []);
-
   useEffect(() => {
     if (!supabase) return;
     let mounted = true;
@@ -2078,7 +1978,7 @@ function MythboundTamersJRPGInner() {
   useEffect(() => { const onKey = (e) => { const k = e.key.toLowerCase(); if (["arrowup","w"].includes(k)) move(0,-1); if (["arrowdown","s"].includes(k)) move(0,1); if (["arrowleft","a"].includes(k)) move(-1,0); if (["arrowright","d"].includes(k)) move(1,0); if (k === "i" && gameRef.current.screen === "world") setScreen("party"); if (k === "p" && gameRef.current.screen === "world") setScreen("dex"); if (k === "m" && ["party","dex"].includes(gameRef.current.screen)) setScreen("world"); if (k === "f5") { e.preventDefault(); saveGame(); } }; window.addEventListener("keydown", onKey); return () => window.removeEventListener("keydown", onKey); }, []);
   function reset() { setScreen("title"); setStoryIndex(0); setPlayer(freshPlayer()); setParty([]); setStorage([]); setActive(0); setBattle(null); setNpc(null); setSeen(freshSeen()); setDex(freshDex()); setClock(freshClock()); setBattleAnim({ player: "idle", enemy: "idle", fx: null, text: null }); }
   const current = party[active]; const stats = dexStats(dex); const TimeIcon = timeIcon(clock);
-  return <div className="min-h-screen bg-slate-950 text-white p-2 sm:p-4 overflow-hidden relative pb-24 lg:pb-4"><div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(34,211,238,.16),transparent_28%),radial-gradient(circle_at_80%_15%,rgba(217,70,239,.13),transparent_25%),radial-gradient(circle_at_55%_85%,rgba(132,204,22,.11),transparent_28%)]"/><div className="relative max-w-7xl mx-auto grid lg:grid-cols-[1fr_350px] gap-4"><Card className="rounded-3xl overflow-hidden bg-slate-900/80 border-white/10 shadow-2xl shadow-cyan-500/10 min-h-[740px]"><CardContent className="p-0 h-full"><AnimatePresence mode="wait">{screen === "title" && <TitleScreen startStory={startStory} loadGame={loadGame} hasSave={hasSave}/>} {screen === "story" && <StoryScreen item={STORY[storyIndex]} nextStory={nextStory} index={storyIndex} total={STORY.length}/>} {screen === "starter" && <StarterScreen chooseStarter={chooseStarter}/>} {screen === "world" && <WorldScreen map={currentAreaMap(player)} area={currentAreaData(player)} player={player} move={move} party={party} storage={storage} seen={seen} dex={dex} setScreen={setScreen} saveGame={saveGame} clock={clock} onObjectiveClick={setObjectiveModal}/>} {screen === "party" && <PartyScreen party={party} active={active} setActive={setActive} setScreen={setScreen} player={player} seen={seen} evolve={evolve} clock={clock} useStatusItem={useStatusItem}/>} {screen === "pc" && <PCStorageScreen party={party} storage={storage} setScreen={setScreen} swapWithStorage={swapWithStorage} withdrawFromStorage={withdrawFromStorage}/>} {screen === "shop" && <ShopScreen player={player} setScreen={setScreen} buyStock={buyStock}/>} {screen === "dex" && <DexScreen dex={dex} setScreen={setScreen}/>} {screen === "account" && <AccountScreen setScreen={setScreen} authUser={authUser} accountProfile={accountProfile} accountStatus={accountStatus} setAccountStatus={setAccountStatus} findValidSave={findValidSave} hydrateSaveData={hydrateSaveData} uploadSaveDataToCloud={uploadSaveDataToCloud} loadAccountProfile={loadAccountProfile} cloudSyncStatus={cloudSyncStatus} lastCloudSyncAt={lastCloudSyncAt}/>} {screen === "multiplayer" && <MultiplayerScreen party={party} setParty={setParty} dex={dex} player={player} setScreen={setScreen} authUser={authUser} accountProfile={accountProfile} saveGame={saveGame}/>} {screen === "help" && <HelpScreen setScreen={setScreen}/>} {screen === "update" && <UpdateCenterScreen setScreen={setScreen} checkForAppUpdate={checkForAppUpdate} updateStatus={autoUpdateStatus} downloadAndInstallUpdate={downloadAndInstallUpdate}/>} {screen === "atlas" && <AtlasScreen player={player} setScreen={setScreen}/>} {screen === "battle" && battle && current && <BattleScreen battle={battle} playerMon={current} skills={skills(current)} playerUse={playerUse} capture={capture} selectedCaptureItem={selectedCaptureItem} setSelectedCaptureItem={setSelectedCaptureItem} usePotion={usePotion} useStatusCure={useStatusCureInBattle} usePPItem={usePPItemInBattle} run={run} player={player} party={party} active={active} setActive={setActive} anim={battleAnim} dex={dex} clock={clock} onBattleResultContinue={finishBattleResult}/>} {screen === "gameover" && <GameOver reset={reset}/>} {!VALID_SCREENS.has(screen) && <RecoveryScreen reset={reset} setScreen={setScreen} party={party}/>} {screen === "battle" && (!battle || !current) && <RecoveryScreen reset={reset} setScreen={setScreen} party={party} message="Battle data was missing, so the app can safely return to the map."/>}</AnimatePresence></CardContent></Card><div className="hidden lg:block"><SidePanel player={player} party={party} active={active} setScreen={setScreen} reset={reset} saveGame={saveGame} loadGame={loadGame} clearSave={clearSave} hasSave={hasSave} muted={muted} setMuted={setMuted} stats={stats} clock={clock} authUser={authUser} accountProfile={accountProfile} cloudSyncStatus={cloudSyncStatus} lastCloudSyncAt={lastCloudSyncAt} storage={storage} seen={seen} dex={dex} onObjectiveClick={setObjectiveModal}/></div></div><MobileNav setScreen={setScreen} saveGame={saveGame} muted={muted} setMuted={setMuted} authUser={authUser}/><AnimatePresence>{cinematic && <CinematicOverlay cinematic={cinematic}/>}</AnimatePresence><AnimatePresence>{evolutionScene && <EvolutionOverlay scene={evolutionScene}/>}</AnimatePresence><AnimatePresence>{toast && <motion.div initial={{ y: 30, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 30, opacity: 0 }} className="fixed bottom-5 left-1/2 -translate-x-1/2 px-5 py-3 rounded-2xl bg-slate-900 border border-cyan-300/30 shadow-xl text-cyan-100 font-bold z-50">{toast}</motion.div>}</AnimatePresence><AnimatePresence>{npc && <NpcModal npc={npc} close={() => { if (npc.reward) npc.reward(); setNpc(null); saveGame(false); }}/>}</AnimatePresence><AnimatePresence>{pendingAreaGate && <AreaGateModal gate={pendingAreaGate} enter={confirmAreaGate} stay={cancelAreaGate}/>}</AnimatePresence><AnimatePresence>{objectiveModal && <ObjectiveDetailModal info={objectiveModal} close={() => setObjectiveModal(null)}/>}</AnimatePresence><AnimatePresence>{battleResult && <BattleResultModal result={battleResult} onContinue={finishBattleResult} />}</AnimatePresence><AnimatePresence>{renameMon && <RenameModal nickname={nickname} setNickname={setNickname} notice={renameNotice} applyNickname={applyNickname} skip={() => { setRenameMon(null); setNickname(""); setRenameNotice(""); setTimeout(() => saveGame(false), 50); }}/>}</AnimatePresence><AnimatePresence>{updatePrompt && <UpdateAvailableModal manifest={updatePrompt} close={() => setUpdatePrompt(null)} install={() => downloadAndInstallUpdate(updatePrompt)}/>}</AnimatePresence></div>;
+  return <div className="min-h-screen bg-slate-950 text-white p-2 sm:p-4 overflow-hidden relative pb-24 lg:pb-4"><div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(34,211,238,.16),transparent_28%),radial-gradient(circle_at_80%_15%,rgba(217,70,239,.13),transparent_25%),radial-gradient(circle_at_55%_85%,rgba(132,204,22,.11),transparent_28%)]"/><div className="relative max-w-7xl mx-auto grid lg:grid-cols-[1fr_350px] gap-4"><Card className="rounded-3xl overflow-hidden bg-slate-900/80 border-white/10 shadow-2xl shadow-cyan-500/10 min-h-[740px]"><CardContent className="p-0 h-full"><AnimatePresence mode="wait">{screen === "title" && <TitleScreen startStory={startStory} loadGame={loadGame} hasSave={hasSave}/>} {screen === "story" && <StoryScreen item={STORY[storyIndex]} nextStory={nextStory} index={storyIndex} total={STORY.length}/>} {screen === "starter" && <StarterScreen chooseStarter={chooseStarter}/>} {screen === "world" && <WorldScreen map={currentAreaMap(player)} area={currentAreaData(player)} player={player} move={move} party={party} storage={storage} seen={seen} dex={dex} setScreen={setScreen} saveGame={saveGame} clock={clock} onObjectiveClick={setObjectiveModal} objectiveMapFocus={objectiveMapFocus} clearObjectiveFocus={() => setObjectiveMapFocus(null)}/>} {screen === "party" && <PartyScreen party={party} active={active} setActive={setActive} setScreen={setScreen} player={player} seen={seen} evolve={evolve} clock={clock} useStatusItem={useStatusItem}/>} {screen === "pc" && <PCStorageScreen party={party} storage={storage} setScreen={setScreen} swapWithStorage={swapWithStorage} withdrawFromStorage={withdrawFromStorage}/>} {screen === "shop" && <ShopScreen player={player} setScreen={setScreen} buyStock={buyStock}/>} {screen === "dex" && <DexScreen dex={dex} setScreen={setScreen}/>} {screen === "account" && <AccountScreen setScreen={setScreen} authUser={authUser} accountProfile={accountProfile} accountStatus={accountStatus} setAccountStatus={setAccountStatus} findValidSave={findValidSave} hydrateSaveData={hydrateSaveData} uploadSaveDataToCloud={uploadSaveDataToCloud} loadAccountProfile={loadAccountProfile} cloudSyncStatus={cloudSyncStatus} lastCloudSyncAt={lastCloudSyncAt}/>} {screen === "multiplayer" && <MultiplayerScreen party={party} setParty={setParty} dex={dex} player={player} setScreen={setScreen} authUser={authUser} accountProfile={accountProfile} saveGame={saveGame}/>} {screen === "help" && <HelpScreen setScreen={setScreen}/>} {screen === "update" && <UpdateCenterScreen setScreen={setScreen}/>} {screen === "atlas" && <AtlasScreen player={player} setScreen={setScreen}/>} {screen === "battle" && battle && current && <BattleScreen battle={battle} playerMon={current} skills={skills(current)} playerUse={playerUse} capture={capture} selectedCaptureItem={selectedCaptureItem} setSelectedCaptureItem={setSelectedCaptureItem} usePotion={usePotion} useStatusCure={useStatusCureInBattle} usePPItem={usePPItemInBattle} run={run} player={player} party={party} active={active} setActive={setActive} anim={battleAnim} dex={dex} clock={clock} onBattleResultContinue={finishBattleResult}/>} {screen === "gameover" && <GameOver reset={reset}/>} {!VALID_SCREENS.has(screen) && <RecoveryScreen reset={reset} setScreen={setScreen} party={party}/>} {screen === "battle" && (!battle || !current) && <RecoveryScreen reset={reset} setScreen={setScreen} party={party} message="Battle data was missing, so the app can safely return to the map."/>}</AnimatePresence></CardContent></Card><div className="hidden lg:block"><SidePanel player={player} party={party} active={active} setScreen={setScreen} reset={reset} saveGame={saveGame} loadGame={loadGame} clearSave={clearSave} hasSave={hasSave} muted={muted} setMuted={setMuted} stats={stats} clock={clock} authUser={authUser} accountProfile={accountProfile} cloudSyncStatus={cloudSyncStatus} lastCloudSyncAt={lastCloudSyncAt} storage={storage} seen={seen} dex={dex} onObjectiveClick={setObjectiveModal}/></div></div><MobileNav setScreen={setScreen} saveGame={saveGame} muted={muted} setMuted={setMuted} authUser={authUser}/><AnimatePresence>{cinematic && <CinematicOverlay cinematic={cinematic}/>}</AnimatePresence><AnimatePresence>{evolutionScene && <EvolutionOverlay scene={evolutionScene}/>}</AnimatePresence><AnimatePresence>{toast && <motion.div initial={{ y: 30, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 30, opacity: 0 }} className="fixed bottom-5 left-1/2 -translate-x-1/2 px-5 py-3 rounded-2xl bg-slate-900 border border-cyan-300/30 shadow-xl text-cyan-100 font-bold z-50">{toast}</motion.div>}</AnimatePresence><AnimatePresence>{npc && <NpcModal npc={npc} close={() => { if (npc.reward) npc.reward(); setNpc(null); saveGame(false); }}/>}</AnimatePresence><AnimatePresence>{pendingAreaGate && <AreaGateModal gate={pendingAreaGate} enter={confirmAreaGate} stay={cancelAreaGate}/>}</AnimatePresence><AnimatePresence>{objectiveModal && <ObjectiveDetailModal info={objectiveModal} close={() => setObjectiveModal(null)} showOnMap={(target) => { if (!target) return; setObjectiveMapFocus(target); setObjectiveModal(null); setScreen("world"); setToast(`Map target highlighted: ${target.label || "Objective"}`); }}/>}</AnimatePresence><AnimatePresence>{battleResult && <BattleResultModal result={battleResult} onContinue={finishBattleResult} />}</AnimatePresence><AnimatePresence>{renameMon && <RenameModal nickname={nickname} setNickname={setNickname} notice={renameNotice} applyNickname={applyNickname} skip={() => { setRenameMon(null); setNickname(""); setRenameNotice(""); setTimeout(() => saveGame(false), 50); }}/>}</AnimatePresence></div>;
 }
 
 function TitleScreen({ startStory, loadGame, hasSave }) { return <motion.div key="title" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="min-h-[740px] flex items-center justify-center relative p-8"><div className="absolute inset-0 bg-slate-950"/><div className="relative text-center max-w-3xl"><motion.div animate={{ y: [0,-10,0] }} transition={{ duration: 3, repeat: Infinity }} className="mx-auto mb-4 w-44 h-44"><MonsterModel mon={makeMon("solarynx", 18)} size="medium"/></motion.div><div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-400/10 border border-cyan-300/30 text-cyan-100 mb-4"><Gamepad2 className="w-5 h-5"/>v4 Clock & Evolution Edition</div><h1 className="text-6xl md:text-7xl font-black tracking-tight bg-gradient-to-r from-cyan-200 via-fuchsia-200 to-lime-200 text-transparent bg-clip-text mb-4">Mythbound Tamers</h1><p className="text-xl text-slate-200 mb-8">Third-stage evolutions, single-stage rares, nicknames, a clock, morning/night encounters, expanded story, and v2/v3 save migration.</p><div className="flex flex-wrap justify-center gap-3"><Button onClick={startStory} className="rounded-2xl px-9 py-6 text-lg bg-cyan-300 hover:bg-cyan-200 text-slate-950 font-black">New Journey</Button><Button onClick={loadGame} disabled={!hasSave} variant="secondary" className={`rounded-2xl px-9 py-6 text-lg font-black ${!hasSave ? "opacity-40 cursor-not-allowed" : ""}`}><Upload className="w-5 h-5 mr-2"/>{hasSave ? "Continue" : "No Save"}</Button></div><p className="text-sm text-slate-400 mt-5">Move: WASD/arrows · Party: I · Dex: P · Return: M · Save: F5</p></div></motion.div>; }
@@ -2293,34 +2193,83 @@ function progressionVisualState(player, seen, dex) {
   };
 }
 
+function areaIdByName(name) {
+  const normalized = String(name || "").toLowerCase();
+  if (!normalized || normalized === "all areas") return null;
+  const found = Object.values(AREA_DATA || {}).find((area) => area.name.toLowerCase() === normalized || area.id.toLowerCase() === normalized.replace(/\s+/g, ""));
+  return found?.id || null;
+}
+function mainObjectiveTarget(player, seen) {
+  if (!player || !(player.area)) player = freshPlayer();
+  if (!seen?.elder) return { areaId: "luminara", tile: "N", label: "Grovepath Village / Elder Nima", icon: "E", detail: "Find an Elder tile marked E. On Luminara this is Grovepath Village." };
+  if (!seen?.rival) return { areaId: "luminara", tile: "R", label: "Rival Ren Bridge", icon: "R", detail: "Find the Rival tile marked R. Prepare before entering the trainer battle." };
+  if (!seen?.keeper) return { areaId: "luminara", tile: "K", label: "Moon Keeper Gate", icon: "K", detail: "Find the Keeper tile marked K. If it is in another route, follow the highlighted area gate first." };
+  if (!seen?.shrine) return { areaId: "luminara", tile: "S", label: "Old Shrine", icon: "⌂", detail: "Find the shrine tile marked ⌂ and interact with it to restore the Prism Key." };
+  if (!seen?.bridgeCaptain) return { areaId: "luminara", tile: "B", label: "Bridge Captain Brann", icon: "B", detail: "Find the Captain tile marked B. Train first if your lead Mythling is underleveled." };
+  if (!seen?.dragon) return { areaId: "calderaCrown", tile: "D", label: "Dragon Gate / Dracinder", icon: "龍", detail: "Travel toward Caldera Crown and find the Dragon Gate marked 龍." };
+  return { areaId: "luminara", tile: "1", label: "Legendary Seals", icon: "★", detail: "Post-game legendary seals are marked by numbers 1-5. Use the Atlas to pick one." };
+}
+function sideObjectiveTarget(data) {
+  const title = String(data?.title || "").toLowerCase();
+  if (title.includes("seed")) return { areaId: "verdantCanopy", tile: "J", label: "Verdant Canopy / Seed Bell Trial", icon: "晶", detail: "Travel through a Crystal Jungle gate marked 晶 and explore Verdant Canopy." };
+  if (title.includes("aurora")) return { areaId: "frostglassPeaks", tile: "H", label: "Frostglass Peaks / Aurora Lens", icon: "❄", detail: "Look for a Frost Hollow gate marked ❄ and explore the peaks." };
+  if (title.includes("harmony")) return { areaId: "orchidCourt", tile: "O", label: "Orchid Court / Harmony Charm", icon: "✿", detail: "Find an Orchid Orchard gate marked ✿ and defeat the court performers." };
+  if (title.includes("engineer") || title.includes("rail")) return { areaId: "ironrailYard", tile: "M", label: "Ironrail Yard / Rail Badge", icon: "▲", detail: "Find a Rocky Pass gate marked ▲ that leads toward Ironrail Yard." };
+  if (title.includes("collector")) return { areaId: "luminara", tile: "G", label: "Any Wild Zone", icon: "♣", detail: "Catch more Mythlings in wild tiles. Different areas contain different pools." };
+  if (title.includes("legend")) return { areaId: "luminara", tile: "1", label: "Legendary Dungeon Seal", icon: "★", detail: "Legend dungeons are numbered 1-5 and unlock after the main story." };
+  const areaId = areaIdByName(data?.area);
+  return { areaId: areaId || "luminara", tile: areaId ? "0" : "G", label: data?.area || "Objective Area", icon: areaId ? "↗" : "♣", detail: data?.goal || "Follow the objective details." };
+}
+function gateTileToArea(areaId) {
+  const entry = Object.entries(AREA_EXITS || {}).find(([, dest]) => dest === areaId);
+  return entry?.[0] || null;
+}
+function objectiveTargetForCurrentMap(target, currentAreaId) {
+  if (!target) return null;
+  if (target.areaId === currentAreaId) return { ...target, displayTile: target.tile, mode: "target" };
+  const gateTile = gateTileToArea(target.areaId);
+  return { ...target, displayTile: gateTile, mode: "gate", label: gateTile ? `Gate toward ${AREA_DATA[target.areaId]?.name || target.label}` : target.label };
+}
+
 function buildObjectivePayload(type, data, player, seen, dex) {
   const visual = progressionVisualState(player, seen, dex);
-  if (type === "main") return {
-    title: visual.stepTitle,
-    badge: visual.priority,
-    body: visual.action,
-    steps: [
-      `Current area: ${visual.currentArea?.name || "Luminara"}`,
-      `Recommended next area: ${visual.nextArea?.name || (visual.route.next?.id === "postgame" ? "Legendary Seals" : "Complete the Prism Dex")}`,
-      `Use the World Atlas if you need the route order.`,
-      `Save before boss or legendary battles.`
-    ],
-    color: visual.color,
-    icon: visual.icon
-  };
-  if (type === "side") return {
-    title: data.title,
-    badge: data.area,
-    body: data.goal,
-    steps: [
-      `Travel to: ${data.area}`,
-      data.done ? "This side objective is already complete." : "Progress this objective while exploring or catching Mythlings.",
-      "Tap nearby tiles to preview encounters and special notes.",
-      "Use Crystal Springs and shops before longer routes."
-    ],
-    color: data.done ? "from-lime-200 to-cyan-300" : "from-fuchsia-200 to-cyan-300",
-    icon: data.done ? "✓" : "○"
-  };
+  if (type === "main") {
+    const target = mainObjectiveTarget(player, seen);
+    return {
+      title: visual.stepTitle,
+      badge: visual.priority,
+      body: visual.action,
+      target,
+      steps: [
+        `Current area: ${visual.currentArea?.name || "Luminara"}`,
+        `Recommended next area: ${visual.nextArea?.name || (visual.route.next?.id === "postgame" ? "Legendary Seals" : "Complete the Prism Dex")}`,
+        `Map target: ${target.label}. Look for the ${target.icon} icon or a highlighted gate on the map.`,
+        target.detail,
+        `Save before boss or legendary battles.`
+      ],
+      color: visual.color,
+      icon: visual.icon
+    };
+  }
+  if (type === "side") {
+    const target = sideObjectiveTarget(data);
+    return {
+      title: data.title,
+      badge: data.area,
+      body: data.goal,
+      target,
+      steps: [
+        `Travel to: ${data.area}`,
+        `Map target: ${target.label}. Look for ${target.icon} or press Show on Map.`,
+        data.done ? "This side objective is already complete." : "Progress this objective while exploring, battling, or catching Mythlings.",
+        target.detail,
+        "Tap nearby tiles to preview encounters and special notes.",
+        "Use Crystal Springs and shops before longer routes."
+      ],
+      color: data.done ? "from-lime-200 to-cyan-300" : "from-fuchsia-200 to-cyan-300",
+      icon: data.done ? "✓" : "○"
+    };
+  }
   return { title: "Objective", badge: "Info", body: "Explore Luminara and follow the tracker.", steps: [], color: "from-cyan-200 to-fuchsia-300", icon: "✦" };
 }
 function ObjectivePanel({ player, seen, dex, party, storage, clock, compact = false, onObjectiveClick = null }) {
@@ -2424,7 +2373,7 @@ function tileDetails(tile, clock, area = null) {
   return { name, ...base, pool, timed };
 }
 
-function WorldScreen({ map, area, player, move, party, storage, seen, dex, setScreen, saveGame, clock, onObjectiveClick }) {
+function WorldScreen({ map, area, player, move, party, storage, seen, dex, setScreen, saveGame, clock, onObjectiveClick, objectiveMapFocus, clearObjectiveFocus }) {
   const [selectedTile, setSelectedTile] = useState(null);
   const [mapZoom, setMapZoom] = useState(1);
   const pinchRef = useRef(null);
@@ -2440,6 +2389,7 @@ function WorldScreen({ map, area, player, move, party, storage, seen, dex, setSc
   const label = (t) => ({ C:"✦", N:"E", R:"R", K:"K", B:"B", S:"⌂", D:"龍", T:"?", G:"♣", L:"≈", M:"▲", V:"☾", F:"火", A:"~", O:"✿", Q:"◆", P:"✧", H:"❄", J:"晶", X:"☠", Z:"⚡", E:"♫", Y:"爪", U:"巨", "1":"☀", "2":"◐", "3":"♒", "4":"根", "5":"⌛", "6":"羽", "7":"幻", "8":"≋", "0":"↩", W:"" }[t] || "");
   const TimeIcon = timeIcon(clock);
   const selected = selectedTile ? tileDetails(selectedTile.tile, clock, area) : null;
+  const objectiveFocusOnMap = objectiveTargetForCurrentMap(objectiveMapFocus, area?.id || player.area || "luminara");
   const mapRows = map.length;
   const mapCols = Math.max(...map.map((row) => row.length));
   const tileSize = Math.round(42 * mapZoom);
@@ -2483,6 +2433,13 @@ function WorldScreen({ map, area, player, move, party, storage, seen, dex, setSc
     <div className="mb-4">
       <ObjectivePanel player={player} seen={seen} dex={dex} party={party} storage={storage} clock={clock} compact onObjectiveClick={onObjectiveClick} />
     </div>
+    {objectiveFocusOnMap && <div className="mb-3 rounded-3xl bg-cyan-300/12 border border-cyan-200/30 p-3 flex flex-wrap items-center justify-between gap-2 shadow-xl shadow-cyan-500/10">
+      <div className="flex items-center gap-3">
+        <div className="w-10 h-10 rounded-2xl bg-cyan-200 text-slate-950 flex items-center justify-center font-black text-xl">{objectiveFocusOnMap.icon || "✦"}</div>
+        <div><div className="text-xs uppercase tracking-wider text-cyan-200 font-black">Objective Map Target</div><div className="font-black text-white">{objectiveFocusOnMap.label}</div><div className="text-xs text-slate-300">{objectiveFocusOnMap.mode === "gate" ? "This highlighted tile is the gate toward the objective area." : "This highlighted tile is the objective target."}</div></div>
+      </div>
+      <Button onClick={clearObjectiveFocus} variant="secondary" className="rounded-xl text-xs font-black">Clear Target</Button>
+    </div>}
 
     <div className="grid xl:grid-cols-[1fr_330px] gap-4 items-start">
       <div
@@ -2512,15 +2469,17 @@ function WorldScreen({ map, area, player, move, party, storage, seen, dex, setSc
               const here=player.x===x&&player.y===y;
               const isSelected=selectedTile?.x===x&&selectedTile?.y===y;
               const isAreaGate = AREA_EXITS[t] && AREA_EXITS[t] !== (player.area || "luminara");
+              const isObjectiveTile = objectiveFocusOnMap?.displayTile && t === objectiveFocusOnMap.displayTile;
               return <button
                 type="button"
                 onClick={()=>setSelectedTile({ tile:t, x, y })}
                 key={`${x}-${y}`}
-                className={`relative rounded-xl border flex items-center justify-center font-black shrink-0 overflow-hidden transition ${tileClass(t)} ${isAreaGate ? "ring-1 ring-cyan-200 shadow-md shadow-cyan-300/20" : ""} ${isSelected ? "ring-2 ring-white ring-offset-2 ring-offset-slate-950 z-10" : ""}`}
+                className={`relative rounded-xl border flex items-center justify-center font-black shrink-0 overflow-hidden transition ${tileClass(t)} ${isAreaGate ? "ring-1 ring-cyan-200 shadow-md shadow-cyan-300/20" : ""} ${isObjectiveTile ? "ring-4 ring-yellow-200 shadow-2xl shadow-yellow-300/50 z-20" : ""} ${isSelected ? "ring-2 ring-white ring-offset-2 ring-offset-slate-950 z-10" : ""}`}
                 style={{ width: tileSize, height: tileSize, fontSize: Math.max(10, Math.min(16, Math.round(tileSize * 0.34))) }}
                 aria-label={`${TILE_NAMES[t] || "Unknown tile"} at ${x + 1}, ${y + 1}`}
               >
                 <span className="opacity-90 pointer-events-none leading-none">{label(t)}</span>{isAreaGate && <><span className="absolute right-0.5 top-0.5 w-1.5 h-1.5 rounded-full bg-cyan-200 border border-slate-950 shadow-sm"/><motion.span animate={{ opacity:[0.25,0.8,0.25], scale:[0.8,1.35,0.8] }} transition={{ duration:1.4, repeat:Infinity }} className="absolute inset-[4px] rounded-lg border border-cyan-100/60 pointer-events-none"/></>}
+                {isObjectiveTile && <motion.div animate={{ y:[0,-4,0], scale:[1,1.08,1] }} transition={{ duration:1.1, repeat:Infinity }} className="absolute left-1/2 -translate-x-1/2 top-0.5 z-30 rounded-full bg-yellow-200 text-slate-950 text-[10px] px-1.5 py-0.5 border border-slate-950 shadow-lg pointer-events-none">{objectiveFocusOnMap.icon || "★"}</motion.div>}
                 {here&&<motion.div layoutId="player" className="absolute inset-[3px] rounded-lg bg-gradient-to-br from-cyan-200 to-fuchsia-300 shadow-lg shadow-cyan-400/40 flex items-center justify-center text-slate-950"><PawPrint className="w-5 h-5"/></motion.div>}
               </button>
             }))}
@@ -3066,89 +3025,51 @@ function BattleResultModal({ result, onContinue }) {
 function SidePanel({ player, party, active, setScreen, reset, saveGame, loadGame, clearSave, hasSave, muted, setMuted, stats, clock, authUser, accountProfile, cloudSyncStatus, lastCloudSyncAt, storage, seen, dex, onObjectiveClick }) { const TimeIcon = timeIcon(clock); return <div className="space-y-4"><Card className="bg-slate-900/80 border-white/10 rounded-3xl shadow-xl"><CardContent className="p-5"><h2 className="text-2xl font-black bg-gradient-to-r from-cyan-200 to-fuchsia-200 text-transparent bg-clip-text mb-4">Tamer Console</h2><div className="p-3 rounded-2xl bg-white/5 border border-white/10 mb-3 flex items-center gap-2"><TimeIcon className="w-5 h-5 text-cyan-200"/><div className="font-black">{timeString(clock)}</div></div><div className="grid grid-cols-2 gap-2 text-sm"><InfoBox label="Coins" value={player.money || 0}/><InfoBox label="Capsules" value={totalCaptureItems(player)}/><InfoBox label="PC" value={(storage || []).length}/><InfoBox label="Dex" value={`${stats.caught}/${stats.total}`}/></div><div className="mt-3 grid grid-cols-3 gap-2 text-xs"><InfoBox label="Pearl" value={player.items?.["Tide Pearl"]||0}/><InfoBox label="Moon" value={player.items?.["Moon Shard"]||0}/><InfoBox label="Fossil" value={player.items?.["Sun Fossil"]||0}/></div><div className="mt-4 p-3 rounded-2xl bg-white/5 border border-white/10"><div className="text-slate-400 text-xs uppercase tracking-wider">Login / Cloud</div><div className="font-bold text-cyan-100">{authUser ? `Signed in as ${accountProfile?.display_name || authUser.email?.split("@")[0] || "Tamer"}` : "Not signed in"}</div><div className="text-xs text-slate-400 mt-1">{cloudSyncStatus}</div><div className="text-xs text-slate-500 mt-1">Last online save: {formatOnlineSyncStamp(lastCloudSyncAt || accountProfile?.last_save_at)}</div></div><div className="mt-4"><ObjectivePanel player={player} seen={seen} dex={dex} party={party} storage={storage} clock={clock} compact onObjectiveClick={onObjectiveClick} /></div><div className="mt-4 grid grid-cols-2 gap-2"><Button onClick={()=>setScreen("party")} variant="secondary" className="rounded-xl"><PawPrint className="w-4 h-4 mr-2"/>Party</Button><Button onClick={()=>setScreen("pc")} variant="secondary" className="rounded-xl"><Backpack className="w-4 h-4 mr-2"/>PC</Button><Button onClick={()=>setScreen("shop")} variant="secondary" className="rounded-xl"><Star className="w-4 h-4 mr-2"/>Shop</Button><Button onClick={()=>setScreen("dex")} variant="secondary" className="rounded-xl"><BookOpen className="w-4 h-4 mr-2"/>Dex</Button><Button onClick={()=>saveGame()} variant="secondary" className="rounded-xl"><Save className="w-4 h-4 mr-2"/>Save</Button><Button onClick={loadGame} disabled={!hasSave} variant="secondary" className="rounded-xl disabled:opacity-40"><Upload className="w-4 h-4 mr-2"/>Load</Button><Button onClick={()=>setMuted(!muted)} variant="secondary" className="rounded-xl">{muted?<VolumeX className="w-4 h-4 mr-2"/>:<Volume2 className="w-4 h-4 mr-2"/>}{muted?"Muted":"Sound"}</Button><Button onClick={reset} variant="secondary" className="rounded-xl"><RotateCcw className="w-4 h-4 mr-2"/>New</Button><Button onClick={()=>setScreen("account")} variant="secondary" className="rounded-xl col-span-2"><Upload className="w-4 h-4 mr-2"/>{authUser ? `Account: ${accountProfile?.display_name || authUser.email?.split("@")[0] || "Signed in"}` : "Account / Cloud Save"}</Button><Button onClick={()=>setScreen("multiplayer")} variant="secondary" className="rounded-xl col-span-2"><Gamepad2 className="w-4 h-4 mr-2"/>Multiplayer Hub</Button><Button onClick={clearSave} disabled={!hasSave} variant="secondary" className="rounded-xl col-span-2 disabled:opacity-40">Clear Save</Button></div></CardContent></Card><Card className="bg-slate-900/80 border-white/10 rounded-3xl"><CardContent className="p-5"><h3 className="text-xl font-black mb-3">Lead Mythling</h3>{party[active]?<div className="flex gap-3 items-center"><MonsterModel mon={party[active]} size="small"/><div><div className="font-black">{displayName(party[active])}</div><div className="text-sm text-slate-300">{party[active].name} · Lv.{party[active].level}</div><TypeBadge type={party[active].type}/></div></div>:<p className="text-slate-300">No mythling yet.</p>}</CardContent></Card></div>; }
 function InfoBox({ label, value }) { return <div className="p-3 rounded-2xl bg-white/5 border border-white/10"><div className="text-slate-400 text-xs uppercase tracking-wider">{label}</div><div className="text-2xl font-black">{value}</div></div>; }
 
-function ObjectiveDetailModal({ info, close }) {
+function ObjectiveDetailModal({ info, close, showOnMap }) {
   if (!info) return null;
+  const target = info.target;
   return <motion.div initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} className="fixed inset-0 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4 z-[1650]">
     <motion.div initial={{y:24,scale:0.96}} animate={{y:0,scale:1}} exit={{y:24,scale:0.96}} className={`max-w-lg w-full rounded-[2rem] bg-gradient-to-br ${info.color || "from-cyan-200 to-fuchsia-300"} p-[2px] shadow-2xl`}>
       <div className="rounded-[1.9rem] bg-slate-950/95 p-5 text-white">
         <div className="flex items-center justify-between gap-3 mb-3"><div><div className="text-xs uppercase tracking-[0.28em] text-cyan-200 font-black">Objective Details</div><h2 className="text-3xl font-black leading-tight">{info.icon} {info.title}</h2></div><Badge className="bg-white text-slate-950 font-black">{info.badge}</Badge></div>
         <p className="text-lg text-slate-100 leading-relaxed mb-4">{info.body}</p>
-        <div className="space-y-2 mb-5">{(info.steps || []).map((s,i)=><div key={i} className="rounded-2xl bg-white/5 border border-white/10 px-3 py-2 text-slate-200"><span className="text-cyan-200 font-black">{i+1}.</span> {s}</div>)}</div>
-        <Button onClick={close} className="w-full rounded-2xl bg-cyan-300 text-slate-950 hover:bg-cyan-200 font-black py-5">Got it</Button>
-      </div>
-    </motion.div>
-  </motion.div>;
-}
-
-function UpdateCenterScreen({ setScreen, checkForAppUpdate, updateStatus, downloadAndInstallUpdate }) {
-  const [manifest, setManifest] = useState(null);
-  const [checking, setChecking] = useState(false);
-  async function manualCheck() {
-    setChecking(true);
-    const data = await checkForAppUpdate({ silent: false });
-    setManifest(data);
-    setChecking(false);
-  }
-  function install() {
-    downloadAndInstallUpdate(manifest);
-  }
-  const newer = isUpdateNewer(manifest);
-  return <motion.div key="update" initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} className="min-h-[740px] p-4 sm:p-6 bg-gradient-to-br from-slate-950 via-cyan-950 to-indigo-950">
-    <div className="flex justify-between items-start gap-3 mb-5">
-      <div>
-        <h2 className="text-3xl sm:text-4xl font-black flex items-center gap-2"><Upload className="w-8 h-8 text-cyan-200"/>Update Center</h2>
-        <p className="text-slate-300 max-w-2xl">The app now auto-checks this manifest on startup and every few hours. If a newer APK exists, you get a popup.</p>
-      </div>
-      <Button onClick={()=>setScreen("world")} className="rounded-xl bg-cyan-300 text-slate-950 hover:bg-cyan-200 font-black">Back</Button>
-    </div>
-    <div className="grid lg:grid-cols-[1fr_380px] gap-4">
-      <Card className="rounded-3xl bg-white/5 border-white/10"><CardContent className="p-5">
-        <h3 className="text-2xl font-black mb-3">Current Version</h3>
-        <InfoBox label="Installed" value={APP_VERSION}/>
-        <div className="mt-3 rounded-2xl bg-black/25 border border-white/10 p-3 text-slate-200 text-sm">Manifest URL: <span className="break-all text-cyan-100">{UPDATE_MANIFEST_URL || "Not configured"}</span></div>
-        <div className="grid sm:grid-cols-2 gap-2 mt-4">
-          <Button onClick={manualCheck} disabled={checking} className="rounded-2xl bg-cyan-300 hover:bg-cyan-200 text-slate-950 font-black disabled:opacity-40">{checking ? "Checking..." : "Check Now"}</Button>
-          <Button onClick={install} disabled={!manifest || !newer} className="rounded-2xl bg-lime-300 hover:bg-lime-200 text-slate-950 font-black disabled:opacity-40">Download & Install</Button>
-        </div>
-      </CardContent></Card>
-      <Card className="rounded-3xl bg-white/5 border-white/10"><CardContent className="p-5">
-        <h3 className="text-xl font-black mb-2">Update Status</h3>
-        <div className="rounded-2xl bg-black/25 border border-white/10 p-3 min-h-[96px] text-slate-100">{updateStatus || "No check yet."}</div>
-        {manifest && <div className="mt-3 text-sm text-slate-300 space-y-1">
-          <div><b>Latest:</b> {manifest.version || "?"}</div>
-          <div><b>Published:</b> {manifest.publishedAt || "?"}</div>
-          <div><b>Required:</b> {manifest.mandatory ? "Yes" : "No"}</div>
-          <div><b>Notes:</b> {manifest.notes || "No notes"}</div>
+        {target && <div className="mb-4 rounded-3xl bg-cyan-300/10 border border-cyan-200/30 p-3">
+          <div className="flex items-center gap-3"><div className="w-12 h-12 rounded-2xl bg-cyan-200 text-slate-950 flex items-center justify-center font-black text-2xl">{target.icon || "✦"}</div><div><div className="text-xs uppercase tracking-wider text-cyan-200 font-black">Map Target</div><div className="text-xl font-black text-white">{target.label}</div><div className="text-xs text-slate-300">Area: {AREA_DATA[target.areaId]?.name || target.areaId || "Luminara"} · Tile: {target.tile || "route"}</div></div></div>
+          <p className="mt-2 text-sm text-cyan-50">{target.detail}</p>
         </div>}
-      </CardContent></Card>
-    </div>
-    <Card className="rounded-3xl bg-amber-300/10 border-amber-200/20 mt-4"><CardContent className="p-5 text-amber-50 text-sm">
-      <b>Android note:</b> the app can automatically check and start the APK download. Android will still show its own install/security confirmation before replacing the app. Fully silent APK replacement is blocked by Android for normal apps.
-    </CardContent></Card>
-  </motion.div>;
-}
-
-function UpdateAvailableModal({ manifest, close, install }) {
-  return <motion.div initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-[1800]">
-    <motion.div initial={{y:26,scale:0.94}} animate={{y:0,scale:1}} exit={{y:26,scale:0.94}} className="max-w-xl w-full rounded-[2rem] border border-lime-200/40 bg-gradient-to-br from-slate-950 via-cyan-950 to-lime-950 shadow-2xl overflow-hidden">
-      <div className="relative p-6">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_15%,rgba(34,211,238,.25),transparent_30%),radial-gradient(circle_at_80%_85%,rgba(190,242,100,.18),transparent_32%)]"/>
-        <div className="relative">
-          <div className="inline-flex items-center rounded-full bg-lime-300 text-slate-950 px-4 py-1 text-xs font-black mb-3">UPDATE AVAILABLE</div>
-          <h2 className="text-3xl sm:text-5xl font-black text-white leading-tight mb-2">Mythbound v{manifest?.version || "new"}</h2>
-          <p className="text-slate-100 text-base sm:text-lg leading-relaxed mb-4">{manifest?.notes || "A new version is ready to install."}</p>
-          <div className="rounded-2xl bg-black/30 border border-white/10 p-3 text-sm text-slate-200 mb-5">
-            Installed: <b>{APP_VERSION}</b><br/>
-            Latest: <b>{manifest?.version || "?"}</b><br/>
-            {manifest?.mandatory ? <span className="text-rose-200 font-bold">This update is marked as required.</span> : <span>You can install now or continue playing.</span>}
-          </div>
-          <div className="grid grid-cols-2 gap-3">
-            <Button onClick={close} variant="secondary" className="rounded-2xl py-5 font-black bg-slate-100 text-slate-950 hover:bg-white">Later</Button>
-            <Button onClick={install} className="rounded-2xl py-5 font-black bg-lime-300 text-slate-950 hover:bg-lime-200">Download & Install</Button>
-          </div>
+        <div className="space-y-2 mb-5">{(info.steps || []).map((s,i)=><div key={i} className="rounded-2xl bg-white/5 border border-white/10 px-3 py-2 text-slate-200"><span className="text-cyan-200 font-black">{i+1}.</span> {s}</div>)}</div>
+        <div className="grid grid-cols-2 gap-2">
+          <Button onClick={close} variant="secondary" className="rounded-2xl bg-slate-100 text-slate-950 hover:bg-white font-black py-5">Close</Button>
+          <Button onClick={() => target ? showOnMap?.(target) : close()} className="rounded-2xl bg-cyan-300 text-slate-950 hover:bg-cyan-200 font-black py-5">Show on Map</Button>
         </div>
       </div>
     </motion.div>
+  </motion.div>;
+}
+
+function UpdateCenterScreen({ setScreen }) {
+  const [status, setStatus] = useState("Ready to check for updates.");
+  const [manifest, setManifest] = useState(null);
+  async function checkUpdates() {
+    if (!UPDATE_MANIFEST_URL) { setStatus("No update manifest configured. Add VITE_UPDATE_MANIFEST_URL to .env.local."); return; }
+    try {
+      setStatus("Checking update manifest...");
+      const res = await fetch(UPDATE_MANIFEST_URL, { cache: "no-store" });
+      if (!res.ok) throw new Error(`Manifest HTTP ${res.status}`);
+      const data = await res.json();
+      setManifest(data);
+      setStatus(data.version && data.version !== APP_VERSION ? `Update available: ${data.version}` : "You are on the latest manifest version.");
+    } catch (e) { setStatus(`Update check failed: ${e.message}`); }
+  }
+  function openUpdate() {
+    const url = manifest?.apkUrl || manifest?.url || manifest?.webUrl;
+    if (!url) { setStatus("Manifest loaded, but no apkUrl/url/webUrl was found."); return; }
+    window.open(url, "_blank");
+  }
+  return <motion.div key="update" initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} className="min-h-[740px] p-4 sm:p-6 bg-gradient-to-br from-slate-950 via-cyan-950 to-indigo-950">
+    <div className="flex justify-between items-start gap-3 mb-5"><div><h2 className="text-3xl sm:text-4xl font-black flex items-center gap-2"><Upload className="w-8 h-8 text-cyan-200"/>Update Center</h2><p className="text-slate-300 max-w-2xl">Check a hosted manifest from GitHub/Vercel/Cloudflare and open the latest APK or update page.</p></div><Button onClick={()=>setScreen("world")} className="rounded-xl bg-cyan-300 text-slate-950 hover:bg-cyan-200 font-black">Back</Button></div>
+    <div className="grid lg:grid-cols-[1fr_360px] gap-4"><Card className="rounded-3xl bg-white/5 border-white/10"><CardContent className="p-5"><h3 className="text-2xl font-black mb-3">Current Version</h3><InfoBox label="App" value={APP_VERSION}/><div className="mt-3 rounded-2xl bg-black/25 border border-white/10 p-3 text-slate-200 text-sm">Manifest URL: <span className="break-all text-cyan-100">{UPDATE_MANIFEST_URL || "Not configured"}</span></div><div className="grid sm:grid-cols-2 gap-2 mt-4"><Button onClick={checkUpdates} className="rounded-2xl bg-cyan-300 hover:bg-cyan-200 text-slate-950 font-black">Check</Button><Button onClick={openUpdate} disabled={!manifest} variant="secondary" className="rounded-2xl font-black disabled:opacity-40">Open Update</Button></div></CardContent></Card><Card className="rounded-3xl bg-white/5 border-white/10"><CardContent className="p-5"><h3 className="text-xl font-black mb-2">Status</h3><div className="rounded-2xl bg-black/25 border border-white/10 p-3 min-h-[96px] text-slate-100">{status}</div>{manifest && <div className="mt-3 text-sm text-slate-300"><div><b>Latest:</b> {manifest.version || "?"}</div><div><b>Notes:</b> {manifest.notes || "No notes"}</div></div>}</CardContent></Card></div>
+    <Card className="rounded-3xl bg-amber-300/10 border-amber-200/20 mt-4"><CardContent className="p-5 text-amber-50 text-sm"><b>Important:</b> this screen can check and open an APK/release page. True silent/OTA web-bundle updates in Capacitor require adding a plugin such as Capgo/Capawesome Live Update or using an app-store/native update flow.</CardContent></Card>
   </motion.div>;
 }
 
