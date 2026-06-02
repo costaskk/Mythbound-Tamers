@@ -8,8 +8,8 @@ import { Sparkles, PawPrint, Flame, Droplets, Leaf, Zap, Heart, Map, Backpack, G
 
 const SAVE_KEY = "mythbound_tamers_save_v4";
 const OLD_SAVE_KEYS = ["mythbound_tamers_save_v6", "mythbound_tamers_save_v5", "mythbound_tamers_save_v4", "mythbound_tamers_save_v3", "mythbound_tamers_save_v2", "mythbound_tamers_save"];
-const APP_VERSION = "0.58.0";
-const APP_VERSION_CODE = 58;
+const APP_VERSION = "0.59.0";
+const APP_VERSION_CODE = 59;
 const UPDATE_MANIFEST_URL = import.meta.env.VITE_UPDATE_MANIFEST_URL || "https://costaskk.github.io/Mythbound-Tamers/update-manifest.json";
 const SHINY_RATE = 1 / 192;
 const VALID_SCREENS = new Set(["title","story","starter","world","party","pc","shop","dex","account","multiplayer","objectives","help","atlas","update","battle","gameover"]);
@@ -1837,7 +1837,7 @@ function MythboundTamersJRPGInner() {
   const [updateModalVisible, setUpdateModalVisible] = useState(false);
   const [nativeUpdaterReady, setNativeUpdaterReady] = useState(false);
 
-  const keyCooldown = useRef(false), audioRef = useRef(null), gameRef = useRef({});
+  const keyCooldown = useRef(false), audioRef = useRef(null), bgmTimerRef = useRef(null), bgmStepRef = useRef(0), gameRef = useRef({});
   const lastCinematicTileRef = useRef(null);
   useEffect(() => { gameRef.current = { screen, storyIndex, player, party, storage, active, battle, seen, dex, clock, muted }; }, [screen, storyIndex, player, party, storage, active, battle, seen, dex, clock, muted]);
   useEffect(() => {
@@ -1855,6 +1855,14 @@ function MythboundTamersJRPGInner() {
 
   useEffect(() => { setHasSave(Boolean(findValidSave())); }, []);
   useEffect(() => { if (!toast) return; const t = setTimeout(() => setToast(null), 2400); return () => clearTimeout(t); }, [toast]);
+  useEffect(() => {
+    const musicScreens = ["title", "story", "world", "objectives", "atlas", "shop", "party", "dex", "pc"];
+    if (!muted && musicScreens.includes(screen)) startBgm();
+    else stopBgm();
+    return () => {};
+  }, [muted, screen]);
+  useEffect(() => () => stopBgm(), []);
+  
   async function checkAppUpdate({ silent = false } = {}) {
     if (!UPDATE_MANIFEST_URL) {
       if (!silent) setUpdateStatus("No update manifest configured.");
@@ -1941,7 +1949,7 @@ function MythboundTamersJRPGInner() {
   }
   function buildSaveData(g = gameRef.current) {
     const safeScreen = ["battle", "gameover", "starter"].includes(g.screen) ? "world" : g.screen;
-    return { version: 14, savedAt: Date.now(), screen: safeScreen, storyIndex: g.storyIndex, player: g.player, party: g.party, storage: g.storage || [], active: g.active, seen: g.seen, dex: g.dex, clock: g.clock, muted: g.muted };
+    return { version: 15, savedAt: Date.now(), screen: safeScreen, storyIndex: g.storyIndex, player: g.player, party: g.party, storage: g.storage || [], active: g.active, seen: g.seen, dex: g.dex, clock: g.clock, muted: g.muted };
   }
   function hydrateSaveData(data, sourceLabel = "save") {
     const migrated = migrateSave(data || {});
@@ -1952,7 +1960,7 @@ function MythboundTamersJRPGInner() {
     if (!supabase) throw new Error("Supabase env variables are missing.");
     if (!authUser) throw new Error("Sign in first.");
     const migrated = migrateSave(saveData || {});
-    const cleanSave = JSON.parse(JSON.stringify({ ...migrated, version: 14, savedAt: Date.now() }));
+    const cleanSave = JSON.parse(JSON.stringify({ ...migrated, version: 15, savedAt: Date.now() }));
     const display = accountProfile?.display_name || authUser.user_metadata?.display_name || authUser.email?.split("@")[0] || `Tamer-${authUser.id.slice(0, 6)}`;
     const syncedAt = new Date().toISOString();
 
@@ -1968,7 +1976,7 @@ function MythboundTamersJRPGInner() {
       inventory_snapshot: cleanSave.player || {},
       dex_caught: Object.keys(cleanSave.dex?.caught || {}).filter((k) => cleanSave.dex.caught[k]).length,
       save_data: cleanSave,
-      save_version: cleanSave.version || 14,
+      save_version: cleanSave.version || 15,
       last_save_at: syncedAt,
       updated_at: syncedAt
     };
@@ -2013,7 +2021,29 @@ function MythboundTamersJRPGInner() {
   function audio() { if (muted) return null; if (!audioRef.current) audioRef.current = new (window.AudioContext || window.webkitAudioContext)(); if (audioRef.current.state === "suspended") audioRef.current.resume(); return audioRef.current; }
   function beep(freq = 440, dur = 0.1, type = "sine", vol = 0.06) { const ctx = audio(); if (!ctx) return; const o = ctx.createOscillator(), g = ctx.createGain(); o.type = type; o.frequency.setValueAtTime(freq, ctx.currentTime); g.gain.setValueAtTime(vol, ctx.currentTime); g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + dur); o.connect(g); g.connect(ctx.destination); o.start(); o.stop(ctx.currentTime + dur); }
   function sfx(name, type = "Mystic") { if (name === "success") [520,660,880,1040].forEach((n,i)=>setTimeout(()=>beep(n,0.09,"sine",0.05),i*95)); if (name === "evolve") [330,440,660,990,1320].forEach((n,i)=>setTimeout(()=>beep(n,0.12,"triangle",0.06),i*120)); if (name === "fail") beep(130,0.18,"square",0.04); if (name === "move") beep(280,0.025,"sine",0.018); if (name === "capture") { beep(420,0.1,"triangle",0.05); setTimeout(()=>beep(620,0.1,"triangle",0.05),120); } if (name === "heal") { beep(620,0.12,"sine",0.04); setTimeout(()=>beep(820,0.14,"sine",0.04),90); } if (name === "attack") beep(type === "Volt" ? 880 : type === "Flame" ? 520 : type === "Aqua" ? 390 : type === "Verdant" ? 450 : type === "Stone" ? 190 : type === "Air" ? 700 : type === "Shadow" ? 240 : 300, 0.12, type === "Volt" ? "square" : "sawtooth", 0.05); }
-  function playCry(id) { const isLegend = !!BESTIARY[id]?.legendary; const base = { emberlynx:520, pyrolynx:420, solarynx:360, aquapup:340, tidemast:260, leviamast:220, leafawn:620, florantler:540, gaianhart:470, voltoroo:760, stormaroo:920, thundaroo:980, gloomander:260, lunamander:310, eclipsander:230, ironboar:180, elderboar:145, cloudfinch:700, galegryph:500, pebbkit:210, granitus:120, shadebat:330, noctyra:240, prismite:850, dawnhare:790, nightmoth:250, dracinder:140, regaldrake:110, frostcub:410, glaciermaw:180, polarune:155, cindermole:250, magmole:160, calderox:120, spriggeist:760, starwhale:95, coralisk:420, reefserpent:160, sandillo:260, duneguard:130, mistowl:610, orchidimp:690, thistlefiend:300, aurorabbit:780, crysteel:620, prismhorn:260, toxifrog:360, venomire:210, spirikit:730, phantelope:510, neonsquid:680, ionwyrm:120, echopup:500, howlitzer:300, resonark:190, cuboulder:190, titanursa:105, worldursa:80, bellimp:640, chimegeist:360, ferroach:260, mantitan:180, mechamane:145, solguard:95, umbraclaw:70, thalassor:55, gaialith:65, chronova:880, auroracalf:720, aurorox:260, glacimarch:150, sirenfin:680, melodray:480, drillbug:230, cometitan:120, miragebud:760, dreamorchid:520, goldkit:760, aurumane:520, solarchon:330, stormkid:840, thunderchoir:460, glasswyrm:380, stormglass:165, incensemoth:560, censeraph:240, runeling:720, glyphsage:380, mossgolem:145, ruingrove:90, coinwyrm:620, treasuredrake:210, shelltide:300, reefguard:190, tsunamora:85, kitspark:760, vulpyr:520, kitsunova:900, abyssnake:130, leviacoil:70, glintcrab:640, prismclaw:360, ashchick:820, cinderwing:610, phoenixar:980, budbyte:720, florabyte:560, prismbloom:880, wolfrune:390, howlglyph:260, runewarden:180, snowkit:740, frostvulp:500, auroravulp:920, hornmite:250, drillhorn:160, railguard:95, miragecub:690, dreamlynx:450, mirageon:780, vaultick:680, lockroach:320, vaultitan:120, balletfin:760, swanlume:620, auroradiva:980, relicalf:260, reliceros:140, templehorn:70, pufflora:710, drowsibloom:520, somniflora:820, stardeer:760, cometstag:360, stellarch:160, inklot:230, eclipsquid:120, candypup:780, caramutt:540, ticktad:620, chronofrog:340, hourglassor:180, lanternimp:690, glowgremlin:500, mudmunch:210, bogjaw:115, happi: 760, jolli: 620, jubilume: 980, }[id] || 440; beep(base, isLegend ? 0.18 : 0.09, isLegend ? "square" : "sawtooth", isLegend ? 0.07 : 0.045); setTimeout(()=>beep(base*1.33, isLegend ? 0.16 : 0.08, "triangle", isLegend ? 0.065 : 0.04),90); if (isLegend) { setTimeout(()=>beep(base*0.66,0.22,"sawtooth",0.055),230); setTimeout(()=>beep(base*1.9,0.18,"sine",0.05),450); } }
+  
+function startBgm() {
+    if (muted || bgmTimerRef.current) return;
+    const melody = [392, 440, 523, 587, 523, 440, 392, 330, 392, 494, 587, 659, 587, 494, 440, 392];
+    const bass = [196, 196, 220, 220, 262, 262, 247, 247];
+    const tick = () => {
+      if (muted) return;
+      const step = bgmStepRef.current++;
+      const m = melody[step % melody.length];
+      const b = bass[Math.floor(step / 2) % bass.length];
+      beep(b, 0.18, "triangle", 0.012);
+      setTimeout(() => beep(m, 0.12, "sine", 0.018), 25);
+      if (step % 4 === 0) setTimeout(() => beep(m * 1.5, 0.09, "triangle", 0.01), 120);
+    };
+    tick();
+    bgmTimerRef.current = setInterval(tick, 420);
+  }
+  function stopBgm() {
+    if (bgmTimerRef.current) clearInterval(bgmTimerRef.current);
+    bgmTimerRef.current = null;
+  }
+
+function playCry(id) { const isLegend = !!BESTIARY[id]?.legendary; const base = { emberlynx:520, pyrolynx:420, solarynx:360, aquapup:340, tidemast:260, leviamast:220, leafawn:620, florantler:540, gaianhart:470, voltoroo:760, stormaroo:920, thundaroo:980, gloomander:260, lunamander:310, eclipsander:230, ironboar:180, elderboar:145, cloudfinch:700, galegryph:500, pebbkit:210, granitus:120, shadebat:330, noctyra:240, prismite:850, dawnhare:790, nightmoth:250, dracinder:140, regaldrake:110, frostcub:410, glaciermaw:180, polarune:155, cindermole:250, magmole:160, calderox:120, spriggeist:760, starwhale:95, coralisk:420, reefserpent:160, sandillo:260, duneguard:130, mistowl:610, orchidimp:690, thistlefiend:300, aurorabbit:780, crysteel:620, prismhorn:260, toxifrog:360, venomire:210, spirikit:730, phantelope:510, neonsquid:680, ionwyrm:120, echopup:500, howlitzer:300, resonark:190, cuboulder:190, titanursa:105, worldursa:80, bellimp:640, chimegeist:360, ferroach:260, mantitan:180, mechamane:145, solguard:95, umbraclaw:70, thalassor:55, gaialith:65, chronova:880, auroracalf:720, aurorox:260, glacimarch:150, sirenfin:680, melodray:480, drillbug:230, cometitan:120, miragebud:760, dreamorchid:520, goldkit:760, aurumane:520, solarchon:330, stormkid:840, thunderchoir:460, glasswyrm:380, stormglass:165, incensemoth:560, censeraph:240, runeling:720, glyphsage:380, mossgolem:145, ruingrove:90, coinwyrm:620, treasuredrake:210, shelltide:300, reefguard:190, tsunamora:85, kitspark:760, vulpyr:520, kitsunova:900, abyssnake:130, leviacoil:70, glintcrab:640, prismclaw:360, ashchick:820, cinderwing:610, phoenixar:980, budbyte:720, florabyte:560, prismbloom:880, wolfrune:390, howlglyph:260, runewarden:180, snowkit:740, frostvulp:500, auroravulp:920, hornmite:250, drillhorn:160, railguard:95, miragecub:690, dreamlynx:450, mirageon:780, vaultick:680, lockroach:320, vaultitan:120, balletfin:760, swanlume:620, auroradiva:980, relicalf:260, reliceros:140, templehorn:70, pufflora:710, drowsibloom:520, somniflora:820, stardeer:760, cometstag:360, stellarch:160, inklot:230, eclipsquid:120, candypup:780, caramutt:540, ticktad:620, chronofrog:340, hourglassor:180, lanternimp:690, glowgremlin:500, mudmunch:210, bogjaw:115, happi: 760, jolli: 620, jubilume: 980, }[id] || 440; beep(base, isLegend ? 0.18 : 0.09, isLegend ? "square" : "sawtooth", isLegend ? 0.07 : 0.045); setTimeout(()=>beep(base*1.33, isLegend ? 0.16 : 0.08, "triangle", isLegend ? 0.065 : 0.04),90); if (isLegend) { setTimeout(()=>beep(base*0.66,0.22,"sawtooth",0.055),230); setTimeout(()=>beep(base*1.9,0.18,"sine",0.05),450); } }
   function playEvolutionSound(fromMon, toMon, style) {
     const fromType = BESTIARY[fromMon?.id]?.type || "Mystic";
     const toType = BESTIARY[toMon?.id]?.type || fromType;
@@ -2696,7 +2726,7 @@ function StartRequiredScreen({ setScreen, loadGame, hasSave }) {
   </motion.div>;
 }
 
-function TitleScreen({ startStory, loadGame, hasSave }) { return <motion.div key="title" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="min-h-[740px] flex items-center justify-center relative p-8"><div className="absolute inset-0 bg-slate-950"/><div className="relative text-center max-w-3xl"><motion.div animate={{ y: [0,-10,0] }} transition={{ duration: 3, repeat: Infinity }} className="mx-auto mb-4 w-44 h-44"><MonsterModel mon={makeMon("solarynx", 18)} size="medium"/></motion.div><div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-400/10 border border-cyan-300/30 text-cyan-100 mb-4"><Gamepad2 className="w-5 h-5"/>v55 Compact Battle Edition</div><h1 className="text-6xl md:text-7xl font-black tracking-tight bg-gradient-to-r from-cyan-200 via-fuchsia-200 to-lime-200 text-transparent bg-clip-text mb-4">Mythbound Tamers</h1><p className="text-xl text-slate-200 mb-8">Third-stage evolutions, single-stage rares, nicknames, a clock, morning/night encounters, expanded story, and v2/v3 save migration.</p><div className="flex flex-wrap justify-center gap-3"><Button onClick={startStory} className="rounded-2xl px-9 py-6 text-lg bg-cyan-300 hover:bg-cyan-200 text-slate-950 font-black">New Journey</Button><Button onClick={loadGame} disabled={!hasSave} variant="secondary" className={`rounded-2xl px-9 py-6 text-lg font-black ${!hasSave ? "opacity-40 cursor-not-allowed" : ""}`}><Upload className="w-5 h-5 mr-2"/>{hasSave ? "Continue" : "No Save"}</Button></div><p className="text-sm text-slate-400 mt-5">Move: WASD/arrows · Party: I · Dex: P · Return: M · Save: F5</p></div></motion.div>; }
+function TitleScreen({ startStory, loadGame, hasSave }) { return <motion.div key="title" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="min-h-[740px] flex items-center justify-center relative p-8"><div className="absolute inset-0 bg-slate-950"/><div className="relative text-center max-w-3xl"><motion.div animate={{ y: [0,-10,0] }} transition={{ duration: 3, repeat: Infinity }} className="mx-auto mb-4 w-44 h-44"><MonsterModel mon={makeMon("solarynx", 18)} size="medium"/></motion.div><div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-400/10 border border-cyan-300/30 text-cyan-100 mb-4"><Gamepad2 className="w-5 h-5"/>v59 Board & Adventure Edition</div><h1 className="text-6xl md:text-7xl font-black tracking-tight bg-gradient-to-r from-cyan-200 via-fuchsia-200 to-lime-200 text-transparent bg-clip-text mb-4">Mythbound Tamers</h1><p className="text-xl text-slate-200 mb-8">A monster-taming RPG: explore tile-board regions, catch Mythlings, train evolutions, discover shiny forms, clear quests, trade, battle, and follow the story through new routes and dungeons.</p><div className="flex flex-wrap justify-center gap-3"><Button onClick={startStory} className="rounded-2xl px-9 py-6 text-lg bg-cyan-300 hover:bg-cyan-200 text-slate-950 font-black">New Journey</Button><Button onClick={loadGame} disabled={!hasSave} variant="secondary" className={`rounded-2xl px-9 py-6 text-lg font-black ${!hasSave ? "opacity-40 cursor-not-allowed" : ""}`}><Upload className="w-5 h-5 mr-2"/>{hasSave ? "Continue" : "No Save"}</Button></div><p className="text-sm text-slate-400 mt-5">Move: WASD/arrows · Party: I · Dex: P · Return: M · Save: F5</p></div></motion.div>; }
 function StoryScreen({ item, nextStory, index, total }) { return <motion.div key={`story-${index}`} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="min-h-[740px] p-8 flex items-center justify-center bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-950"><Card className="max-w-3xl bg-slate-900/90 border-cyan-300/20 rounded-3xl shadow-2xl"><CardContent className="p-8"><div className="flex items-center gap-4 mb-5"><div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-300 to-fuchsia-400 flex items-center justify-center text-slate-950"><Sparkles className="w-8 h-8"/></div><div><div className="text-sm text-slate-400 uppercase tracking-wider">Story {index + 1}/{total}</div><h2 className="text-3xl font-black text-white">{item.speaker}</h2></div></div><p className="text-2xl leading-relaxed text-slate-100 mb-7">{item.text}</p><Button onClick={nextStory} className="rounded-2xl px-6 py-5 bg-fuchsia-400 hover:bg-fuchsia-300 text-slate-950 font-black">Continue</Button></CardContent></Card></motion.div>; }
 function StarterScreen({ chooseStarter }) { return <motion.div key="starter" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="min-h-full p-6 bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950"><div className="text-center mb-6"><h2 className="text-4xl font-black">Choose Your First Mythling</h2><p className="text-slate-300">All three starters now have third-stage evolutions.</p></div><div className="grid md:grid-cols-3 gap-5">{["emberlynx","aquapup","leafawn"].map((id) => <StarterCard key={id} id={id} chooseStarter={chooseStarter}/>)}</div></motion.div>; }
 function StarterCard({ id, chooseStarter }) { const m = makeMon(id, 5), d = BESTIARY[id]; return <motion.button whileHover={{ y: -8, scale: 1.02 }} onClick={() => chooseStarter(id)} className="text-left rounded-3xl p-4 bg-white/5 border border-white/10 hover:border-cyan-200 transition shadow-xl overflow-hidden"><div className={`rounded-3xl bg-gradient-to-br ${TYPES[d.type].color} p-3 min-h-[235px] flex items-center justify-center`}><MonsterModel mon={m} size="medium"/></div><div className="p-3"><div className="flex justify-between items-center mb-2"><h3 className="text-2xl font-black">{d.name}</h3><TypeBadge type={d.type}/></div><p className="text-sm text-slate-300 mb-3">{d.species} · Evolves: {d.evo.method}</p><p className="text-slate-200 text-sm min-h-[72px]">{d.lore}</p></div></motion.button>; }
@@ -3256,22 +3286,26 @@ function WorldScreen({ map, area, player, move, party, storage, seen, dex, setSc
     setMapZoom(clampZoom(next));
   };
   return <motion.div key="world" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className={`min-h-[calc(100dvh-92px)] sm:min-h-[calc(100dvh-96px)] landscape:min-h-[calc(100dvh-16px)] p-1 sm:p-2 bg-gradient-to-br ${area?.bg || "from-slate-950 via-emerald-950 to-slate-950"}`}>
-    <div className="relative mb-1.5 sm:mb-2 rounded-[1.1rem] sm:rounded-[1.5rem] overflow-hidden border border-cyan-200/20 bg-slate-950/70 shadow-2xl shadow-cyan-500/10">
-      <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_20%_15%,rgba(34,211,238,.16),transparent_28%),radial-gradient(circle_at_80%_80%,rgba(217,70,239,.16),transparent_32%)]" />
-      <div className="relative flex items-center justify-between gap-1.5 px-2 py-1.5 sm:px-3 sm:py-2 landscape:py-1">
-        <div className="flex items-center gap-2 min-w-0">
-          <Map className="w-4 h-4 sm:w-5 sm:h-5 text-cyan-200 shrink-0"/>
-          <div className="truncate">
-            <div className="text-[8px] sm:text-[10px] uppercase tracking-[0.20em] sm:tracking-[0.24em] text-cyan-100 font-black leading-none">Board</div>
-            <div className="text-[12px] sm:text-sm landscape:text-[11px] font-black text-white truncate max-w-[38vw] sm:max-w-none">{area?.name || "Luminara Wilds"}</div>
+    <div className="relative mb-1.5 sm:mb-2 rounded-[1.25rem] sm:rounded-[1.65rem] overflow-hidden border border-cyan-200/25 bg-slate-950/82 shadow-2xl shadow-cyan-500/15">
+      <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_12%_20%,rgba(34,211,238,.22),transparent_30%),radial-gradient(circle_at_90%_20%,rgba(217,70,239,.18),transparent_32%),linear-gradient(90deg,rgba(15,23,42,.96),rgba(8,47,73,.74),rgba(15,23,42,.92))]" />
+      <div className="relative grid grid-cols-[1fr_auto] gap-2 px-2.5 py-2 sm:px-4 sm:py-3 landscape:py-1.5">
+        <div className="min-w-0 flex items-center gap-2.5">
+          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-cyan-300 text-slate-950 flex items-center justify-center shadow-lg shadow-cyan-300/30 shrink-0"><Map className="w-5 h-5 sm:w-6 sm:h-6"/></div>
+          <div className="min-w-0">
+            <div className="flex flex-wrap items-center gap-1.5">
+              <span className="text-[8px] sm:text-[10px] uppercase tracking-[0.28em] text-cyan-100 font-black leading-none">Mythbound Tamers</span>
+              <span className="hidden sm:inline-flex text-[9px] uppercase tracking-[0.18em] text-lime-100/90 font-black">Monster-taming RPG</span>
+            </div>
+            <div className="text-xl sm:text-3xl landscape:text-lg font-black text-white truncate leading-tight max-w-[53vw] sm:max-w-[62vw]">{area?.name || "Luminara Wilds"}</div>
+            <div className="text-[10px] sm:text-xs landscape:text-[9px] text-cyan-100/90 font-bold truncate">Catch • Train • Evolve • Explore routes • Battle bosses</div>
           </div>
         </div>
-        <div className="flex items-center gap-1.5 shrink-0">
-          <Button onClick={() => setScreen("objectives")} variant="secondary" className="rounded-lg sm:rounded-xl font-black px-2 py-1 sm:px-2.5 sm:py-1.5 text-[10px] sm:text-xs bg-cyan-300 text-slate-950 hover:bg-cyan-200 border-cyan-100"><Sparkles className="w-3 h-3 sm:w-3.5 sm:h-3.5 mr-1"/>Goals</Button>
-          <Badge className="hidden xs:inline-flex sm:inline-flex bg-slate-800 text-cyan-100 border border-cyan-300/20 px-1.5 sm:px-2 py-0.5 sm:py-1 text-[9px] sm:text-[10px]"><TimeIcon className="w-3 h-3 mr-1"/>{timeString(clock)}</Badge>
-          <Button onClick={() => setMapZoom((z)=>clampZoom(z - 0.15))} variant="secondary" className="rounded-lg sm:rounded-xl font-black px-2 py-1 text-[10px] sm:text-xs">−</Button>
-          <Button onClick={() => setMapZoom(1)} variant="secondary" className="rounded-lg sm:rounded-xl font-black px-2 py-1 text-[10px] sm:text-xs">{Math.round(mapZoom * 100)}%</Button>
-          <Button onClick={() => setMapZoom((z)=>clampZoom(z + 0.15))} variant="secondary" className="rounded-lg sm:rounded-xl font-black px-2 py-1 text-[10px] sm:text-xs">+</Button>
+        <div className="flex items-center justify-end gap-1.5 shrink-0">
+          <Button onClick={() => setScreen("objectives")} variant="secondary" className="rounded-xl font-black px-2.5 py-2 sm:px-3 sm:py-2 text-[10px] sm:text-xs bg-cyan-300 text-slate-950 hover:bg-cyan-200 border-cyan-100 shadow-lg shadow-cyan-300/20"><Sparkles className="w-3.5 h-3.5 mr-1"/>Goals</Button>
+          <Badge className="hidden md:inline-flex bg-slate-800 text-cyan-100 border border-cyan-300/20 px-2 py-1 text-[10px]"><TimeIcon className="w-3 h-3 mr-1"/>{timeString(clock)}</Badge>
+          <Button onClick={() => setMapZoom((z)=>clampZoom(z - 0.15))} variant="secondary" className="rounded-xl font-black px-2 py-1 text-[10px] sm:text-xs">−</Button>
+          <Button onClick={() => setMapZoom(1)} variant="secondary" className="rounded-xl font-black px-2 py-1 text-[10px] sm:text-xs">{Math.round(mapZoom * 100)}%</Button>
+          <Button onClick={() => setMapZoom((z)=>clampZoom(z + 0.15))} variant="secondary" className="rounded-xl font-black px-2 py-1 text-[10px] sm:text-xs">+</Button>
         </div>
       </div>
     </div>
@@ -4688,7 +4722,7 @@ function AccountScreen({
           storage_snapshot: [],
           inventory_snapshot: {},
           dex_caught: 0,
-          save_version: 14,
+          save_version: 15,
           updated_at: new Date().toISOString()
         };
         await supabase.from("mythbound_profiles").upsert(payload, { onConflict: "id" });
@@ -4771,7 +4805,7 @@ function AccountScreen({
         throw new Error("Cloud row exists, but it does not contain party/storage save data. Upload a local save from the old device to repair it.");
       }
       hydrateSaveData(migrated, recovered._recoveredFromProfileSnapshot ? "recovered cloud snapshot" : "cloud save");
-      await uploadSaveDataToCloud({ ...migrated, version: 14, savedAt: Date.now() }, false);
+      await uploadSaveDataToCloud({ ...migrated, version: 15, savedAt: Date.now() }, false);
       setAccountStatus(`Cloud save loaded and upgraded for this version. ${cloudSaveSummary(profile)}`);
     } catch (e) {
       setAccountStatus(`Load cloud save error: ${e.message}`);
