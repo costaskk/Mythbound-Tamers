@@ -12,7 +12,7 @@ Write-Host "Version: $Version"
 Write-Host "VersionCode: $VersionCode"
 if (!(Test-Path $ApkSource)) {
   Write-Host "Could not find APK at: $ApkSource" -ForegroundColor Yellow
-  Get-ChildItem -Recurse -Filter "*.apk" "android\app" -ErrorAction SilentlyContinue | Sort-Object LastWriteTime -Descending | Select-Object FullName, LastWriteTime | Format-Table -AutoSize
+  Get-ChildItem -Recurse -Filter "*.apk" "android\app" -ErrorAction SilentlyContinue | Sort-Object FullName, LastWriteTime | Format-Table -AutoSize
   exit 1
 }
 $apkName = "mythbound-tamers-v$Version.apk"
@@ -26,6 +26,7 @@ if (!(Test-Path "docs")) { New-Item -ItemType Directory -Path "docs" | Out-Null 
   apkUrl = $apkUrl
   mandatory = $false
   publishedAt = (Get-Date -Format "yyyy-MM-dd")
+  autoStartNativeUpdate = $false
 } | ConvertTo-Json -Depth 5 | Set-Content -Path "docs\update-manifest.json" -Encoding UTF8
 Write-Host "Copied APK to $apkName and updated docs\update-manifest.json" -ForegroundColor Green
 Write-Host "Run:"
