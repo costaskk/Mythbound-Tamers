@@ -1,9 +1,10 @@
 ﻿{
-    "version":  "0.53.0",
-    "versionCode":  53,
-    "notes":  "Fix cloud sync upsert payload, prevent map access before starting a journey, harden starter save persistence, add new monsters/evolutions/attacks, and improve content.",
-    "apkUrl":  "https://github.com/costaskk/Mythbound-Tamers/releases/download/v0.53.0/mythbound-tamers-v0.53.0.apk",
+    "version":  "0.54.0",
+    "versionCode":  54,
+    "notes":  "Add manual cloud upload success/failure confirmation, improve capture throw targeting, improve area-gate tile icons/art, implement native in-app updater flow, and add new monsters/evolutions/obtain methods.",
+    "apkUrl":  "https://github.com/costaskk/Mythbound-Tamers/releases/download/v0.54.0/mythbound-tamers-v0.54.0.apk",
     "mandatory":  false,
     "publishedAt":  "2026-06-02",
-    "autoStartNativeUpdate":  false
+    "autoStartNativeUpdate":  false,
+    "mandatoryAutoStart":  false
 }
