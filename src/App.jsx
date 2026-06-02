@@ -8,8 +8,8 @@ import {Sparkles, PawPrint, Flame, Droplets, Leaf, Zap, Heart, Map, Backpack, Ga
 
 const SAVE_KEY = "mythbound_tamers_save_v4";
 const OLD_SAVE_KEYS = ["mythbound_tamers_save_v6", "mythbound_tamers_save_v5", "mythbound_tamers_save_v4", "mythbound_tamers_save_v3", "mythbound_tamers_save_v2", "mythbound_tamers_save"];
-const APP_VERSION = "0.65.0";
-const APP_VERSION_CODE = 65;
+const APP_VERSION = "0.66.0";
+const APP_VERSION_CODE = 66;
 const UPDATE_MANIFEST_URL = import.meta.env.VITE_UPDATE_MANIFEST_URL || "https://costaskk.github.io/Mythbound-Tamers/update-manifest.json";
 const SHINY_RATE = 1 / 192;
 const VALID_SCREENS = new Set(["title","story","starter","world","party","pc","shop","dex","account","multiplayer","friends","objectives","help","atlas","update","battle","gameover"]);
@@ -1455,13 +1455,13 @@ function migrateSave(input) {
 function typeMult(a, d) {
   const chart = TYPE_MATCHUPS[a] || {};
   let mult = 1;
-  if ((chart.strong || []).includes(d)) mult *= 1.6;
-  if ((chart.weak || []).includes(d)) mult *= 0.625;
+  if ((chart.strong || []).includes(d)) mult *= 1.75;
+  if ((chart.weak || []).includes(d)) mult *= 0.58;
   return mult;
 }
 function typeText(mult) {
-  if (mult >= 1.55) return " — super effective!";
-  if (mult <= 0.65) return " — resisted.";
+  if (mult >= 1.5) return " — super effective!";
+  if (mult <= 0.7) return " — resisted.";
   return ".";
 }
 function moveAccuracy(attacker, defender, skill) {
@@ -1480,24 +1480,25 @@ function resolveMove(attacker, defender, skillName, guarding = false) {
   const accuracy = moveAccuracy(attacker, defender, skill);
   if (Math.random() > accuracy) return { hit: false, damage: 0, mult: 1, crit: false, stab: 1, accuracy };
 
-  // Pokémon-inspired damage core:
-  // floor((floor(((2*Level/5+2) * Power * Attack / Defense) / 50) + 2) * Modifier)
-  // Modifier includes random 0.85-1.00, STAB, type, critical, guard, and a Mythbound wild penalty.
+  // v0.66 battle balance:
+  // stronger attacks, better reward for super-effective hits, and healing no longer outpaces real damage.
   const mult = typeMult(skill.type, defender.type);
-  const stab = attacker.type === skill.type ? 1.25 : 1;
+  const stab = attacker.type === skill.type ? 1.35 : 1;
   const crit = Math.random() < critChance(attacker, defender, skill);
-  const critMult = crit ? 1.5 : 1;
-  const guardMult = guarding ? 0.5 : 1;
-  const wildAttackerMult = attacker.wild ? 0.82 : 1;
+  const critMult = crit ? 1.6 : 1;
+  const guardMult = guarding ? 0.48 : 1;
+  const wildAttackerMult = attacker.wild ? 0.92 : 1;
   const level = Math.max(1, Math.floor(attacker.level || 1));
   const offense = Math.max(1, effectiveAttack(attacker));
   const defense = Math.max(1, defender.def || 1);
   const power = Math.max(1, skill.power || 1);
-  const base = Math.floor(Math.floor((((2 * level / 5 + 2) * power * offense) / defense) / 50) + 2);
-  const randomSpread = 0.85 + Math.random() * 0.15;
-  const levelGap = Math.max(0.82, Math.min(1.18, 1 + ((level - (defender.level || 1)) * 0.012)));
-  const raw = base * randomSpread * stab * mult * critMult * guardMult * wildAttackerMult * levelGap;
-  const damage = Math.max(1, Math.floor(raw));
+  const base = Math.floor(Math.floor((((2 * level / 5 + 2) * power * offense) / defense) / 42) + 3);
+  const randomSpread = 0.92 + Math.random() * 0.12;
+  const levelGap = Math.max(0.72, Math.min(1.32, 1 + ((level - (defender.level || 1)) * 0.018)));
+  const attackTempo = power >= 70 ? 1.12 : power >= 50 ? 1.18 : 1.10;
+  const effectivenessBonus = mult > 1 ? 1.15 : mult < 1 ? 0.92 : 1;
+  const raw = base * randomSpread * stab * mult * effectivenessBonus * critMult * guardMult * wildAttackerMult * levelGap * attackTempo;
+  const damage = Math.max(2, Math.floor(raw));
   return { hit: true, damage, mult, crit, stab, accuracy };
 }
 function hasDexBattleInfo(dex, enemy) {
@@ -1537,7 +1538,7 @@ function typeButtonClass(type, disabled = false) {
 }
 function moveSummary(skillName, mon, targetType, dex = null, enemy = null) {
   const sk = SKILLS[skillName] || SKILLS.Guard;
-  if (sk.kind === "heal") return `Heal ~20-25% HP · ${ppText(mon, skillName)} · A100%`;
+  if (sk.kind === "heal") return `Heal ~12-16% HP · ${ppText(mon, skillName)} · A100%`;
   if (sk.kind === "guard") return `Guard · ${ppText(mon, skillName)} · Reduces damage`;
   const acc = Math.round((sk.accuracy ?? 0.94) * 100);
   const crit = Math.round((sk.crit ?? 0.08) * 100);
@@ -1565,7 +1566,7 @@ function bestMoveSuggestion(mon, enemy) {
   let best = usable[0], bestScore = -Infinity;
   usable.forEach((s) => {
     const sk = SKILLS[s] || SKILLS.Guard;
-    const score = (sk.kind === "attack" ? sk.power : sk.kind === "heal" ? 10 : 6) * (sk.kind === "attack" ? typeMult(sk.type, enemy.type) : 1) * (mon.type === sk.type ? 1.25 : 1) * (sk.accuracy ?? 1);
+    const score = (sk.kind === "attack" ? sk.power * 1.25 : sk.kind === "heal" ? 4 : 6) * (sk.kind === "attack" ? typeMult(sk.type, enemy.type) : 1) * (mon.type === sk.type ? 1.35 : 1) * (sk.accuracy ?? 1);
     if (score > bestScore) { best = s; bestScore = score; }
   });
   return best;
@@ -1961,7 +1962,7 @@ function MythboundTamersJRPGInner() {
   }
   function buildSaveData(g = gameRef.current) {
     const safeScreen = ["battle", "gameover", "starter"].includes(g.screen) ? "world" : g.screen;
-    return { version: 21, savedAt: Date.now(), screen: safeScreen, storyIndex: g.storyIndex, player: g.player, party: g.party, storage: g.storage || [], active: g.active, seen: g.seen, dex: g.dex, clock: g.clock, muted: g.muted };
+    return { version: 22, savedAt: Date.now(), screen: safeScreen, storyIndex: g.storyIndex, player: g.player, party: g.party, storage: g.storage || [], active: g.active, seen: g.seen, dex: g.dex, clock: g.clock, muted: g.muted };
   }
   function hydrateSaveData(data, sourceLabel = "save") {
     const migrated = migrateSave(data || {});
@@ -1972,7 +1973,7 @@ function MythboundTamersJRPGInner() {
     if (!supabase) throw new Error("Supabase env variables are missing.");
     if (!authUser) throw new Error("Sign in first.");
     const migrated = migrateSave(saveData || {});
-    const cleanSave = JSON.parse(JSON.stringify({ ...migrated, version: 21, savedAt: Date.now() }));
+    const cleanSave = JSON.parse(JSON.stringify({ ...migrated, version: 22, savedAt: Date.now() }));
     const display = accountProfile?.display_name || authUser.user_metadata?.display_name || authUser.email?.split("@")[0] || `Tamer-${authUser.id.slice(0, 6)}`;
     const syncedAt = new Date().toISOString();
 
@@ -1988,7 +1989,7 @@ function MythboundTamersJRPGInner() {
       inventory_snapshot: cleanSave.player || {},
       dex_caught: Object.keys(cleanSave.dex?.caught || {}).filter((k) => cleanSave.dex.caught[k]).length,
       save_data: cleanSave,
-      save_version: cleanSave.version || 21,
+      save_version: cleanSave.version || 22,
       last_save_at: syncedAt,
       updated_at: syncedAt
     };
@@ -2324,7 +2325,7 @@ function playCry(id) { const isLegend = !!BESTIARY[id]?.legendary; const base = 
     msg += `${displayName(me)} used ${skillName}!`;
     animateAttack("player", skillName, enemy.type);
     if (skill.kind === "heal") {
-      const heal = Math.min(me.maxHp - me.hp, Math.max(6, Math.floor(me.maxHp * 0.22) + Math.floor((skill.power || 0) * 0.25) + Math.floor(me.level * 0.75)));
+      const heal = Math.min(me.maxHp - me.hp, Math.max(4, Math.floor(me.maxHp * 0.13) + Math.floor((skill.power || 0) * 0.10) + Math.floor(me.level * 0.35)));
       me.hp += heal;
       msg += ` Restored ${heal} HP.`;
     } else if (skill.kind === "guard") {
@@ -2368,8 +2369,8 @@ function playCry(id) { const isLegend = !!BESTIARY[id]?.legendary; const base = 
       setBattle((old) => old ? ({ ...old, enemy, enemyGuard: false, playerGuard: false, turn: "player", message: msg || `${enemy.name} couldn't move!` }) : old);
       return;
     }
-    const usable = skills(enemy).filter((s) => hasPP(enemy, s) && (SKILLS[s].kind !== "heal" || enemy.hp < enemy.maxHp * 0.55));
-    const scored = usable.map((name) => ({ name, score: (SKILLS[name].kind === "attack" ? typeMult(SKILLS[name].type, me.type) * (SKILLS[name].power || 1) : enemy.hp < enemy.maxHp * 0.35 ? 80 : 10) + (STATUS_SKILL_EFFECTS[name] && !me.status ? 18 : 0) + Math.random() * 8 }));
+    const usable = skills(enemy).filter((s) => hasPP(enemy, s) && (SKILLS[s].kind !== "heal" || enemy.hp < enemy.maxHp * 0.38));
+    const scored = usable.map((name) => ({ name, score: (SKILLS[name].kind === "attack" ? typeMult(SKILLS[name].type, me.type) * (SKILLS[name].power || 1) * 1.15 : enemy.hp < enemy.maxHp * 0.24 ? 38 : 4) + (STATUS_SKILL_EFFECTS[name] && !me.status ? 18 : 0) + Math.random() * 8 }));
     scored.sort((a, b) => b.score - a.score);
     const skillName = scored[0]?.name || "Guard";
     const skill = SKILLS[skillName];
@@ -2379,7 +2380,7 @@ function playCry(id) { const isLegend = !!BESTIARY[id]?.legendary; const base = 
     msg += `${enemy.name} used ${skillName}!`;
     let enemyGuard = false;
     if (skill.kind === "heal") {
-      const heal = Math.min(enemy.maxHp - enemy.hp, Math.max(5, Math.floor(enemy.maxHp * 0.18) + Math.floor((skill.power || 0) * 0.2) + Math.floor(enemy.level * 0.55)));
+      const heal = Math.min(enemy.maxHp - enemy.hp, Math.max(3, Math.floor(enemy.maxHp * 0.10) + Math.floor((skill.power || 0) * 0.08) + Math.floor(enemy.level * 0.25)));
       enemy.hp += heal;
       msg += ` It restored ${heal} HP.`;
     } else if (skill.kind === "guard") {
@@ -3286,39 +3287,32 @@ function WorldScreen({ map, area, player, move, party, storage, seen, dex, setSc
   const mapRows = map.length;
   const mapCols = Math.max(...map.map((row) => row.length));
   const isLandscapeView = viewport.w > viewport.h;
-  const targetAspect = isLandscapeView ? (3200 / 1440) : (1440 / 3200);
-  const actualAspect = Math.max(0.25, viewport.w / Math.max(1, viewport.h));
-  const aspectCloseness = Math.max(0, 1 - Math.min(1, Math.abs(actualAspect - targetAspect) / targetAspect));
   const boardGap = isLandscapeView ? 3 : 4;
 
-  // 1440x3200 portrait and 3200x1440 landscape friendly layout:
-  // reserve only the visible HUD/menu space, then reshape the map cells so the FULL board fits
-  // at 100% zoom without vertical/horizontal scrolling.
-  const headerAllowance = isLandscapeView ? Math.max(78, Math.min(108, viewport.h * 0.105)) : Math.max(132, Math.min(176, viewport.h * 0.055));
-  const bottomMenuAllowance = isLandscapeView ? Math.max(52, Math.min(76, viewport.h * 0.06)) : Math.max(92, Math.min(118, viewport.h * 0.035));
-  const sidePadding = isLandscapeView ? 8 : 10;
-  const boardFitWidth = Math.max(280, Math.min(viewport.w - sidePadding, isLandscapeView ? viewport.w - 8 : Math.min(920, viewport.w - 10)));
+  // Square-tile fit:
+  // 100% zoom now uses the largest SQUARE tile that fits the whole active board inside
+  // the available phone screen. This avoids stretched tiles and prevents clipped board edges.
+  const headerAllowance = isLandscapeView ? Math.max(76, Math.min(104, viewport.h * 0.10)) : Math.max(142, Math.min(188, viewport.h * 0.058));
+  const bottomMenuAllowance = isLandscapeView ? Math.max(54, Math.min(76, viewport.h * 0.058)) : Math.max(94, Math.min(122, viewport.h * 0.038));
+  const sidePadding = isLandscapeView ? 10 : 12;
+  const boardFitWidth = Math.max(280, Math.min(viewport.w - sidePadding, isLandscapeView ? viewport.w - 10 : Math.min(900, viewport.w - 12)));
   const boardFitHeight = Math.max(260, viewport.h - headerAllowance - bottomMenuAllowance);
 
-  const exactTileW = (boardFitWidth - Math.max(0, mapCols - 1) * boardGap) / Math.max(1, mapCols);
-  const exactTileH = (boardFitHeight - Math.max(0, mapRows - 1) * boardGap) / Math.max(1, mapRows);
+  const exactTileByWidth = (boardFitWidth - Math.max(0, mapCols - 1) * boardGap - 8) / Math.max(1, mapCols);
+  const exactTileByHeight = (boardFitHeight - Math.max(0, mapRows - 1) * boardGap - 8) / Math.max(1, mapRows);
+  const fitTile = Math.floor(Math.min(exactTileByWidth, exactTileByHeight));
 
-  // When close to the target phone ratios, allow more dramatic non-square shaping:
-  // portrait = tall tiles, landscape = wide tiles. Other devices still get safe proportional shaping.
-  const portraitShape = !isLandscapeView ? 1 + aspectCloseness * 0.18 : 1;
-  const landscapeShape = isLandscapeView ? 1 + aspectCloseness * 0.20 : 1;
-  const tileW = Math.max(24, Math.min(180, Math.floor(exactTileW * mapZoom * landscapeShape)));
-  const tileH = Math.max(24, Math.min(180, Math.floor(exactTileH * mapZoom * portraitShape)));
-  const tileVisual = Math.min(tileW, tileH);
-  const mapPixelWidth = mapCols * tileW + Math.max(0, mapCols - 1) * boardGap;
-  const mapPixelHeight = mapRows * tileH + Math.max(0, mapRows - 1) * boardGap;
+  const tileSize = Math.max(24, Math.min(160, Math.floor(fitTile * mapZoom)));
+  const tileW = tileSize;
+  const tileH = tileSize;
+  const tileVisual = tileSize;
+  const mapPixelWidth = mapCols * tileSize + Math.max(0, mapCols - 1) * boardGap;
+  const mapPixelHeight = mapRows * tileSize + Math.max(0, mapRows - 1) * boardGap;
 
-  // At 100% this matches the board size, so the whole board is visible. If the user zooms in,
-  // the same container becomes scrollable intentionally.
-  const boardViewportWidth = Math.max(280, Math.min(boardFitWidth, mapPixelWidth + 8));
-  const boardViewportHeight = Math.max(240, Math.min(boardFitHeight, mapPixelHeight + 8));
-  const boardScaleMode = `${Math.round(viewport.w)}×${Math.round(viewport.h)} · ${isLandscapeView ? "landscape" : "portrait"}`;
-  const clampZoom = (value) => Math.max(0.58, Math.min(1.85, value));
+  const boardViewportWidth = Math.max(280, Math.min(boardFitWidth, mapPixelWidth + 10));
+  const boardViewportHeight = Math.max(240, Math.min(boardFitHeight, mapPixelHeight + 10));
+  const boardScaleMode = `${Math.round(viewport.w)}×${Math.round(viewport.h)} · square-fit ${isLandscapeView ? "landscape" : "portrait"}`;
+  const clampZoom = (value) => Math.max(0.55, Math.min(1.85, value));
   const touchDistance = (touches) => {
     const [a, b] = touches;
     return Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY);
@@ -3440,7 +3434,7 @@ function WorldScreen({ map, area, player, move, party, storage, seen, dex, setSc
 
     <div className="relative">
       <div
-        className={`${mapZoom > 1.01 ? "overflow-auto" : "overflow-hidden"} rounded-[1.35rem] sm:rounded-[2rem] bg-black/35 border border-white/10 shadow-2xl p-1 sm:p-1.5 overscroll-contain mx-auto`}
+        className={`${mapZoom > 1.01 ? "overflow-auto" : "overflow-hidden"} rounded-[1.35rem] sm:rounded-[2rem] bg-[radial-gradient(circle_at_30%_20%,rgba(34,211,238,.10),transparent_32%),linear-gradient(135deg,rgba(2,6,23,.55),rgba(15,23,42,.35))] border border-cyan-200/15 shadow-2xl p-1 sm:p-1.5 overscroll-contain mx-auto`}
         style={{ touchAction: "pan-x pan-y", height: boardViewportHeight, maxHeight: boardViewportHeight, width: boardViewportWidth, maxWidth: "100%" }}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
@@ -3479,7 +3473,7 @@ function WorldScreen({ map, area, player, move, party, storage, seen, dex, setSc
                 onClick={()=>tapTile(t, x, y)}
                 key={`${x}-${y}`}
                 className={`relative rounded-xl border flex items-center justify-center font-black shrink-0 overflow-hidden transition shadow-lg ${tileGlow(t)} ${tileClass(t)} ${isAreaGate ? "ring-1 ring-cyan-200 shadow-md shadow-cyan-300/20" : ""} ${isObjectiveTile ? "ring-4 ring-yellow-200 shadow-2xl shadow-yellow-300/50 z-20" : ""} ${isSelected ? "ring-2 ring-white ring-offset-2 ring-offset-slate-950 z-10" : ""}`}
-                style={{ width: tileW, height: tileH, borderRadius: Math.max(10, Math.min(24, Math.round(tileVisual * 0.26))), fontSize: Math.max(9, Math.min(20, Math.round(tileVisual * 0.36))) }}
+                style={{ width: tileW, height: tileH, borderRadius: Math.max(10, Math.min(22, Math.round(tileVisual * 0.24))), fontSize: Math.max(9, Math.min(19, Math.round(tileVisual * 0.35))) }}
                 aria-label={`${TILE_NAMES[t] || "Unknown tile"} at ${x + 1}, ${y + 1}`}
               >
                 <span className={`absolute inset-0 bg-gradient-to-br ${tileOverlay(t)} pointer-events-none`}/><span className="relative z-10 opacity-95 pointer-events-none leading-none drop-shadow-[0_2px_4px_rgba(0,0,0,.65)]">{label(t)}</span>{isAreaGate && <><span className="absolute right-1 top-1 px-1 py-[1px] rounded-full bg-cyan-100 text-[7px] leading-none text-slate-950 border border-slate-950 shadow-sm z-20">GO</span><motion.span animate={{ opacity:[0.18,0.65,0.18], scale:[0.85,1.22,0.85] }} transition={{ duration:1.5, repeat:Infinity }} className="absolute inset-[5px] rounded-lg border border-cyan-100/50 pointer-events-none z-10"/></>}
@@ -3491,7 +3485,7 @@ function WorldScreen({ map, area, player, move, party, storage, seen, dex, setSc
                   onPointerCancel={() => { swipeRef.current = null; }}
                   className="absolute inset-[3px] rounded-lg bg-gradient-to-br from-cyan-200 to-fuchsia-300 shadow-lg shadow-cyan-400/40 flex items-center justify-center text-slate-950 cursor-grab active:cursor-grabbing touch-none z-30"
                   title="Swipe this paw to move"
-                ><PawPrint className="w-5 h-5 pointer-events-none"/></motion.div>}
+                ><PawPrint className="w-[55%] h-[55%] pointer-events-none"/></motion.div>}
               </button>
             }))}
           </div>
@@ -5271,7 +5265,7 @@ function AccountScreen({
           storage_snapshot: [],
           inventory_snapshot: {},
           dex_caught: 0,
-          save_version: 21,
+          save_version: 22,
           updated_at: new Date().toISOString()
         };
         await supabase.from("mythbound_profiles").upsert(payload, { onConflict: "id" });
@@ -5354,7 +5348,7 @@ function AccountScreen({
         throw new Error("Cloud row exists, but it does not contain party/storage save data. Upload a local save from the old device to repair it.");
       }
       hydrateSaveData(migrated, recovered._recoveredFromProfileSnapshot ? "recovered cloud snapshot" : "cloud save");
-      await uploadSaveDataToCloud({ ...migrated, version: 21, savedAt: Date.now() }, false);
+      await uploadSaveDataToCloud({ ...migrated, version: 22, savedAt: Date.now() }, false);
       setAccountStatus(`Cloud save loaded and upgraded for this version. ${cloudSaveSummary(profile)}`);
     } catch (e) {
       setAccountStatus(`Load cloud save error: ${e.message}`);

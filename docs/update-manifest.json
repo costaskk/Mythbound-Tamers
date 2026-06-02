@@ -1,8 +1,8 @@
 ﻿{
-    "version":  "0.65.0",
-    "versionCode":  65,
-    "notes":  "Fit every board to 1440x3200 portrait and 3200x1440 landscape ratios without scrolling at 100% zoom, reshape tiles per orientation, and upgrade persistent title/area HUD visuals.",
-    "apkUrl":  "https://github.com/costaskk/Mythbound-Tamers/releases/download/v0.65.0/mythbound-tamers-v0.65.0.apk",
+    "version":  "0.66.0",
+    "versionCode":  66,
+    "notes":  "Fix stretched/missing board tiles by restoring square full-board fit at 100% zoom, improve tile visuals, boost damage, strengthen super-effective hits, and nerf healing moves.",
+    "apkUrl":  "https://github.com/costaskk/Mythbound-Tamers/releases/download/v0.66.0/mythbound-tamers-v0.66.0.apk",
     "mandatory":  false,
     "publishedAt":  "2026-06-02",
     "autoStartNativeUpdate":  false,
