@@ -8,8 +8,8 @@ import { Sparkles, PawPrint, Flame, Droplets, Leaf, Zap, Heart, Map, Backpack, G
 
 const SAVE_KEY = "mythbound_tamers_save_v4";
 const OLD_SAVE_KEYS = ["mythbound_tamers_save_v3", "mythbound_tamers_save_v2"];
-const APP_VERSION = "0.46.0";
-const APP_VERSION_CODE = 46;
+const APP_VERSION = "0.47.0";
+const APP_VERSION_CODE = 47;
 const UPDATE_MANIFEST_URL = import.meta.env.VITE_UPDATE_MANIFEST_URL || "https://costaskk.github.io/Mythbound-Tamers/update-manifest.json";
 const SHINY_RATE = 1 / 192;
 const VALID_SCREENS = new Set(["title","story","starter","world","party","pc","shop","dex","account","multiplayer","help","atlas","update","battle","gameover"]);
@@ -625,16 +625,16 @@ const STORY = [
 ];
 const MAP_DATA = [
   "WWWWWWWWWWWWWWWW",
-  "W.$G.!A.M..OE1W",
-  "W.GGJ.GG.QQQGY.W",
+  "W..G..a..M..o.1W",
+  "W.GGj.GG.QQQGY.W",
   "W..G..T..QG.SQ2W",
   "W..G..G..V..QQUW",
-  "W..8.C..GQG.P3.W",
-  "W.GGX...G..KG..W",
-  "W...N..L..G.H4.W",
+  "W..t.C..GQG.p3.W",
+  "W.GGx...G..KG..W",
+  "W...N..L..G.h4.W",
   "W..G..R..LLG.GYW",
-  "W.FG..G....DGG5W",
-  "W.G6.B..Z..G.G.W",
+  "W.FG..G....9GG5W",
+  "W.G$.B..Z..G.!WW",
   "WWWWWWWWWWWWWWWW"
 ];
 const ENCOUNTERS = {
@@ -661,12 +661,10 @@ const ENCOUNTERS = {
   "!": ["stormkid", "thunderchoir", "glasswyrm", "stormglass", "cloudfinch", "ionwyrm"]
 };
 const TILE_NAMES = {
-  G: "Tall Grass", L: "Lake Shore", M: "Rocky Pass", V: "Moon Cave", F: "Ash Field", A: "Wind Hill",
-  O: "Orchid Orchard", Q: "Sun Quarry", P: "Prism Ruins", H: "Frost Hollow",
-  J: "Crystal Jungle", X: "Spirit Marsh", Z: "Neon Basin", E: "Echo Caves", Y: "Beastwood", U: "Titan Pass",
-  "1": "Sunken Sun Catacombs", "2": "Nocturne Catacombs", "3": "Tideglass Grotto", "4": "Verdant Catacombs", "5": "Timeglass Labyrinth",
-  "6": "Ember Roost", "7": "Mirage Garden", "8": "Tideglass Flats", "$": "Luminous Bazaar", "!": "Stormspire Cliffs", "0": "Area Exit",
-  C: "Crystal Spring", N: "Grovepath Village", R: "River Rival Bridge", K: "Keeper Gate", B: "Ash Road Captain", S: "Old Shrine", D: "Dragon Gate", T: "Treasure Chest", W: "Mountain Wall"
+  G: "Tall Grass", L: "Lake Shore", M: "Rocky Pass", V: "Moon Cave", F: "Ash Field", A: "Wind Hill", O: "Orchid Orchard", Q: "Crystal Quarry", P: "Prism Ruins", H: "Frost Hollow", J: "Crystal Jungle", X: "Spirit Marsh", Z: "Storm Rail", E: "Echo Grove", Y: "Beast Den", U: "Titan Pass",
+  "6": "Ember Roost", "7": "Mirage Garden", "8": "Tideglass Flats", "$": "Luminous Bazaar Gate", "!": "Stormspire Gate", "9": "Caldera Crown Gate",
+  a: "Skyrail Meadow Gate", e: "Echo Caves Gate", x: "Spirit Marsh Gate", p: "Prism Ruins Gate", u: "Titan Pass Gate", t: "Tideglass Flats Gate", m: "Ironrail Yard Gate", v: "Nocturne Road Gate", h: "Frostglass Peaks Gate", j: "Verdant Canopy Gate", o: "Orchid Court Gate",
+  "0": "Return Gate", N: "Grovepath Village", R: "Rival Bridge", K: "Keeper Gate", B: "Bridge Captain", S: "Old Shrine", D: "Dragon Gate", C: "Crystal Spring", T: "Treasure Cache", W: "Wall"
 };
 const AREA_DATA = {
   luminara: {
@@ -1070,50 +1068,50 @@ const AREA_DATA = {
 };
 
 const AREA_EXITS = {
-  E: "echoCaves",
-  X: "spiritMarsh",
-  P: "prismRuins",
-  U: "titanPass",
-  "8": "tideglassFlats",
-  A: "skyrailMeadow",
-  M: "ironrailYard",
-  V: "nocturneRoad",
-  F: "calderaCrown",
-  H: "frostglassPeaks",
-  J: "verdantCanopy",
-  O: "orchidCourt",
+  a: "skyrailMeadow",
+  e: "echoCaves",
+  x: "spiritMarsh",
+  p: "prismRuins",
+  u: "titanPass",
+  t: "tideglassFlats",
+  m: "ironrailYard",
+  v: "nocturneRoad",
+  h: "frostglassPeaks",
+  j: "verdantCanopy",
+  o: "orchidCourt",
   "$": "luminousBazaar",
   "!": "stormspireCliffs",
+  "9": "calderaCrown",
   "0": "luminara"
 };
 
 
 const WORLD_ROUTE = [
   { id: "luminara", gate: "Start", story: "Choose a starter and speak to Elder Nima." },
-  { id: "skyrailMeadow", gate: "Wind Hill / A", story: "Learn route travel and fight early tamers." },
-  { id: "echoCaves", gate: "Echo Cave / E", story: "Defeat Rival Ren and hear the first Prism song." },
-  { id: "spiritMarsh", gate: "Spirit Marsh / X", story: "Find Moon Keeper Sola and unlock shrine shadows." },
-  { id: "verdantCanopy", gate: "Crystal Jungle / J", story: "Optional but recommended: complete the Seed Bell side quest and train Verdant lines." },
+  { id: "skyrailMeadow", gate: "Skyrail Gate / a", story: "Learn route travel and fight early tamers." },
+  { id: "echoCaves", gate: "Echo Gate / e", story: "Defeat Rival Ren and hear the first Prism song." },
+  { id: "spiritMarsh", gate: "Spirit Marsh Gate / x", story: "Find Moon Keeper Sola and unlock shrine shadows." },
+  { id: "verdantCanopy", gate: "Verdant Gate / j", story: "Optional but recommended: complete the Seed Bell side quest and train Verdant lines." },
   { id: "luminousBazaar", gate: "Luminous Bazaar / $", story: "Side route: earn the Lucky Prism tag and discover Light Mythlings." },
-  { id: "tideglassFlats", gate: "Tideglass / 8", story: "Gather coastal items and evolve Aqua lines." },
-  { id: "prismRuins", gate: "Prism Ruins / P", story: "Recover the Prism Key from broken glass." },
-  { id: "frostglassPeaks", gate: "Frost Hollow / H", story: "Side route: recover the Aurora Lens and catch Ice Mythlings." },
-  { id: "ironrailYard", gate: "Rocky Pass / M", story: "Upgrade your team with Metal and Volt Mythlings." },
-  { id: "titanPass", gate: "Titan Pass / U", story: "Defeat Bridge Captain Brann." },
-  { id: "nocturneRoad", gate: "Moon Cave / V", story: "Prepare for shadow routes and late-game threats." },
-  { id: "orchidCourt", gate: "Orchid Orchard / O", story: "Side route: earn Harmony Charm and learn about trade evolutions." },
+  { id: "tideglassFlats", gate: "Tideglass Gate / t", story: "Gather coastal items and evolve Aqua lines." },
+  { id: "prismRuins", gate: "Prism Gate / p", story: "Recover the Prism Key from broken glass." },
+  { id: "frostglassPeaks", gate: "Frost Gate / h", story: "Side route: recover the Aurora Lens and catch Ice Mythlings." },
+  { id: "ironrailYard", gate: "Ironrail Gate / m", story: "Upgrade your team with Metal and Volt Mythlings." },
+  { id: "titanPass", gate: "Titan Gate / u", story: "Defeat Bridge Captain Brann." },
+  { id: "nocturneRoad", gate: "Nocturne Gate / v", story: "Prepare for shadow routes and late-game threats." },
+  { id: "orchidCourt", gate: "Orchid Gate / o", story: "Side route: earn Harmony Charm and learn about trade evolutions." },
   { id: "stormspireCliffs", gate: "Stormspire / !", story: "Side route: ring the storm bells and awaken Stormglass." },
-  { id: "calderaCrown", gate: "Ash Field / F", story: "Reach the fiery road to Dragon Gate." },
+  { id: "calderaCrown", gate: "Caldera Gate / 9", story: "Reach the fiery road to Dragon Gate." },
   { id: "postgame", gate: "Legend seals 1-5", story: "After Dracinder, hunt the five legendary dungeons." }
 ];
 function areaOrderIndex(areaId) {
   const idx = WORLD_ROUTE.findIndex((r) => r.id === areaId);
   return idx < 0 ? 0 : idx;
 }
-function currentRouteStep(player, seen = {}) {
+function currentRouteStep(player, seen = {}, party = []) {
   const area = player?.area || "luminara";
   const currentIdx = areaOrderIndex(area);
-  const recommendedId = recommendedStoryAreaId(player, seen);
+  const recommendedId = recommendedStoryAreaId(player, seen, party);
   const recommendedIdx = areaOrderIndex(recommendedId);
   const current = WORLD_ROUTE[currentIdx] || WORLD_ROUTE[0];
   const next = WORLD_ROUTE[recommendedIdx] || WORLD_ROUTE[0];
@@ -1128,12 +1126,23 @@ function averagePartyLevel(party = []) {
 function maxPartyLevel(party = []) {
   return Math.max(1, ...((party || []).filter(Boolean).map((m) => Number(m.level || 1))));
 }
-function recommendedStoryAreaId(player, seen) {
+function recommendedStoryAreaId(player, seen, party = []) {
+  const avg = averagePartyLevel(party);
   if (!seen?.elder || !seen?.rival) return "luminara";
-  if (!seen?.keeper) return "echoCaves";
-  if (!seen?.shrine) return "spiritMarsh";
-  if (!seen?.bridgeCaptain) return "titanPass";
-  if (!seen?.dragon) return "calderaCrown";
+  if (!seen?.keeper) return avg < 7 ? "skyrailMeadow" : "echoCaves";
+  if (!seen?.shrine) return avg < 9 ? "echoCaves" : "spiritMarsh";
+  if (!seen?.bridgeCaptain) {
+    if (avg < 13) return "verdantCanopy";
+    if (avg < 17) return "prismRuins";
+    if (avg < 21) return "ironrailYard";
+    return "titanPass";
+  }
+  if (!seen?.dragon) {
+    if (avg < 18) return "prismRuins";
+    if (avg < 22) return "ironrailYard";
+    if (avg < 26) return "nocturneRoad";
+    return "calderaCrown";
+  }
   return "postgame";
 }
 function areaGateSafety(areaId, party = [], seen = {}, player = {}) {
@@ -1143,7 +1152,7 @@ function areaGateSafety(areaId, party = [], seen = {}, player = {}) {
   const min = area.levelMin || 3;
   const maxRec = area.levelMax || min + 6;
   const routeIndex = areaOrderIndex(areaId);
-  const recommendedId = recommendedStoryAreaId(player, seen);
+  const recommendedId = recommendedStoryAreaId(player, seen, party);
   const recommendedIndex = areaOrderIndex(recommendedId);
   let severity = "safe";
   let title = "Recommended";
@@ -1159,11 +1168,17 @@ function areaGateSafety(areaId, party = [], seen = {}, player = {}) {
     warnings.push(`This route is much later than your current story step. Recommended next story area: ${AREA_DATA[recommendedId]?.name || "Luminara"}.`);
   }
 
-  if (avg < min - 4) {
+  if (avg < min - 8) {
     severity = severity === "locked" ? "locked" : "danger";
+    title = severity === "locked" ? title : "Way too strong";
+    warnings.push(`Your team's average level is about ${avg}. This area starts around Lv.${min}, so wild battles can overwhelm you quickly.`);
+  } else if (avg < min - 4) {
+    severity = severity === "locked" ? "locked" : "danger";
+    title = severity === "locked" ? title : "Overpowered area";
     warnings.push(`Your team's average level is about ${avg}. This area starts around Lv.${min}.`);
   } else if (avg < min - 1) {
     severity = severity === "safe" ? "caution" : severity;
+    title = severity === "caution" ? "Slightly underleveled" : title;
     warnings.push(`Your team's average level is about ${avg}. This area is recommended around Lv.${min}-${maxRec}.`);
   }
 
@@ -2306,6 +2321,19 @@ const TILE_INFO = {
   "6": { kind: "Cinematic Wild Zone", note: "Ember Roost is a cliffside nest field where ash feathers glow in the wind.", danger: "Flame/Air encounters", special: "Best place to find Embercrow and Pyreaven." },
   "7": { kind: "Cinematic Wild Zone", note: "Mirage Garden bends light around crystal flowers and dreamlike paths.", danger: "Mystic encounters", special: "Best place to find Miragecalf and Miragehart." },
   "8": { kind: "Cinematic Wild Zone", note: "Tideglass Flats shimmer like shallow glass after every wave.", danger: "Aqua/Metal encounters", special: "Best place to find Tidebug and Shellsurge." },
+  a: { kind: "Area Gate", note: "A beginner gate toward Skyrail Meadow.", danger: "Travel · Lv.5-11", special: "Leads to Skyrail Meadow." },
+  e: { kind: "Area Gate", note: "A cave gate toward Echo Caves.", danger: "Travel · Lv.7-14", special: "Leads to Echo Caves." },
+  x: { kind: "Area Gate", note: "A misty gate toward Spirit Marsh.", danger: "Travel · Lv.9-17", special: "Leads to Spirit Marsh." },
+  j: { kind: "Area Gate", note: "A green-crystal gate toward Verdant Canopy.", danger: "Travel · Lv.11-19", special: "Leads to Verdant Canopy." },
+  t: { kind: "Area Gate", note: "A tideglass gate toward the coast.", danger: "Travel · Lv.13-22", special: "Leads to Tideglass Flats." },
+  p: { kind: "Area Gate", note: "A prism gate toward the old ruins.", danger: "Travel · Lv.15-24", special: "Leads to Prism Ruins." },
+  h: { kind: "Area Gate", note: "An icy gate toward Frostglass Peaks.", danger: "Travel · Lv.17-27", special: "Leads to Frostglass Peaks." },
+  m: { kind: "Area Gate", note: "A rail gate toward Ironrail Yard.", danger: "Travel · Lv.19-30", special: "Leads to Ironrail Yard." },
+  u: { kind: "Area Gate", note: "A giant-stone gate toward Titan Pass.", danger: "Travel · Lv.21-33", special: "Leads to Titan Pass." },
+  v: { kind: "Area Gate", note: "A moonlit gate toward Nocturne Road.", danger: "Travel · Lv.23-35", special: "Leads to Nocturne Road." },
+  o: { kind: "Area Gate", note: "A flower gate toward Orchid Court.", danger: "Travel · Lv.24-36", special: "Leads to Orchid Court." },
+  "9": { kind: "Story Gate", note: "The late-game fire gate toward Caldera Crown and Dracinder.", danger: "Travel · Lv.28-42", special: "Leads to Caldera Crown after the bridge oath." },
+  F: { kind: "Wild Zone", note: "Ash Field is a normal Flame encounter field. It is not the Caldera gate anymore.", danger: "Wild encounters", special: "Use the separate Caldera Gate marked 🔥 / 9 for the late-game route." },
   "0": { kind: "Area Exit", note: "Return to Luminara Crossroads or step into a connected board.", danger: "Safe", special: "Moves between area boards." },
 };
 
@@ -2436,8 +2464,8 @@ function objectiveSections(player, seen, dex, party, storage, clock) {
 }
 
 
-function progressionVisualState(player, seen, dex) {
-  const route = currentRouteStep(player, seen);
+function progressionVisualState(player, seen, dex, party = []) {
+  const route = currentRouteStep(player, seen, party);
   const currentArea = AREA_DATA[player?.area] || AREA_DATA.luminara;
   const nextArea = route.next?.id === "postgame" ? null : AREA_DATA[route.next?.id];
   let stepTitle = "Continue your journey";
@@ -2513,12 +2541,12 @@ function mainObjectiveTarget(player, seen) {
 }
 function sideObjectiveTarget(data) {
   const title = String(data?.title || "").toLowerCase();
-  if (title.includes("seed")) return { areaId: "verdantCanopy", tile: "J", label: "Verdant Canopy / Seed Bell Trial", icon: "晶", detail: "Travel through a Crystal Jungle gate marked 晶 and explore Verdant Canopy." };
-  if (title.includes("aurora")) return { areaId: "frostglassPeaks", tile: "H", label: "Frostglass Peaks / Aurora Lens", icon: "❄", detail: "Look for a Frost Hollow gate marked ❄ and explore the peaks." };
-  if (title.includes("harmony")) return { areaId: "orchidCourt", tile: "O", label: "Orchid Court / Harmony Charm", icon: "✿", detail: "Find an Orchid Orchard gate marked ✿ and defeat the court performers." };
-  if (title.includes("engineer") || title.includes("rail")) return { areaId: "ironrailYard", tile: "M", label: "Ironrail Yard / Rail Badge", icon: "▲", detail: "Find a Rocky Pass gate marked ▲ that leads toward Ironrail Yard." };
-  if (title.includes("lucky") || title.includes("bazaar")) return { areaId: "luminousBazaar", tile: "$", label: "Luminous Bazaar / Lucky Prism Tag", icon: "¤", detail: "Find the Luminous Bazaar gate marked ¤ and look for Goldkit and Aurumane." };
-  if (title.includes("storm")) return { areaId: "stormspireCliffs", tile: "!", label: "Stormspire Cliffs / Storm Bell Trial", icon: "ϟ", detail: "Find the Stormspire gate marked ϟ and explore the high cliffs." };
+  if (title.includes("seed")) return { areaId: "verdantCanopy", tile: "J", label: "Verdant Canopy / Seed Bell Trial", icon: "晶", detail: "Travel through the Verdant Gate marked ↗ near the Crystal Jungle route." };
+  if (title.includes("aurora")) return { areaId: "frostglassPeaks", tile: "H", label: "Frostglass Peaks / Aurora Lens", icon: "❄", detail: "Use the Frostglass Peaks gate marked ↗ near Frost Hollow." };
+  if (title.includes("harmony")) return { areaId: "orchidCourt", tile: "O", label: "Orchid Court / Harmony Charm", icon: "✿", detail: "Use the Orchid Court gate marked ↗ near Orchid Orchard." };
+  if (title.includes("engineer") || title.includes("rail")) return { areaId: "ironrailYard", tile: "M", label: "Ironrail Yard / Rail Badge", icon: "▲", detail: "Use the Ironrail Yard gate marked ↗ near Rocky Pass." };
+  if (title.includes("lucky") || title.includes("bazaar")) return { areaId: "luminousBazaar", tile: "$", label: "Luminous Bazaar / Lucky Prism Tag", icon: "¤", detail: "Use the Luminous Bazaar gate marked ¤ near the southern market road." };
+  if (title.includes("storm")) return { areaId: "stormspireCliffs", tile: "!", label: "Stormspire Cliffs / Storm Bell Trial", icon: "ϟ", detail: "Use the Stormspire gate marked ϟ at the southern cliff road." };
   if (title.includes("collector")) return { areaId: "luminara", tile: "G", label: "Any Wild Zone", icon: "♣", detail: "Catch more Mythlings in wild tiles. Different areas contain different pools." };
   if (title.includes("legend")) return { areaId: "luminara", tile: "1", label: "Legendary Dungeon Seal", icon: "★", detail: "Legend dungeons are numbered 1-5 and unlock after the main story." };
   const areaId = areaIdByName(data?.area);
@@ -2601,8 +2629,8 @@ function buildStepObjectivePayload(parentInfo, step) {
   };
 }
 
-function buildObjectivePayload(type, data, player, seen, dex) {
-  const visual = progressionVisualState(player, seen, dex);
+function buildObjectivePayload(type, data, player, seen, dex, party = []) {
+  const visual = progressionVisualState(player, seen, dex, party);
   if (type === "main") {
     const target = mainObjectiveTarget(player, seen);
     return {
@@ -2644,14 +2672,14 @@ function buildObjectivePayload(type, data, player, seen, dex) {
 function ObjectivePanel({ player, seen, dex, party, storage, clock, compact = false, onObjectiveClick = null }) {
   const obj = objectiveSections(player, seen, dex, party, storage, clock);
   const percent = storyProgressPercent(seen, dex);
-  const visual = progressionVisualState(player, seen, dex);
+  const visual = progressionVisualState(player, seen, dex, party);
   const milestones = storyMilestones(seen, dex);
   const sideQuests = sideQuestList(player, seen, dex, party);
   const ppWarnings = lowPPWarnings(party);
   const shownMilestones = compact ? milestones.slice(0, 6) : milestones;
   const nextAreaName = visual.nextArea?.name || (visual.route.next?.id === "postgame" ? "Legendary Seals" : "Complete the Prism Dex");
   const currentAreaName = visual.currentArea?.name || "Luminara";
-  const openObjective = (type, data) => onObjectiveClick && onObjectiveClick(buildObjectivePayload(type, data, player, seen, dex));
+  const openObjective = (type, data) => onObjectiveClick && onObjectiveClick(buildObjectivePayload(type, data, player, seen, dex, party));
 
   return <div className={`rounded-[2rem] bg-slate-950/70 border border-cyan-200/20 ${compact ? "p-3" : "p-5"} shadow-2xl shadow-cyan-500/10 overflow-hidden relative`}>
     <div className={`absolute inset-0 opacity-20 bg-gradient-to-br ${visual.color}`} />
@@ -2753,9 +2781,9 @@ function WorldScreen({ map, area, player, move, party, storage, seen, dex, setSc
     T:"bg-yellow-500/80 border-yellow-200", L:"bg-blue-700/80 border-blue-300", M:"bg-stone-600 border-stone-300",
     V:"bg-indigo-900 border-indigo-300", F:"bg-red-800/80 border-red-300", A:"bg-sky-700/80 border-sky-200",
     O:"bg-pink-700/80 border-pink-300", Q:"bg-amber-700/80 border-yellow-300", P:"bg-violet-800/90 border-cyan-200",
-    H:"bg-cyan-900/80 border-blue-100", J:"bg-teal-700/80 border-fuchsia-200", X:"bg-purple-950 border-lime-300", Z:"bg-cyan-950 border-fuchsia-300", E:"bg-pink-950 border-fuchsia-300", Y:"bg-orange-950 border-yellow-300", U:"bg-stone-900 border-orange-300", "1":"bg-yellow-950 border-yellow-200", "2":"bg-black border-purple-300", "3":"bg-blue-950 border-cyan-200", "4":"bg-emerald-950 border-lime-200", "5":"bg-slate-950 border-fuchsia-200", "6":"bg-red-950 border-orange-300", "7":"bg-fuchsia-950 border-cyan-200", "8":"bg-blue-950 border-sky-200", "$":"bg-yellow-950 border-amber-200", "!":"bg-sky-950 border-yellow-200", "0":"bg-cyan-950 border-cyan-200"
+    H:"bg-cyan-900/80 border-blue-100", J:"bg-teal-700/80 border-fuchsia-200", X:"bg-purple-950 border-lime-300", Z:"bg-cyan-950 border-fuchsia-300", E:"bg-pink-950 border-fuchsia-300", Y:"bg-orange-950 border-yellow-300", U:"bg-stone-900 border-orange-300", "1":"bg-yellow-950 border-yellow-200", "2":"bg-black border-purple-300", "3":"bg-blue-950 border-cyan-200", "4":"bg-emerald-950 border-lime-200", "5":"bg-slate-950 border-fuchsia-200", "6":"bg-red-950 border-orange-300", "7":"bg-fuchsia-950 border-cyan-200", "8":"bg-blue-950 border-sky-200", "$":"bg-yellow-950 border-amber-200", "!":"bg-sky-950 border-yellow-200", "9":"bg-red-950 border-yellow-200", a:"bg-sky-950 border-sky-200", e:"bg-indigo-950 border-fuchsia-200", x:"bg-purple-950 border-lime-300", p:"bg-violet-950 border-cyan-200", u:"bg-stone-950 border-orange-200", t:"bg-blue-950 border-cyan-200", m:"bg-zinc-900 border-stone-200", v:"bg-slate-950 border-purple-300", h:"bg-cyan-950 border-blue-100", j:"bg-teal-950 border-lime-200", o:"bg-pink-950 border-pink-200", "0":"bg-cyan-950 border-cyan-200"
   }[t] || "bg-lime-700/60 border-lime-500/30");
-  const label = (t) => ({ C:"✦", N:"E", R:"R", K:"K", B:"B", S:"⌂", D:"龍", T:"?", G:"♣", L:"≈", M:"▲", V:"☾", F:"火", A:"~", O:"✿", Q:"◆", P:"✧", H:"❄", J:"晶", X:"☠", Z:"⚡", E:"♫", Y:"爪", U:"巨", "1":"☀", "2":"◐", "3":"♒", "4":"根", "5":"⌛", "6":"羽", "7":"幻", "8":"≋", "$":"¤", "!":"ϟ", "0":"↩", W:"" }[t] || "");
+  const label = (t) => ({ C:"✦", N:"E", R:"R", K:"K", B:"B", S:"⌂", D:"龍", T:"?", G:"♣", L:"≈", M:"▲", V:"☾", F:"火", A:"~", O:"✿", Q:"◆", P:"✧", H:"❄", J:"晶", X:"☠", Z:"⚡", E:"♫", Y:"爪", U:"巨", "1":"☀", "2":"◐", "3":"♒", "4":"根", "5":"⌛", "6":"羽", "7":"幻", "8":"≋", "$":"¤", "!":"ϟ", "9":"🔥", a:"↗", e:"↗", x:"↗", p:"↗", u:"↗", t:"↗", m:"↗", v:"↗", h:"↗", j:"↗", o:"↗", "0":"↩", W:"" }[t] || "");
   const TimeIcon = timeIcon(clock);
   const selected = selectedTile ? tileDetails(selectedTile.tile, clock, area) : null;
   const objectiveFocusOnMap = objectiveTargetForCurrentMap(objectiveMapFocus, area?.id || player.area || "luminara");
