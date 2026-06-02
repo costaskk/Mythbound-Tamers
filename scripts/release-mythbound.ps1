@@ -13,7 +13,6 @@ Write-Host "VersionCode: $VersionCode"
 if (!(Test-Path $ApkSource)) {
   Write-Host "Could not find APK at: $ApkSource" -ForegroundColor Yellow
   Get-ChildItem -Recurse -Filter "*.apk" "android\app" -ErrorAction SilentlyContinue | Sort-Object LastWriteTime -Descending | Select-Object FullName, LastWriteTime | Format-Table -AutoSize
-  Write-Host "Rerun with -ApkSource if Android Studio saved it elsewhere."
   exit 1
 }
 $apkName = "mythbound-tamers-v$Version.apk"

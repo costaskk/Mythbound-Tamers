@@ -8,8 +8,8 @@ import { Sparkles, PawPrint, Flame, Droplets, Leaf, Zap, Heart, Map, Backpack, G
 
 const SAVE_KEY = "mythbound_tamers_save_v4";
 const OLD_SAVE_KEYS = ["mythbound_tamers_save_v3", "mythbound_tamers_save_v2"];
-const APP_VERSION = "0.44.0";
-const APP_VERSION_CODE = 44;
+const APP_VERSION = "0.46.0";
+const APP_VERSION_CODE = 46;
 const UPDATE_MANIFEST_URL = import.meta.env.VITE_UPDATE_MANIFEST_URL || "https://costaskk.github.io/Mythbound-Tamers/update-manifest.json";
 const SHINY_RATE = 1 / 192;
 const VALID_SCREENS = new Set(["title","story","starter","world","party","pc","shop","dex","account","multiplayer","help","atlas","update","battle","gameover"]);
@@ -87,13 +87,25 @@ function normalizeUpdateManifest(rawManifest) {
     _rawManifest: rawManifest,
   };
 }
-function startApkDownload(rawManifest) {
+async function startApkDownload(rawManifest) {
   const manifest = normalizeUpdateManifest(rawManifest);
   const url = manifestDownloadUrl(manifest);
   if (!url) return false;
+  const fileName = `mythbound-tamers-v${manifest.version || APP_VERSION}.apk`;
 
-  // Use replace() instead of assigning href so the app does not keep old redirect history.
-  // The URL always comes from the newest manifest entry only.
+  // Best path: optional native Capacitor plugin can download the APK, then immediately open Android's installer UI.
+  // Android still requires user approval; a normal app cannot silently install/replace itself.
+  try {
+    const nativeUpdater = window.Capacitor?.Plugins?.MythboundUpdater;
+    if (nativeUpdater?.downloadAndInstallApk) {
+      await nativeUpdater.downloadAndInstallApk({ url, fileName });
+      return true;
+    }
+  } catch (e) {
+    console.warn("Native updater failed, falling back to browser download.", e);
+  }
+
+  // Fallback: open the latest APK URL only.
   try { window.location.replace(url); }
   catch {
     try { window.open(url, "_blank", "noopener,noreferrer"); }
@@ -326,6 +338,16 @@ const BESTIARY = {
   miragebud: { name: "Miragebud", type: "Mystic", species: "Mirage Bud", cry: "mira-bloom!", stage: 1, evo: { to: "dreamorchid", method: "Reach Lv.25 in Orchid Court" }, base: [42, 23, 13, 38], skills: ["Moon Tap", "Petal Mirage", "Bloom Heal"], capture: 0.22, body: "sprite", colors: ["#f0abfc", "#fdf2f8", "#4c1d95"], lore: "It bends moonlight into fake flowers that confuse predators." },
   dreamorchid: { name: "Dreamorchid", type: "Mystic", species: "Dream Orchid", cry: "DREAM-ORCHID!", stage: 2, base: [86, 44, 24, 51], skills: ["Petal Mirage", "Dream Pulse", "Lullaby Bell"], capture: 0.055, body: "sprite", colors: ["#d946ef", "#c4b5fd", "#111827"], lore: "A theatrical garden spirit that makes enemies battle their own dreams." },
 
+  goldkit: { name: "Goldkit", type: "Light", species: "Market Kit", cry: "ching-mew!", stage: 1, evo: { to: "aurumane", method: "Reach Lv.23 after visiting Luminous Bazaar" }, base: [48, 24, 16, 40], skills: ["Starlight Pulse", "Bazaar Trick", "Fang Rush"], capture: 0.18, body: "cat", colors: ["#fde68a", "#fef3c7", "#7c2d12"], lore: "A lucky market Mythling whose bell collar rings near hidden treasure." },
+  aurumane: { name: "Aurumane", type: "Light", species: "Golden Mane", cry: "AU-RU-MANE!", stage: 2, evo: { to: "solarchon", method: "Reach Lv.40 with 5000 coins" }, base: [92, 45, 30, 55], skills: ["Radiant Lance", "Bazaar Trick", "Solar Crown"], capture: 0.045, body: "cat", colors: ["#facc15", "#fff7ed", "#451a03"], lore: "Its mane shines like minted sunlight. Merchants treat it as a blessing." },
+  solarchon: { name: "Solarchon", type: "Light", species: "Solar Archon", cry: "SOL-AR-CHON!", stage: 3, base: [130, 60, 42, 66], skills: ["Radiant Lance", "Solar Crown", "Prism Nova"], capture: 0.015, body: "cat", colors: ["#fbbf24", "#fef9c3", "#020617"], lore: "A regal final evolution that judges false promises by dimming its crown." },
+  stormkid: { name: "Stormkid", type: "Sound", species: "Storm Bell Kid", cry: "ding-ZAP!", stage: 1, evo: { to: "thunderchoir", method: "Reach Lv.27 in Stormspire Cliffs" }, base: [44, 26, 14, 44], skills: ["Gust Peck", "Storm Sonata", "Static Rush"], capture: 0.20, body: "sprite", colors: ["#bae6fd", "#fef08a", "#1e1b4b"], lore: "It rings a tiny cloud-bell when it wants thunder to answer." },
+  thunderchoir: { name: "Thunderchoir", type: "Sound", species: "Thunder Choir", cry: "THUN-DER-CHOIR!", stage: 2, base: [88, 49, 26, 58], skills: ["Storm Sonata", "Thunder Crown", "Cyclone Fang"], capture: 0.055, body: "bird", colors: ["#7dd3fc", "#facc15", "#111827"], lore: "A many-voiced sky Mythling whose chorus makes lightning fall in rhythm." },
+  glasswyrm: { name: "Glasswyrm", type: "Crystal", species: "Glass Wyrm", cry: "gliss-wyrm!", stage: 1, evo: { to: "stormglass", method: "Reach Lv.32 in Stormspire Cliffs" }, base: [58, 32, 24, 34], skills: ["Crystal Shard", "Astral Bloom", "Comet Drill"], capture: 0.10, body: "dragon", colors: ["#a5f3fc", "#f5d0fe", "#111827"], lore: "A transparent wyrm whose bones flash like lightning inside stormglass." },
+  stormglass: { name: "Stormglass", type: "Crystal", species: "Stormglass Drake", cry: "STORM-GLASS!", stage: 2, base: [118, 58, 44, 46], skills: ["Stormglass Break", "Astral Bloom", "Thunder Crown"], capture: 0.028, body: "dragon", colors: ["#22d3ee", "#fde68a", "#020617"], lore: "A rare drake that refracts storms into hard crystal thunder." },
+  incensemoth: { name: "Incensemoth", type: "Spirit", species: "Incense Moth", cry: "saa-moth!", stage: 1, evo: { to: "censeraph", method: "Reach Lv.30 at night after Shrine Key" }, base: [46, 25, 18, 48], skills: ["Spirit Claw", "Petal Mirage", "Mind Fog"], capture: 0.16, body: "bird", colors: ["#c4b5fd", "#fde68a", "#111827"], lore: "It carries sweet shrine smoke on its wings and appears near forgotten prayers." },
+  censeraph: { name: "Censeraph", type: "Spirit", species: "Censer Seraph", cry: "CEN-SE-RAPH!", stage: 2, base: [96, 48, 34, 62], skills: ["Spirit Claw", "Lullaby Bell", "Starlight Pulse"], capture: 0.04, body: "bird", colors: ["#a78bfa", "#fef3c7", "#020617"], lore: "A solemn shrine guardian whose wings ring like bronze censers." },
+
   solguard: { name: "Solguard", type: "Light", species: "Legendary Sun Sentinel", cry: "SOOOOL-GUAAARD!", stage: 1, legendary: true, base: [150, 48, 40, 34], skills: ["Dawn Judgment", "Solar Crown", "Light Fang"], capture: 0.018, body: "dragon", colors: ["#facc15", "#fef3c7", "#7c2d12"], lore: "A legendary sentinel sealed beneath the Sunken Sun Catacombs. It answers only at morning after the Prism is restored." },
   umbraclaw: { name: "Umbraclaw", type: "Shadow", species: "Legendary Eclipse Beast", cry: "UM-BRAAA-CLAW!", stage: 1, legendary: true, base: [142, 53, 32, 41], skills: ["Eclipse Rend", "Shadow Spiral", "Night Nip"], capture: 0.014, body: "cat", colors: ["#111827", "#a855f7", "#000000"], lore: "A predatory legend chained in the Nocturne Catacombs. Its claws cut through moonlight." },
   thalassor: { name: "Thalassor", type: "Aqua", species: "Legendary Abyss Whale", cry: "THA-LAAAS-SOOOR!", stage: 1, legendary: true, base: [178, 42, 43, 18], skills: ["Abyssal Maelstrom", "Tidal Crush", "Healing Rain"], capture: 0.012, body: "whale", colors: ["#0e7490", "#67e8f9", "#020617"], lore: "A legendary abyssal whale sleeping below the Tideglass Grotto. It awakens only when the tide and night align." },
@@ -394,7 +416,7 @@ const BESTIARY = {
   regaldrake: { name: "Regaldrake", type: "Flame", species: "Sky Prism Dragon", cry: "REGAL-DRAY!", stage: 2, base: [108, 32, 22, 20], skills: ["Royal Flame", "Meteor Claw", "Prism Nova"], capture: 0.03, body: "dragon", colors: ["#dc2626", "#fef08a", "#111827"], lore: "The restored royal dragon whose wings reflect every color of the Sky Prism." },
 };
 const DEX_ORDER = Object.keys(BESTIARY);
-const SKILLS = { "Cinder Paw": { power: 18, type: "Flame", text: "A hot claw swipe.", kind: "attack", fx: "slash" }, "Flare Burst": { power: 30, type: "Flame", text: "A flame blast.", kind: "attack", unlock: 3, fx: "blast" }, "Meteor Claw": { power: 43, type: "Flame", text: "A burning claw.", kind: "attack", unlock: 5, fx: "meteor" }, "Solar Crown": { power: 54, type: "Flame", text: "A sun crown attack.", kind: "attack", unlock: 8, fx: "blast" }, "Royal Flame": { power: 30, type: "Flame", text: "A noble flame.", kind: "attack", fx: "blast" }, "Bubble Bite": { power: 17, type: "Aqua", text: "A bubble bite.", kind: "attack", fx: "bubble" }, "Healing Rain": { power: 25, type: "Aqua", text: "Restore HP.", kind: "heal", unlock: 3, fx: "heal" }, "Tidal Crush": { power: 40, type: "Aqua", text: "A crushing wave.", kind: "attack", unlock: 5, fx: "bubble" }, "Vine Kick": { power: 18, type: "Verdant", text: "A leafy kick.", kind: "attack", fx: "slash" }, "Bloom Heal": { power: 23, type: "Verdant", text: "Heal with petals.", kind: "heal", unlock: 3, fx: "heal" }, "Worldroot Ram": { power: 52, type: "Verdant", text: "A sacred root charge.", kind: "attack", unlock: 8, fx: "slam" }, "Jolt Kick": { power: 19, type: "Volt", text: "A shocking kick.", kind: "attack", fx: "zap" }, "Static Rush": { power: 31, type: "Volt", text: "A fast electric rush.", kind: "attack", unlock: 3, fx: "zap" }, "Thunder Crown": { power: 42, type: "Volt", text: "Lightning falls.", kind: "attack", unlock: 5, fx: "zap" }, "Moon Tap": { power: 17, type: "Mystic", text: "A lunar strike.", kind: "attack", fx: "moon" }, "Dream Pulse": { power: 33, type: "Mystic", text: "A dream pulse.", kind: "attack", unlock: 4, fx: "moon" }, "Prism Nova": { power: 48, type: "Mystic", text: "Prism burst.", kind: "attack", unlock: 7, fx: "nova" }, "Root Ram": { power: 21, type: "Stone", text: "A mossy ram.", kind: "attack", fx: "slam" }, "Thorn Wall": { power: 0, type: "Verdant", text: "Guard strongly.", kind: "guard", unlock: 3, fx: "guard" }, "Boulder Crash": { power: 38, type: "Stone", text: "Rock impact.", kind: "attack", unlock: 4, fx: "slam" }, "Pebble Toss": { power: 18, type: "Stone", text: "Stone throw.", kind: "attack", fx: "slam" }, "Gust Peck": { power: 17, type: "Air", text: "Wind peck.", kind: "attack", fx: "wind" }, "Sky Dive": { power: 34, type: "Air", text: "Aerial dive.", kind: "attack", unlock: 4, fx: "wind" }, "Cyclone Fang": { power: 45, type: "Air", text: "Cyclone strike.", kind: "attack", unlock: 6, fx: "wind" }, "Night Nip": { power: 18, type: "Shadow", text: "Dark bite.", kind: "attack", fx: "moon" }, "Light Fang": { power: 24, type: "Light", text: "A shining bite.", kind: "attack", fx: "nova" }, "Metal Bite": { power: 25, type: "Metal", text: "A steel-jawed bite.", kind: "attack", fx: "slam" }, "Frost Peck": { power: 22, type: "Ice", text: "A chilling peck.", kind: "attack", fx: "wind" }, "Shadow Spiral": { power: 36, type: "Shadow", text: "Black mist.", kind: "attack", unlock: 4, fx: "moon" }, "Crystal Shard": { power: 27, type: "Crystal", text: "A glittering shard strike.", kind: "attack", unlock: 2, fx: "nova" }, "Toxic Sting": { power: 26, type: "Toxic", text: "A venomous jab.", kind: "attack", unlock: 2, fx: "slash" }, "Spirit Claw": { power: 28, type: "Spirit", text: "A ghostly claw swipe.", kind: "attack", unlock: 2, fx: "moon", accuracy: 0.94, crit: 0.13 }, "Echo Pulse": { power: 25, type: "Sound", text: "A ringing pulse with high accuracy.", kind: "attack", unlock: 2, fx: "nova", accuracy: 0.98, crit: 0.08 }, "Sonic Roar": { power: 42, type: "Sound", text: "A loud shockwave with higher crit chance.", kind: "attack", unlock: 5, fx: "nova", accuracy: 0.88, crit: 0.18 }, "Fang Rush": { power: 34, type: "Beast", text: "A fierce rushing bite.", kind: "attack", unlock: 3, fx: "slash", accuracy: 0.92, crit: 0.16 }, "Terra Howl": { power: 50, type: "Beast", text: "A mountain-shaking howl.", kind: "attack", unlock: 7, fx: "slam", accuracy: 0.86, crit: 0.12 }, "Aurora Verdict": { power: 62, type: "Ice", text: "A royal blizzard beam.", kind: "attack", unlock: 8, fx: "legend", accuracy: 0.9, crit: 0.16 }, "Magma Crown": { power: 64, type: "Flame", text: "A crown of molten rock erupts.", kind: "attack", unlock: 8, fx: "legend", accuracy: 0.88, crit: 0.14 }, "Cathedral Howl": { power: 60, type: "Sound", text: "A sacred resonant howl.", kind: "attack", unlock: 8, fx: "legend", accuracy: 0.93, crit: 0.18 }, "Continental Slam": { power: 68, type: "Beast", text: "A continent-shaking strike.", kind: "attack", unlock: 8, fx: "legend", accuracy: 0.84, crit: 0.16 }, "Gear Eclipse": { power: 63, type: "Metal", text: "A perfect clockwork eclipse.", kind: "attack", unlock: 8, fx: "legend", accuracy: 0.91, crit: 0.15 }, "Dawn Judgment": { power: 78, type: "Light", text: "Solguard judges the field with sunrise fire.", kind: "attack", fx: "legend", accuracy: 0.9, crit: 0.2 }, "Eclipse Rend": { power: 82, type: "Shadow", text: "Umbraclaw tears open an eclipse slash.", kind: "attack", fx: "legend", accuracy: 0.88, crit: 0.24 }, "Abyssal Maelstrom": { power: 76, type: "Aqua", text: "Thalassor summons a crushing abyss current.", kind: "attack", fx: "legend", accuracy: 0.9, crit: 0.14 }, "Worldroot Cataclysm": { power: 80, type: "Verdant", text: "Gaialith raises ancient roots through the battlefield.", kind: "attack", fx: "legend", accuracy: 0.86, crit: 0.16 }, "Chrono Fracture": { power: 74, type: "Crystal", text: "Chronova fractures time into prism shards.", kind: "attack", fx: "legend", accuracy: 0.92, crit: 0.22 }, Guard: { power: 0, type: "Mystic", text: "Reduce damage.", kind: "guard", fx: "guard" } };
+const SKILLS = { "Cinder Paw": { power: 18, type: "Flame", text: "A hot claw swipe.", kind: "attack", fx: "slash" }, "Flare Burst": { power: 30, type: "Flame", text: "A flame blast.", kind: "attack", unlock: 3, fx: "blast" }, "Meteor Claw": { power: 43, type: "Flame", text: "A burning claw.", kind: "attack", unlock: 5, fx: "meteor" }, "Solar Crown": { power: 54, type: "Flame", text: "A sun crown attack.", kind: "attack", unlock: 8, fx: "blast" }, "Royal Flame": { power: 30, type: "Flame", text: "A noble flame.", kind: "attack", fx: "blast" }, "Bubble Bite": { power: 17, type: "Aqua", text: "A bubble bite.", kind: "attack", fx: "bubble" }, "Healing Rain": { power: 25, type: "Aqua", text: "Restore HP.", kind: "heal", unlock: 3, fx: "heal" }, "Tidal Crush": { power: 40, type: "Aqua", text: "A crushing wave.", kind: "attack", unlock: 5, fx: "bubble" }, "Vine Kick": { power: 18, type: "Verdant", text: "A leafy kick.", kind: "attack", fx: "slash" }, "Bloom Heal": { power: 23, type: "Verdant", text: "Heal with petals.", kind: "heal", unlock: 3, fx: "heal" }, "Worldroot Ram": { power: 52, type: "Verdant", text: "A sacred root charge.", kind: "attack", unlock: 8, fx: "slam" }, "Jolt Kick": { power: 19, type: "Volt", text: "A shocking kick.", kind: "attack", fx: "zap" }, "Static Rush": { power: 31, type: "Volt", text: "A fast electric rush.", kind: "attack", unlock: 3, fx: "zap" }, "Thunder Crown": { power: 42, type: "Volt", text: "Lightning falls.", kind: "attack", unlock: 5, fx: "zap" }, "Moon Tap": { power: 17, type: "Mystic", text: "A lunar strike.", kind: "attack", fx: "moon" }, "Dream Pulse": { power: 33, type: "Mystic", text: "A dream pulse.", kind: "attack", unlock: 4, fx: "moon" }, "Prism Nova": { power: 48, type: "Mystic", text: "Prism burst.", kind: "attack", unlock: 7, fx: "nova" }, "Root Ram": { power: 21, type: "Stone", text: "A mossy ram.", kind: "attack", fx: "slam" }, "Thorn Wall": { power: 0, type: "Verdant", text: "Guard strongly.", kind: "guard", unlock: 3, fx: "guard" }, "Boulder Crash": { power: 38, type: "Stone", text: "Rock impact.", kind: "attack", unlock: 4, fx: "slam" }, "Pebble Toss": { power: 18, type: "Stone", text: "Stone throw.", kind: "attack", fx: "slam" }, "Gust Peck": { power: 17, type: "Air", text: "Wind peck.", kind: "attack", fx: "wind" }, "Sky Dive": { power: 34, type: "Air", text: "Aerial dive.", kind: "attack", unlock: 4, fx: "wind" }, "Cyclone Fang": { power: 45, type: "Air", text: "Cyclone strike.", kind: "attack", unlock: 6, fx: "wind" }, "Night Nip": { power: 18, type: "Shadow", text: "Dark bite.", kind: "attack", fx: "moon" }, "Light Fang": { power: 24, type: "Light", text: "A shining bite.", kind: "attack", fx: "nova" }, "Metal Bite": { power: 25, type: "Metal", text: "A steel-jawed bite.", kind: "attack", fx: "slam" }, "Frost Peck": { power: 22, type: "Ice", text: "A chilling peck.", kind: "attack", fx: "wind" }, "Shadow Spiral": { power: 36, type: "Shadow", text: "Black mist.", kind: "attack", unlock: 4, fx: "moon" }, "Crystal Shard": { power: 27, type: "Crystal", text: "A glittering shard strike.", kind: "attack", unlock: 2, fx: "nova" }, "Toxic Sting": { power: 26, type: "Toxic", text: "A venomous jab.", kind: "attack", unlock: 2, fx: "slash" }, "Spirit Claw": { power: 28, type: "Spirit", text: "A ghostly claw swipe.", kind: "attack", unlock: 2, fx: "moon", accuracy: 0.94, crit: 0.13 }, "Echo Pulse": { power: 25, type: "Sound", text: "A ringing pulse with high accuracy.", kind: "attack", unlock: 2, fx: "nova", accuracy: 0.98, crit: 0.08 }, "Sonic Roar": { power: 42, type: "Sound", text: "A loud shockwave with higher crit chance.", kind: "attack", unlock: 5, fx: "nova", accuracy: 0.88, crit: 0.18 }, "Fang Rush": { power: 34, type: "Beast", text: "A fierce rushing bite.", kind: "attack", unlock: 3, fx: "slash", accuracy: 0.92, crit: 0.16 }, "Terra Howl": { power: 50, type: "Beast", text: "A mountain-shaking howl.", kind: "attack", unlock: 7, fx: "slam", accuracy: 0.86, crit: 0.12 }, "Radiant Lance": { power: 62, type: "Light", text: "A piercing lance of sunlight with strong accuracy.", kind: "attack", unlock: 8, fx: "nova", accuracy: 0.95, crit: 0.12 }, "Storm Sonata": { power: 60, type: "Sound", text: "A thunderous song that may paralyze.", kind: "attack", unlock: 8, fx: "zap", accuracy: 0.9, status: { name: "paralyzed", chance: 0.2 } }, "Astral Bloom": { power: 56, type: "Crystal", text: "A constellation blossom that may confuse.", kind: "attack", unlock: 8, fx: "nova", accuracy: 0.91, status: { name: "confuse", chance: 0.18 } }, "Bazaar Trick": { power: 42, type: "Mystic", text: "A sly market illusion that may confuse.", kind: "attack", unlock: 5, fx: "moon", accuracy: 0.96, status: { name: "confuse", chance: 0.28 } }, "Stormglass Break": { power: 72, type: "Crystal", text: "A heavy glass thunder strike with lower accuracy.", kind: "attack", unlock: 10, fx: "zap", accuracy: 0.82, crit: 0.2 }, "Aurora Verdict": { power: 62, type: "Ice", text: "A royal blizzard beam.", kind: "attack", unlock: 8, fx: "legend", accuracy: 0.9, crit: 0.16 }, "Magma Crown": { power: 64, type: "Flame", text: "A crown of molten rock erupts.", kind: "attack", unlock: 8, fx: "legend", accuracy: 0.88, crit: 0.14 }, "Cathedral Howl": { power: 60, type: "Sound", text: "A sacred resonant howl.", kind: "attack", unlock: 8, fx: "legend", accuracy: 0.93, crit: 0.18 }, "Continental Slam": { power: 68, type: "Beast", text: "A continent-shaking strike.", kind: "attack", unlock: 8, fx: "legend", accuracy: 0.84, crit: 0.16 }, "Gear Eclipse": { power: 63, type: "Metal", text: "A perfect clockwork eclipse.", kind: "attack", unlock: 8, fx: "legend", accuracy: 0.91, crit: 0.15 }, "Dawn Judgment": { power: 78, type: "Light", text: "Solguard judges the field with sunrise fire.", kind: "attack", fx: "legend", accuracy: 0.9, crit: 0.2 }, "Eclipse Rend": { power: 82, type: "Shadow", text: "Umbraclaw tears open an eclipse slash.", kind: "attack", fx: "legend", accuracy: 0.88, crit: 0.24 }, "Abyssal Maelstrom": { power: 76, type: "Aqua", text: "Thalassor summons a crushing abyss current.", kind: "attack", fx: "legend", accuracy: 0.9, crit: 0.14 }, "Worldroot Cataclysm": { power: 80, type: "Verdant", text: "Gaialith raises ancient roots through the battlefield.", kind: "attack", fx: "legend", accuracy: 0.86, crit: 0.16 }, "Chrono Fracture": { power: 74, type: "Crystal", text: "Chronova fractures time into prism shards.", kind: "attack", fx: "legend", accuracy: 0.92, crit: 0.22 }, Guard: { power: 0, type: "Mystic", text: "Reduce damage.", kind: "guard", fx: "guard" } };
 
 
 
@@ -603,7 +625,7 @@ const STORY = [
 ];
 const MAP_DATA = [
   "WWWWWWWWWWWWWWWW",
-  "W..G..A..M..OE1W",
+  "W.$G.!A.M..OE1W",
   "W.GGJ.GG.QQQGY.W",
   "W..G..T..QG.SQ2W",
   "W..G..G..V..QQUW",
@@ -634,14 +656,16 @@ const ENCOUNTERS = {
   U: ["cuboulder", "titanursa", "mantitan", "pebbkit", "crysteel"],
   "6": ["embercrow", "pyreaven", "cindermole", "magmole", "cloudfinch"],
   "7": ["miragecalf", "miragehart", "prismite", "aurorabbit", "mistowl"],
-  "8": ["tidebug", "shellsurge", "coralisk", "aquapup", "neonsquid"]
+  "8": ["tidebug", "shellsurge", "coralisk", "aquapup", "neonsquid"],
+  "$": ["goldkit", "aurumane", "prismite", "lumifox", "bellimp"],
+  "!": ["stormkid", "thunderchoir", "glasswyrm", "stormglass", "cloudfinch", "ionwyrm"]
 };
 const TILE_NAMES = {
   G: "Tall Grass", L: "Lake Shore", M: "Rocky Pass", V: "Moon Cave", F: "Ash Field", A: "Wind Hill",
   O: "Orchid Orchard", Q: "Sun Quarry", P: "Prism Ruins", H: "Frost Hollow",
   J: "Crystal Jungle", X: "Spirit Marsh", Z: "Neon Basin", E: "Echo Caves", Y: "Beastwood", U: "Titan Pass",
   "1": "Sunken Sun Catacombs", "2": "Nocturne Catacombs", "3": "Tideglass Grotto", "4": "Verdant Catacombs", "5": "Timeglass Labyrinth",
-  "6": "Ember Roost", "7": "Mirage Garden", "8": "Tideglass Flats", "0": "Area Exit",
+  "6": "Ember Roost", "7": "Mirage Garden", "8": "Tideglass Flats", "$": "Luminous Bazaar", "!": "Stormspire Cliffs", "0": "Area Exit",
   C: "Crystal Spring", N: "Grovepath Village", R: "River Rival Bridge", K: "Keeper Gate", B: "Ash Road Captain", S: "Old Shrine", D: "Dragon Gate", T: "Treasure Chest", W: "Mountain Wall"
 };
 const AREA_DATA = {
@@ -655,7 +679,7 @@ const AREA_DATA = {
     levelMin: 3,
     levelMax: 9,
     map: MAP_DATA,
-    description: "The central crossroads of Luminara. Routes branch toward caves, marshes, quarries, gardens, and legendary seals."
+    description: "The safe central crossroads of Luminara. Early story objectives happen here before the road opens toward caves, marshes, quarries, gardens, and finally Dracinder."
   },
   echoCaves: {
     id: "echoCaves",
@@ -691,8 +715,8 @@ const AREA_DATA = {
     subtitle: "Chapter 3 · Lanterns in the Mire",
     theme: "Low Bells and Rain",
     bg: "from-purple-950 via-lime-950 to-slate-950",
-    levelMin: 10,
-    levelMax: 18,
+    levelMin: 9,
+    levelMax: 17,
     start: { x: 2, y: 9 },
     map: [
       "WWWWWWWWWWWWWWWW",
@@ -718,8 +742,8 @@ const AREA_DATA = {
     subtitle: "Chapter 4 · The Broken Light",
     theme: "Glass Choir",
     bg: "from-violet-950 via-cyan-950 to-slate-950",
-    levelMin: 14,
-    levelMax: 22,
+    levelMin: 15,
+    levelMax: 24,
     start: { x: 2, y: 9 },
     map: [
       "WWWWWWWWWWWWWWWW",
@@ -745,8 +769,8 @@ const AREA_DATA = {
     subtitle: "Chapter 5 · Steps of Giants",
     theme: "Mountain War Drums",
     bg: "from-stone-950 via-orange-950 to-slate-950",
-    levelMin: 18,
-    levelMax: 28,
+    levelMin: 21,
+    levelMax: 33,
     start: { x: 2, y: 9 },
     map: [
       "WWWWWWWWWWWWWWWW",
@@ -772,8 +796,8 @@ const AREA_DATA = {
     subtitle: "Chapter 3 · Mirror of the Sea",
     theme: "Glass Tide",
     bg: "from-blue-950 via-cyan-950 to-slate-950",
-    levelMin: 11,
-    levelMax: 19,
+    levelMin: 13,
+    levelMax: 22,
     start: { x: 2, y: 9 },
     map: [
       "WWWWWWWWWWWWWWWW",
@@ -799,8 +823,8 @@ const AREA_DATA = {
     subtitle: "Chapter 2 · Rails Above the Grass",
     theme: "Windbells Over Green",
     bg: "from-sky-950 via-emerald-950 to-slate-950",
-    levelMin: 8,
-    levelMax: 16,
+    levelMin: 5,
+    levelMax: 11,
     start: { x: 2, y: 9 },
     map: [
       "WWWWWWWWWWWWWWWW",
@@ -826,8 +850,8 @@ const AREA_DATA = {
     subtitle: "Chapter 4 · Engines Under the Prism",
     theme: "Steam and Steel",
     bg: "from-slate-950 via-zinc-900 to-cyan-950",
-    levelMin: 16,
-    levelMax: 26,
+    levelMin: 19,
+    levelMax: 30,
     start: { x: 2, y: 9 },
     map: [
       "WWWWWWWWWWWWWWWW",
@@ -853,8 +877,8 @@ const AREA_DATA = {
     subtitle: "Chapter 5 · The Long Shadow",
     theme: "Black Star Road",
     bg: "from-black via-purple-950 to-slate-950",
-    levelMin: 20,
-    levelMax: 31,
+    levelMin: 23,
+    levelMax: 35,
     start: { x: 2, y: 9 },
     map: [
       "WWWWWWWWWWWWWWWW",
@@ -880,8 +904,8 @@ const AREA_DATA = {
     subtitle: "Chapter 6 · Fire at the World's Rim",
     theme: "Crown of Ash",
     bg: "from-red-950 via-orange-950 to-black",
-    levelMin: 24,
-    levelMax: 36,
+    levelMin: 28,
+    levelMax: 42,
     start: { x: 2, y: 9 },
     map: [
       "WWWWWWWWWWWWWWWW",
@@ -908,7 +932,7 @@ const AREA_DATA = {
     theme: "Aurora Bells",
     bg: "from-cyan-950 via-blue-950 to-slate-950",
     levelMin: 17,
-    levelMax: 29,
+    levelMax: 27,
     start: { x: 2, y: 9 },
     sideQuest: "Recover the Aurora Lens from the frozen watchtower.",
     map: [
@@ -935,8 +959,8 @@ const AREA_DATA = {
     subtitle: "Chapter 3 Side Route · Roots Above the World",
     theme: "Canopy Flutes",
     bg: "from-emerald-950 via-lime-950 to-slate-950",
-    levelMin: 12,
-    levelMax: 24,
+    levelMin: 11,
+    levelMax: 19,
     start: { x: 2, y: 9 },
     sideQuest: "Find the three Seed Bells and wake the sleeping root bridge.",
     map: [
@@ -963,8 +987,8 @@ const AREA_DATA = {
     subtitle: "Chapter 5 Side Route · The Singing Garden",
     theme: "Orchid Waltz",
     bg: "from-pink-950 via-fuchsia-950 to-indigo-950",
-    levelMin: 19,
-    levelMax: 32,
+    levelMin: 24,
+    levelMax: 36,
     start: { x: 2, y: 9 },
     sideQuest: "Defeat the three court performers to earn the Harmony Charm.",
     map: [
@@ -985,6 +1009,63 @@ const AREA_DATA = {
     description: "A melodic garden full of Mystic performers, sleep moves, and trade-evolution hints."
   },
 
+  luminousBazaar: {
+    id: "luminousBazaar",
+    name: "Luminous Bazaar",
+    chapter: 3,
+    subtitle: "Side Route · The Market of Living Light",
+    theme: "Golden Lantern Waltz",
+    bg: "from-yellow-950 via-orange-950 to-slate-950",
+    levelMin: 11,
+    levelMax: 20,
+    start: { x: 2, y: 9 },
+    sideQuest: "Find the three Bell Merchants and earn the Lucky Prism tag.",
+    map: [
+      "WWWWWWWWWWWWWWWW",
+      "W$$$$..O..T...0W",
+      "W.$G$..$$..OO..W",
+      "W..$..WWWW..$..W",
+      "W..$..C..O..N..W",
+      "W..$$$..O..$$..W",
+      "W..$..WWWW..$..W",
+      "W..$....$...$..W",
+      "W..$..R..OO....W",
+      "W.0$$$$$$..$...W",
+      "W....$...B..$$.W",
+      "WWWWWWWWWWWWWWWW"
+    ],
+    encounters: { "$": ["goldkit","aurumane","bellimp","lumifox","prismite"], O: ["orchling","miragebud","dreamorchid"], G: ["leafawn","spriggeist"] },
+    description: "A glowing market route where Light and Mystic Mythlings gather around living lantern stalls."
+  },
+  stormspireCliffs: {
+    id: "stormspireCliffs",
+    name: "Stormspire Cliffs",
+    chapter: 5,
+    subtitle: "Side Route · The Singing Thunder Cliffs",
+    theme: "Choir of Lightning",
+    bg: "from-sky-950 via-indigo-950 to-slate-950",
+    levelMin: 26,
+    levelMax: 39,
+    start: { x: 2, y: 9 },
+    sideQuest: "Ring the three storm bells to awaken Stormglass.",
+    map: [
+      "WWWWWWWWWWWWWWWW",
+      "W!!!!..A..T...0W",
+      "W.!A!..!!..AA..W",
+      "W..!..WWWW..!..W",
+      "W..!..C..A..K..W",
+      "W..!!!..A..!!..W",
+      "W..!..WWWW..!..W",
+      "W..!....!...!..W",
+      "W..!..R..AA....W",
+      "W.0!!!!!!..!...W",
+      "W....!...D..!!.W",
+      "WWWWWWWWWWWWWWWW"
+    ],
+    encounters: { "!": ["stormkid","thunderchoir","glasswyrm","stormglass","ionwyrm","cloudfinch"], A: ["galegryph","dawnhare","mistowl"], Z: ["sparkitten","voltiger"] },
+    description: "A high-level optional cliff route. Wind, thunder, crystal, and song overlap here; enter after your team is around Lv.26+."
+  },
+
 
 };
 
@@ -1001,6 +1082,8 @@ const AREA_EXITS = {
   H: "frostglassPeaks",
   J: "verdantCanopy",
   O: "orchidCourt",
+  "$": "luminousBazaar",
+  "!": "stormspireCliffs",
   "0": "luminara"
 };
 
@@ -1011,6 +1094,7 @@ const WORLD_ROUTE = [
   { id: "echoCaves", gate: "Echo Cave / E", story: "Defeat Rival Ren and hear the first Prism song." },
   { id: "spiritMarsh", gate: "Spirit Marsh / X", story: "Find Moon Keeper Sola and unlock shrine shadows." },
   { id: "verdantCanopy", gate: "Crystal Jungle / J", story: "Optional but recommended: complete the Seed Bell side quest and train Verdant lines." },
+  { id: "luminousBazaar", gate: "Luminous Bazaar / $", story: "Side route: earn the Lucky Prism tag and discover Light Mythlings." },
   { id: "tideglassFlats", gate: "Tideglass / 8", story: "Gather coastal items and evolve Aqua lines." },
   { id: "prismRuins", gate: "Prism Ruins / P", story: "Recover the Prism Key from broken glass." },
   { id: "frostglassPeaks", gate: "Frost Hollow / H", story: "Side route: recover the Aurora Lens and catch Ice Mythlings." },
@@ -1018,6 +1102,7 @@ const WORLD_ROUTE = [
   { id: "titanPass", gate: "Titan Pass / U", story: "Defeat Bridge Captain Brann." },
   { id: "nocturneRoad", gate: "Moon Cave / V", story: "Prepare for shadow routes and late-game threats." },
   { id: "orchidCourt", gate: "Orchid Orchard / O", story: "Side route: earn Harmony Charm and learn about trade evolutions." },
+  { id: "stormspireCliffs", gate: "Stormspire / !", story: "Side route: ring the storm bells and awaken Stormglass." },
   { id: "calderaCrown", gate: "Ash Field / F", story: "Reach the fiery road to Dragon Gate." },
   { id: "postgame", gate: "Legend seals 1-5", story: "After Dracinder, hunt the five legendary dungeons." }
 ];
@@ -1025,11 +1110,80 @@ function areaOrderIndex(areaId) {
   const idx = WORLD_ROUTE.findIndex((r) => r.id === areaId);
   return idx < 0 ? 0 : idx;
 }
-function currentRouteStep(player) {
+function currentRouteStep(player, seen = {}) {
   const area = player?.area || "luminara";
-  const idx = areaOrderIndex(area);
-  return { index: idx, current: WORLD_ROUTE[idx] || WORLD_ROUTE[0], next: WORLD_ROUTE[idx + 1] || WORLD_ROUTE[WORLD_ROUTE.length - 1] };
+  const currentIdx = areaOrderIndex(area);
+  const recommendedId = recommendedStoryAreaId(player, seen);
+  const recommendedIdx = areaOrderIndex(recommendedId);
+  const current = WORLD_ROUTE[currentIdx] || WORLD_ROUTE[0];
+  const next = WORLD_ROUTE[recommendedIdx] || WORLD_ROUTE[0];
+  return { index: currentIdx, recommendedIndex: recommendedIdx, current, next };
 }
+
+function averagePartyLevel(party = []) {
+  const alive = (party || []).filter(Boolean);
+  if (!alive.length) return 1;
+  return Math.round(alive.reduce((sum, m) => sum + Number(m.level || 1), 0) / alive.length);
+}
+function maxPartyLevel(party = []) {
+  return Math.max(1, ...((party || []).filter(Boolean).map((m) => Number(m.level || 1))));
+}
+function recommendedStoryAreaId(player, seen) {
+  if (!seen?.elder || !seen?.rival) return "luminara";
+  if (!seen?.keeper) return "echoCaves";
+  if (!seen?.shrine) return "spiritMarsh";
+  if (!seen?.bridgeCaptain) return "titanPass";
+  if (!seen?.dragon) return "calderaCrown";
+  return "postgame";
+}
+function areaGateSafety(areaId, party = [], seen = {}, player = {}) {
+  const area = AREA_DATA[areaId] || AREA_DATA.luminara;
+  const avg = averagePartyLevel(party);
+  const max = maxPartyLevel(party);
+  const min = area.levelMin || 3;
+  const maxRec = area.levelMax || min + 6;
+  const routeIndex = areaOrderIndex(areaId);
+  const recommendedId = recommendedStoryAreaId(player, seen);
+  const recommendedIndex = areaOrderIndex(recommendedId);
+  let severity = "safe";
+  let title = "Recommended";
+  const warnings = [];
+
+  if (areaId === "calderaCrown" && !seen.bridgeCaptain) {
+    severity = "locked";
+    title = "Story locked";
+    warnings.push("This is the road to Dracinder. Defeat Bridge Captain Brann before taking this route.");
+  } else if (routeIndex > recommendedIndex + 2 && !seen.dragon) {
+    severity = "danger";
+    title = "Far ahead";
+    warnings.push(`This route is much later than your current story step. Recommended next story area: ${AREA_DATA[recommendedId]?.name || "Luminara"}.`);
+  }
+
+  if (avg < min - 4) {
+    severity = severity === "locked" ? "locked" : "danger";
+    warnings.push(`Your team's average level is about ${avg}. This area starts around Lv.${min}.`);
+  } else if (avg < min - 1) {
+    severity = severity === "safe" ? "caution" : severity;
+    warnings.push(`Your team's average level is about ${avg}. This area is recommended around Lv.${min}-${maxRec}.`);
+  }
+
+  if (!warnings.length) warnings.push(`Recommended levels: Lv.${min}-${maxRec}. Your highest Mythling is Lv.${max}.`);
+  return { area, avg, max, min, maxRec, severity, title, warnings, recommendedId };
+}
+function routeTargetForArea(areaId) {
+  const route = WORLD_ROUTE.find((r) => r.id === areaId);
+  const gate = route?.gate || "";
+  const match = gate.match(/\/\s*(.)$/);
+  const tile = match ? match[1] : (areaId === "luminara" ? "N" : "0");
+  return {
+    areaId,
+    tile,
+    label: `${AREA_DATA[areaId]?.name || areaId} route`,
+    icon: tile,
+    detail: route?.story || AREA_DATA[areaId]?.description || "Follow the highlighted route gate."
+  };
+}
+
 function areaUnlockHint(id) {
   const i = areaOrderIndex(id);
   if (i <= 1) return "Available early from Luminara.";
@@ -1061,11 +1215,11 @@ function areaEncounterPool(tile, player) {
 }
 
 const LEGENDARY_DUNGEONS = {
-  "1": { id: "solguard", title: "Sunken Sun Catacombs", condition: "Post-game morning encounter after Dracinder is defeated.", check: (g) => !!g.seen?.dragon && timeName(g.clock) === "Morning", fail: "The sun door is sealed. Return in the morning after restoring the Sky Prism.", level: 24, reward: "solguard", intro: "Ancient sunlight pours through the catacombs. Solguard lowers its golden wings." },
-  "2": { id: "umbraclaw", title: "Nocturne Catacombs", condition: "Post-game night encounter with at least 20 Dex entries seen.", check: (g) => !!g.seen?.dragon && timeName(g.clock) === "Night" && dexStats(g.dex).seen >= 20, fail: "Only a tamer who has seen 20 Mythlings may disturb the Nocturne chains at night.", level: 25, reward: "umbraclaw", intro: "The torches go black. Umbraclaw steps out of an eclipse-shaped shadow." },
-  "3": { id: "thalassor", title: "Tideglass Grotto", condition: "Post-game night encounter while carrying a Tide Pearl.", check: (g) => !!g.seen?.dragon && timeName(g.clock) === "Night" && (g.player?.items?.["Tide Pearl"] || 0) > 0, fail: "The Tideglass Grotto asks for nightfall and a Tide Pearl.", level: 26, reward: "thalassor", intro: "The cave floods with stars reflected in black water. Thalassor rises from the abyss." },
-  "4": { id: "gaialith", title: "Verdant Catacombs", condition: "Post-game encounter after walking 120 steps.", check: (g) => !!g.seen?.dragon && (g.player?.steps || 0) >= 120, fail: "The root-gate sleeps. Walk 120 steps after the Prism is restored to wake it.", level: 26, reward: "gaialith", intro: "Roots crack the stone floor open. Gaialith awakens beneath the ancient forest." },
-  "5": { id: "chronova", title: "Timeglass Labyrinth", condition: "Post-game encounter after catching 25 Mythlings.", check: (g) => !!g.seen?.dragon && dexStats(g.dex).caught >= 25, fail: "The time lock rejects you. Catch 25 Mythlings before challenging Chronova.", level: 28, reward: "chronova", intro: "The world freezes between seconds. Chronova unfolds from a prism clock." },
+  "1": { id: "solguard", title: "Sunken Sun Catacombs", condition: "Post-game morning encounter after Dracinder is defeated.", check: (g) => !!g.seen?.dragon && timeName(g.clock) === "Morning", fail: "The sun door is sealed. Return in the morning after restoring the Sky Prism.", level: 44, reward: "solguard", intro: "Ancient sunlight pours through the catacombs. Solguard lowers its golden wings." },
+  "2": { id: "umbraclaw", title: "Nocturne Catacombs", condition: "Post-game night encounter with at least 20 Dex entries seen.", check: (g) => !!g.seen?.dragon && timeName(g.clock) === "Night" && dexStats(g.dex).seen >= 20, fail: "Only a tamer who has seen 20 Mythlings may disturb the Nocturne chains at night.", level: 46, reward: "umbraclaw", intro: "The torches go black. Umbraclaw steps out of an eclipse-shaped shadow." },
+  "3": { id: "thalassor", title: "Tideglass Grotto", condition: "Post-game night encounter while carrying a Tide Pearl.", check: (g) => !!g.seen?.dragon && timeName(g.clock) === "Night" && (g.player?.items?.["Tide Pearl"] || 0) > 0, fail: "The Tideglass Grotto asks for nightfall and a Tide Pearl.", level: 48, reward: "thalassor", intro: "The cave floods with stars reflected in black water. Thalassor rises from the abyss." },
+  "4": { id: "gaialith", title: "Verdant Catacombs", condition: "Post-game encounter after walking 120 steps.", check: (g) => !!g.seen?.dragon && (g.player?.steps || 0) >= 120, fail: "The root-gate sleeps. Walk 120 steps after the Prism is restored to wake it.", level: 50, reward: "gaialith", intro: "Roots crack the stone floor open. Gaialith awakens beneath the ancient forest." },
+  "5": { id: "chronova", title: "Timeglass Labyrinth", condition: "Post-game encounter after catching 25 Mythlings.", check: (g) => !!g.seen?.dragon && dexStats(g.dex).caught >= 25, fail: "The time lock rejects you. Catch 25 Mythlings before challenging Chronova.", level: 52, reward: "chronova", intro: "The world freezes between seconds. Chronova unfolds from a prism clock." },
 };
 
 const freshPlayer = () => ({ area: "luminara", x: 3, y: 5, money: 1200, balls: 8, potions: 4, captureItems: { ...DEFAULT_CAPTURE_ITEMS }, items: { "Tide Pearl": 1, "Moon Shard": 0, "Sun Fossil": 0, "Potion": 4, "Super Potion": 0, "Revive Herb": 0, "Power Herb": 0, "Guard Herb": 0, "Antidote": 1, "Burn Salve": 1, "Ice Melt": 0, "Awakening": 1, "Paralyze Heal": 1, "Clarity Herb": 1, "Full Heal": 0 }, keys: [], quest: "Choose your first mythling.", steps: 0, trainerWins: 0, badges: 0, chapter: 1 });
@@ -1525,7 +1679,7 @@ function MythboundTamersJRPGInner() {
   function audio() { if (muted) return null; if (!audioRef.current) audioRef.current = new (window.AudioContext || window.webkitAudioContext)(); if (audioRef.current.state === "suspended") audioRef.current.resume(); return audioRef.current; }
   function beep(freq = 440, dur = 0.1, type = "sine", vol = 0.06) { const ctx = audio(); if (!ctx) return; const o = ctx.createOscillator(), g = ctx.createGain(); o.type = type; o.frequency.setValueAtTime(freq, ctx.currentTime); g.gain.setValueAtTime(vol, ctx.currentTime); g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + dur); o.connect(g); g.connect(ctx.destination); o.start(); o.stop(ctx.currentTime + dur); }
   function sfx(name, type = "Mystic") { if (name === "success") [520,660,880,1040].forEach((n,i)=>setTimeout(()=>beep(n,0.09,"sine",0.05),i*95)); if (name === "evolve") [330,440,660,990,1320].forEach((n,i)=>setTimeout(()=>beep(n,0.12,"triangle",0.06),i*120)); if (name === "fail") beep(130,0.18,"square",0.04); if (name === "move") beep(280,0.025,"sine",0.018); if (name === "capture") { beep(420,0.1,"triangle",0.05); setTimeout(()=>beep(620,0.1,"triangle",0.05),120); } if (name === "heal") { beep(620,0.12,"sine",0.04); setTimeout(()=>beep(820,0.14,"sine",0.04),90); } if (name === "attack") beep(type === "Volt" ? 880 : type === "Flame" ? 520 : type === "Aqua" ? 390 : type === "Verdant" ? 450 : type === "Stone" ? 190 : type === "Air" ? 700 : type === "Shadow" ? 240 : 300, 0.12, type === "Volt" ? "square" : "sawtooth", 0.05); }
-  function playCry(id) { const isLegend = !!BESTIARY[id]?.legendary; const base = { emberlynx:520, pyrolynx:420, solarynx:360, aquapup:340, tidemast:260, leviamast:220, leafawn:620, florantler:540, gaianhart:470, voltoroo:760, stormaroo:920, thundaroo:980, gloomander:260, lunamander:310, eclipsander:230, ironboar:180, elderboar:145, cloudfinch:700, galegryph:500, pebbkit:210, granitus:120, shadebat:330, noctyra:240, prismite:850, dawnhare:790, nightmoth:250, dracinder:140, regaldrake:110, frostcub:410, glaciermaw:180, polarune:155, cindermole:250, magmole:160, calderox:120, spriggeist:760, starwhale:95, coralisk:420, reefserpent:160, sandillo:260, duneguard:130, mistowl:610, orchidimp:690, thistlefiend:300, aurorabbit:780, crysteel:620, prismhorn:260, toxifrog:360, venomire:210, spirikit:730, phantelope:510, neonsquid:680, ionwyrm:120, echopup:500, howlitzer:300, resonark:190, cuboulder:190, titanursa:105, worldursa:80, bellimp:640, chimegeist:360, ferroach:260, mantitan:180, mechamane:145, solguard:95, umbraclaw:70, thalassor:55, gaialith:65, chronova:880, auroracalf:720, aurorox:260, glacimarch:150, sirenfin:680, melodray:480, drillbug:230, cometitan:120, miragebud:760, dreamorchid:520, }[id] || 440; beep(base, isLegend ? 0.18 : 0.09, isLegend ? "square" : "sawtooth", isLegend ? 0.07 : 0.045); setTimeout(()=>beep(base*1.33, isLegend ? 0.16 : 0.08, "triangle", isLegend ? 0.065 : 0.04),90); if (isLegend) { setTimeout(()=>beep(base*0.66,0.22,"sawtooth",0.055),230); setTimeout(()=>beep(base*1.9,0.18,"sine",0.05),450); } }
+  function playCry(id) { const isLegend = !!BESTIARY[id]?.legendary; const base = { emberlynx:520, pyrolynx:420, solarynx:360, aquapup:340, tidemast:260, leviamast:220, leafawn:620, florantler:540, gaianhart:470, voltoroo:760, stormaroo:920, thundaroo:980, gloomander:260, lunamander:310, eclipsander:230, ironboar:180, elderboar:145, cloudfinch:700, galegryph:500, pebbkit:210, granitus:120, shadebat:330, noctyra:240, prismite:850, dawnhare:790, nightmoth:250, dracinder:140, regaldrake:110, frostcub:410, glaciermaw:180, polarune:155, cindermole:250, magmole:160, calderox:120, spriggeist:760, starwhale:95, coralisk:420, reefserpent:160, sandillo:260, duneguard:130, mistowl:610, orchidimp:690, thistlefiend:300, aurorabbit:780, crysteel:620, prismhorn:260, toxifrog:360, venomire:210, spirikit:730, phantelope:510, neonsquid:680, ionwyrm:120, echopup:500, howlitzer:300, resonark:190, cuboulder:190, titanursa:105, worldursa:80, bellimp:640, chimegeist:360, ferroach:260, mantitan:180, mechamane:145, solguard:95, umbraclaw:70, thalassor:55, gaialith:65, chronova:880, auroracalf:720, aurorox:260, glacimarch:150, sirenfin:680, melodray:480, drillbug:230, cometitan:120, miragebud:760, dreamorchid:520, goldkit:760, aurumane:520, solarchon:330, stormkid:840, thunderchoir:460, glasswyrm:380, stormglass:165, incensemoth:560, censeraph:240, }[id] || 440; beep(base, isLegend ? 0.18 : 0.09, isLegend ? "square" : "sawtooth", isLegend ? 0.07 : 0.045); setTimeout(()=>beep(base*1.33, isLegend ? 0.16 : 0.08, "triangle", isLegend ? 0.065 : 0.04),90); if (isLegend) { setTimeout(()=>beep(base*0.66,0.22,"sawtooth",0.055),230); setTimeout(()=>beep(base*1.9,0.18,"sine",0.05),450); } }
   function playEvolutionSound(fromMon, toMon, style) {
     const fromType = BESTIARY[fromMon?.id]?.type || "Mystic";
     const toType = BESTIARY[toMon?.id]?.type || fromType;
@@ -1607,7 +1761,8 @@ function MythboundTamersJRPGInner() {
     if (AREA_EXITS[t] && (AREA_EXITS[t] !== (g.player.area || "luminara"))) {
       const target = AREA_DATA[AREA_EXITS[t]] || AREA_DATA.luminara;
       setPlayer((p) => ({ ...p, x: nx, y: ny, steps: (p.steps || 0) + 1 }));
-      setPendingAreaGate({ areaId: target.id, tile: t, tileName: TILE_NAMES[t] || "Area Gate", fromArea: AREA_DATA[g.player.area || "luminara"]?.name || "Luminara", targetName: target.name, subtitle: target.subtitle, theme: target.theme, description: target.description, sideQuest: target.sideQuest });
+      const safety = areaGateSafety(target.id, g.party, g.seen, g.player);
+      setPendingAreaGate({ areaId: target.id, tile: t, tileName: TILE_NAMES[t] || "Area Gate", fromArea: AREA_DATA[g.player.area || "luminara"]?.name || "Luminara", targetName: target.name, subtitle: target.subtitle, theme: target.theme, description: target.description, sideQuest: target.sideQuest, safety });
       sfx("success");
       return;
     }
@@ -1673,6 +1828,7 @@ function MythboundTamersJRPGInner() {
   function finalDragon() {
     const g = gameRef.current;
     if (!g.seen.bridgeCaptain || !g.seen.shrine) { setToast("The dragon seal needs both the Prism Key and the ash road oath."); return; }
+    if (maxPartyLevel(g.party) < 26) { setToast("Dracinder is a late-game boss. Train closer to Lv.28+ before challenging the Dragon Gate."); return; }
     if (g.seen.dragon) { setToast("Dracinder watches over Luminara from above."); return; }
     setNpc({ title: "Dragon Gate", body: "Boss cutscene: The gate burns without flame. Dracinder descends through a ring of broken Prism light and stares directly at your lead Mythling.", reward: () => beginBattle("legend", makeMon("dracinder", 12 + areaChapter(g.player), true), "The lost royal Mythling descends!", "dragon") });
     sfx("success");
@@ -2237,6 +2393,8 @@ function sideQuestList(player, seen, dex, party) {
     { title: "Aurora Lens", area: "Frostglass Peaks", done: !!dex?.caught?.glacira || !!dex?.seen?.glacira, goal: "Find the Snowkit line and unlock Glacira's Dex entry." },
     { title: "Harmony Charm", area: "Orchid Court", done: !!dex?.caught?.orchidiva || !!dex?.seen?.orchidiva, goal: "Encounter Orchidiva and learn sleep/confuse counterplay." },
     { title: "Engineer’s Rail Badge", area: "Ironrail Yard", done: !!dex?.caught?.locopanther || !!dex?.seen?.locopanther, goal: "Catch or see Locopanther in the rail yard." },
+    { title: "Lucky Prism Tag", area: "Luminous Bazaar", done: !!dex?.caught?.aurumane || !!dex?.seen?.aurumane, goal: "Encounter Aurumane and find the Bell Merchants in Luminous Bazaar." },
+    { title: "Storm Bell Trial", area: "Stormspire Cliffs", done: !!dex?.caught?.stormglass || !!dex?.seen?.stormglass, goal: "Encounter Stormglass after ringing the storm bells on the cliffs." },
     { title: "Collector Rank", area: "All Areas", done: stats.caught >= 25, goal: `Catch 25 Mythlings. Current: ${stats.caught}/25.` },
   ];
 }
@@ -2279,7 +2437,7 @@ function objectiveSections(player, seen, dex, party, storage, clock) {
 
 
 function progressionVisualState(player, seen, dex) {
-  const route = currentRouteStep(player);
+  const route = currentRouteStep(player, seen);
   const currentArea = AREA_DATA[player?.area] || AREA_DATA.luminara;
   const nextArea = route.next?.id === "postgame" ? null : AREA_DATA[route.next?.id];
   let stepTitle = "Continue your journey";
@@ -2359,6 +2517,8 @@ function sideObjectiveTarget(data) {
   if (title.includes("aurora")) return { areaId: "frostglassPeaks", tile: "H", label: "Frostglass Peaks / Aurora Lens", icon: "❄", detail: "Look for a Frost Hollow gate marked ❄ and explore the peaks." };
   if (title.includes("harmony")) return { areaId: "orchidCourt", tile: "O", label: "Orchid Court / Harmony Charm", icon: "✿", detail: "Find an Orchid Orchard gate marked ✿ and defeat the court performers." };
   if (title.includes("engineer") || title.includes("rail")) return { areaId: "ironrailYard", tile: "M", label: "Ironrail Yard / Rail Badge", icon: "▲", detail: "Find a Rocky Pass gate marked ▲ that leads toward Ironrail Yard." };
+  if (title.includes("lucky") || title.includes("bazaar")) return { areaId: "luminousBazaar", tile: "$", label: "Luminous Bazaar / Lucky Prism Tag", icon: "¤", detail: "Find the Luminous Bazaar gate marked ¤ and look for Goldkit and Aurumane." };
+  if (title.includes("storm")) return { areaId: "stormspireCliffs", tile: "!", label: "Stormspire Cliffs / Storm Bell Trial", icon: "ϟ", detail: "Find the Stormspire gate marked ϟ and explore the high cliffs." };
   if (title.includes("collector")) return { areaId: "luminara", tile: "G", label: "Any Wild Zone", icon: "♣", detail: "Catch more Mythlings in wild tiles. Different areas contain different pools." };
   if (title.includes("legend")) return { areaId: "luminara", tile: "1", label: "Legendary Dungeon Seal", icon: "★", detail: "Legend dungeons are numbered 1-5 and unlock after the main story." };
   const areaId = areaIdByName(data?.area);
@@ -2395,11 +2555,13 @@ function milestoneObjectiveTarget(milestone) {
 
 function objectiveInstructionSteps(type, data, target, player, seen, dex, visual) {
   if (type === "main") {
+    const recommendedId = visual.route?.next?.id || recommendedStoryAreaId(player, seen);
+    const routeTarget = recommendedId === "postgame" ? target : routeTargetForArea(recommendedId);
     return [
-      { title: "Check current area", body: `You are currently in ${visual.currentArea?.name || "Luminara"}.`, target },
-      { title: "Go to the recommended route", body: `Next recommended area: ${visual.nextArea?.name || (visual.route.next?.id === "postgame" ? "Legendary Seals" : "Complete the Prism Dex")}.`, target },
-      { title: "Find the map icon", body: `Look for ${target.icon} / ${target.label}. Press Show on Map to highlight the tile or the gate leading there.`, target },
-      { title: "Complete the objective", body: target.detail, target },
+      { title: "Check current area", body: `You are currently in ${visual.currentArea?.name || "Luminara"}.`, target: routeTarget },
+      { title: "Go to the recommended route", body: `Next recommended area: ${visual.nextArea?.name || (visual.route.next?.id === "postgame" ? "Legendary Seals" : "Complete the Prism Dex")}.`, target: routeTarget },
+      { title: "Find the correct map icon", body: `Look for ${routeTarget.icon} / ${routeTarget.label}. Press Show on Map to highlight the correct route gate.`, target: routeTarget },
+      { title: "Complete the current objective", body: target.detail, target },
       { title: "Prepare first", body: "Heal, save, and buy items before boss, trainer, or legendary battles.", target },
     ];
   }
@@ -2574,8 +2736,8 @@ function tileDetails(tile, clock, area = null) {
   if (LEGENDARY_DUNGEONS[tile]) timed.push(`Legendary dungeon: ${LEGENDARY_DUNGEONS[tile].condition}`);
   if (AREA_EXITS[tile]) {
     const target = AREA_DATA[AREA_EXITS[tile]];
-    timed.unshift(`Area gate: enter ${target?.name || "another area"}. Step on this tile to choose whether to travel.`);
-    return { name, ...base, kind: "Area Gate", danger: base.danger || "Travel", special: `Leads to ${target?.name || "another area"}`, pool, timed };
+    timed.unshift(`Area gate: enter ${target?.name || "another area"} · recommended Lv.${target?.levelMin || "?"}-${target?.levelMax || "?"}. Step on this tile to choose whether to travel.`);
+    return { name, ...base, kind: "Area Gate", danger: `Travel · Lv.${target?.levelMin || "?"}-${target?.levelMax || "?"}`, special: `Leads to ${target?.name || "another area"}`, pool, timed };
   }
   return { name, ...base, pool, timed };
 }
@@ -2591,9 +2753,9 @@ function WorldScreen({ map, area, player, move, party, storage, seen, dex, setSc
     T:"bg-yellow-500/80 border-yellow-200", L:"bg-blue-700/80 border-blue-300", M:"bg-stone-600 border-stone-300",
     V:"bg-indigo-900 border-indigo-300", F:"bg-red-800/80 border-red-300", A:"bg-sky-700/80 border-sky-200",
     O:"bg-pink-700/80 border-pink-300", Q:"bg-amber-700/80 border-yellow-300", P:"bg-violet-800/90 border-cyan-200",
-    H:"bg-cyan-900/80 border-blue-100", J:"bg-teal-700/80 border-fuchsia-200", X:"bg-purple-950 border-lime-300", Z:"bg-cyan-950 border-fuchsia-300", E:"bg-pink-950 border-fuchsia-300", Y:"bg-orange-950 border-yellow-300", U:"bg-stone-900 border-orange-300", "1":"bg-yellow-950 border-yellow-200", "2":"bg-black border-purple-300", "3":"bg-blue-950 border-cyan-200", "4":"bg-emerald-950 border-lime-200", "5":"bg-slate-950 border-fuchsia-200", "6":"bg-red-950 border-orange-300", "7":"bg-fuchsia-950 border-cyan-200", "8":"bg-blue-950 border-sky-200", "0":"bg-cyan-950 border-cyan-200"
+    H:"bg-cyan-900/80 border-blue-100", J:"bg-teal-700/80 border-fuchsia-200", X:"bg-purple-950 border-lime-300", Z:"bg-cyan-950 border-fuchsia-300", E:"bg-pink-950 border-fuchsia-300", Y:"bg-orange-950 border-yellow-300", U:"bg-stone-900 border-orange-300", "1":"bg-yellow-950 border-yellow-200", "2":"bg-black border-purple-300", "3":"bg-blue-950 border-cyan-200", "4":"bg-emerald-950 border-lime-200", "5":"bg-slate-950 border-fuchsia-200", "6":"bg-red-950 border-orange-300", "7":"bg-fuchsia-950 border-cyan-200", "8":"bg-blue-950 border-sky-200", "$":"bg-yellow-950 border-amber-200", "!":"bg-sky-950 border-yellow-200", "0":"bg-cyan-950 border-cyan-200"
   }[t] || "bg-lime-700/60 border-lime-500/30");
-  const label = (t) => ({ C:"✦", N:"E", R:"R", K:"K", B:"B", S:"⌂", D:"龍", T:"?", G:"♣", L:"≈", M:"▲", V:"☾", F:"火", A:"~", O:"✿", Q:"◆", P:"✧", H:"❄", J:"晶", X:"☠", Z:"⚡", E:"♫", Y:"爪", U:"巨", "1":"☀", "2":"◐", "3":"♒", "4":"根", "5":"⌛", "6":"羽", "7":"幻", "8":"≋", "0":"↩", W:"" }[t] || "");
+  const label = (t) => ({ C:"✦", N:"E", R:"R", K:"K", B:"B", S:"⌂", D:"龍", T:"?", G:"♣", L:"≈", M:"▲", V:"☾", F:"火", A:"~", O:"✿", Q:"◆", P:"✧", H:"❄", J:"晶", X:"☠", Z:"⚡", E:"♫", Y:"爪", U:"巨", "1":"☀", "2":"◐", "3":"♒", "4":"根", "5":"⌛", "6":"羽", "7":"幻", "8":"≋", "$":"¤", "!":"ϟ", "0":"↩", W:"" }[t] || "");
   const TimeIcon = timeIcon(clock);
   const selected = selectedTile ? tileDetails(selectedTile.tile, clock, area) : null;
   const objectiveFocusOnMap = objectiveTargetForCurrentMap(objectiveMapFocus, area?.id || player.area || "luminara");
@@ -3390,14 +3552,21 @@ function AreaGateModal({ gate, enter, stay }) {
           </div>
           <p className="text-slate-100 text-lg leading-relaxed mb-4">{gate.description || "A new path opens ahead."}</p>
           {gate.sideQuest && <div className="rounded-2xl bg-amber-200/15 border border-amber-200/30 p-3 text-amber-100 font-bold mb-4">Side quest: {gate.sideQuest}</div>}
-          <div className="rounded-2xl bg-black/25 border border-white/10 p-3 text-sm text-slate-200 mb-5">
+          <div className="rounded-2xl bg-black/25 border border-white/10 p-3 text-sm text-slate-200 mb-3">
             Current area: <b>{gate.fromArea}</b><br/>
             Standing on: <b>{gate.tileName}</b><br/>
             Choosing <b>Stay here</b> keeps you on this same tile.
           </div>
+          {gate.safety && <div className={`rounded-2xl border p-3 mb-5 text-sm font-bold ${gate.safety.severity === "locked" ? "bg-rose-400/15 border-rose-200/40 text-rose-100" : gate.safety.severity === "danger" ? "bg-amber-400/15 border-amber-200/40 text-amber-100" : gate.safety.severity === "caution" ? "bg-yellow-300/15 border-yellow-200/40 text-yellow-100" : "bg-lime-300/10 border-lime-200/30 text-lime-100"}`}>
+            <div className="text-xs uppercase tracking-[0.22em] mb-1">{gate.safety.title || "Route Check"}</div>
+            <div>Area level: Lv.{gate.safety.min}-{gate.safety.maxRec} · Your average: Lv.{gate.safety.avg} · Highest: Lv.{gate.safety.max}</div>
+            <ul className="mt-2 list-disc list-inside space-y-1">
+              {gate.safety.warnings.map((w, i)=><li key={i}>{w}</li>)}
+            </ul>
+          </div>}
           <div className="grid grid-cols-2 gap-3">
             <Button onClick={stay} variant="secondary" className="rounded-2xl py-5 font-black bg-slate-100 text-slate-950 hover:bg-white">Stay here</Button>
-            <Button onClick={enter} className="rounded-2xl py-5 font-black bg-cyan-300 text-slate-950 hover:bg-cyan-200">Enter Area</Button>
+            <Button onClick={enter} disabled={gate.safety?.severity === "locked"} className="rounded-2xl py-5 font-black bg-cyan-300 text-slate-950 hover:bg-cyan-200 disabled:opacity-40">{gate.safety?.severity === "locked" ? "Locked" : gate.safety?.severity === "danger" ? "Enter Anyway" : "Enter Area"}</Button>
           </div>
         </div>
       </div>
@@ -3938,7 +4107,7 @@ function ShopScreen({ player, setScreen, buyStock }) {
 
 
 function AtlasScreen({ player, setScreen }) {
-  const route = currentRouteStep(player);
+  const route = currentRouteStep(player, seen);
   return <motion.div key="atlas" initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} className="min-h-[740px] p-4 sm:p-6 bg-gradient-to-br from-slate-950 via-blue-950 to-indigo-950">
     <div className="flex justify-between items-start gap-3 mb-5">
       <div>

@@ -1,8 +1,8 @@
 ﻿{
-    "version":  "0.44.0",
-    "versionCode":  44,
-    "notes":  "Fix mobile popup scrolling, improve capture ball landing animation, add new attacks, cries, monsters, and encounter upgrades.",
-    "apkUrl":  "https://github.com/costaskk/Mythbound-Tamers/releases/download/v0.44.0/mythbound-tamers-v0.44.0.apk",
+    "version":  "0.46.0",
+    "versionCode":  46,
+    "notes":  "Fix objective route guidance, add area power warnings and story locks, rebalance progression levels, improve boss scaling, and clarify late-game gates.",
+    "apkUrl":  "https://github.com/costaskk/Mythbound-Tamers/releases/download/v0.46.0/mythbound-tamers-v0.46.0.apk",
     "mandatory":  false,
     "publishedAt":  "2026-06-02"
 }
