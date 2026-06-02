@@ -1,8 +1,8 @@
 ﻿{
-    "version":  "0.41.0",
-    "versionCode":  41,
-    "notes":  "New monsters, UI improvements, objective guidance, and updater fixes.",
-    "apkUrl":  "https://github.com/costaskk/Mythbound-Tamers/releases/download/v0.41.0/mythbound-tamers-v0.41.0.apk",
+    "version":  "0.42.0",
+    "versionCode":  42,
+    "notes":  "Mobile scroll fixes, clickable main/story/side objectives with map search, auto update popup improvements, more monsters, UI visibility cleanup, and gameplay polish.",
+    "apkUrl":  "https://github.com/costaskk/Mythbound-Tamers/releases/download/v0.42.0/mythbound-tamers-v0.42.0.apk",
     "mandatory":  false,
     "publishedAt":  "2026-06-02"
 }
