@@ -1,8 +1,8 @@
 ﻿{
-    "version":  "0.66.0",
-    "versionCode":  66,
-    "notes":  "Fix stretched/missing board tiles by restoring square full-board fit at 100% zoom, improve tile visuals, boost damage, strengthen super-effective hits, and nerf healing moves.",
-    "apkUrl":  "https://github.com/costaskk/Mythbound-Tamers/releases/download/v0.66.0/mythbound-tamers-v0.66.0.apk",
+    "version":  "0.67.0",
+    "versionCode":  67,
+    "notes":  "Restore tap-tile info popouts, make movement happen by swiping the player paw, fix battle HP/name badge overlap, and rebuild battle layout for landscape screens.",
+    "apkUrl":  "https://github.com/costaskk/Mythbound-Tamers/releases/download/v0.67.0/mythbound-tamers-v0.67.0.apk",
     "mandatory":  false,
     "publishedAt":  "2026-06-02",
     "autoStartNativeUpdate":  false,

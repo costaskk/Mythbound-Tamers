@@ -8,8 +8,8 @@ import {Sparkles, PawPrint, Flame, Droplets, Leaf, Zap, Heart, Map, Backpack, Ga
 
 const SAVE_KEY = "mythbound_tamers_save_v4";
 const OLD_SAVE_KEYS = ["mythbound_tamers_save_v6", "mythbound_tamers_save_v5", "mythbound_tamers_save_v4", "mythbound_tamers_save_v3", "mythbound_tamers_save_v2", "mythbound_tamers_save"];
-const APP_VERSION = "0.66.0";
-const APP_VERSION_CODE = 66;
+const APP_VERSION = "0.67.0";
+const APP_VERSION_CODE = 67;
 const UPDATE_MANIFEST_URL = import.meta.env.VITE_UPDATE_MANIFEST_URL || "https://costaskk.github.io/Mythbound-Tamers/update-manifest.json";
 const SHINY_RATE = 1 / 192;
 const VALID_SCREENS = new Set(["title","story","starter","world","party","pc","shop","dex","account","multiplayer","friends","objectives","help","atlas","update","battle","gameover"]);
@@ -1534,7 +1534,7 @@ function typeButtonClass(type, disabled = false) {
     Beast: "from-orange-200 to-yellow-700 border-orange-300",
     Sound: "from-pink-100 to-indigo-300 border-pink-300",
   }[type] || "from-slate-100 to-slate-300 border-slate-300";
-  return `justify-start rounded-md bg-gradient-to-br ${tone} ${disabled ? "opacity-45" : "hover:brightness-110"} text-slate-950 border h-auto py-0.5 px-1.5 min-h-[38px] shadow-sm`;
+  return `justify-start rounded-md bg-gradient-to-br ${tone} ${disabled ? "opacity-45" : "hover:brightness-110"} text-slate-950 border h-auto py-0.5 px-1.5 min-h-[36px] landscape:min-h-[34px] shadow-sm`;
 }
 function moveSummary(skillName, mon, targetType, dex = null, enemy = null) {
   const sk = SKILLS[skillName] || SKILLS.Guard;
@@ -1962,7 +1962,7 @@ function MythboundTamersJRPGInner() {
   }
   function buildSaveData(g = gameRef.current) {
     const safeScreen = ["battle", "gameover", "starter"].includes(g.screen) ? "world" : g.screen;
-    return { version: 22, savedAt: Date.now(), screen: safeScreen, storyIndex: g.storyIndex, player: g.player, party: g.party, storage: g.storage || [], active: g.active, seen: g.seen, dex: g.dex, clock: g.clock, muted: g.muted };
+    return { version: 23, savedAt: Date.now(), screen: safeScreen, storyIndex: g.storyIndex, player: g.player, party: g.party, storage: g.storage || [], active: g.active, seen: g.seen, dex: g.dex, clock: g.clock, muted: g.muted };
   }
   function hydrateSaveData(data, sourceLabel = "save") {
     const migrated = migrateSave(data || {});
@@ -1973,7 +1973,7 @@ function MythboundTamersJRPGInner() {
     if (!supabase) throw new Error("Supabase env variables are missing.");
     if (!authUser) throw new Error("Sign in first.");
     const migrated = migrateSave(saveData || {});
-    const cleanSave = JSON.parse(JSON.stringify({ ...migrated, version: 22, savedAt: Date.now() }));
+    const cleanSave = JSON.parse(JSON.stringify({ ...migrated, version: 23, savedAt: Date.now() }));
     const display = accountProfile?.display_name || authUser.user_metadata?.display_name || authUser.email?.split("@")[0] || `Tamer-${authUser.id.slice(0, 6)}`;
     const syncedAt = new Date().toISOString();
 
@@ -1989,7 +1989,7 @@ function MythboundTamersJRPGInner() {
       inventory_snapshot: cleanSave.player || {},
       dex_caught: Object.keys(cleanSave.dex?.caught || {}).filter((k) => cleanSave.dex.caught[k]).length,
       save_data: cleanSave,
-      save_version: cleanSave.version || 22,
+      save_version: cleanSave.version || 23,
       last_save_at: syncedAt,
       updated_at: syncedAt
     };
@@ -3352,12 +3352,8 @@ function WorldScreen({ map, area, player, move, party, storage, seen, dex, setSc
   const tapTile = (t, x, y) => {
     clearTileHold();
     if (swipeHandledRef.current) return;
-    if (longPressedRef.current) {
-      longPressedRef.current = false;
-      return;
-    }
-    const didMove = stepTowardTile(x, y);
-    if (!didMove) setSelectedTile({ tile: t, x, y });
+    longPressedRef.current = false;
+    setSelectedTile({ tile: t, x, y });
   };
   const startPlayerSwipe = (e) => {
     e.preventDefault();
@@ -3417,7 +3413,7 @@ function WorldScreen({ map, area, player, move, party, storage, seen, dex, setSc
               </div>
               <Badge className="bg-slate-900/85 text-cyan-100 border border-cyan-300/25 px-2 py-1 text-[10px] landscape:text-[8px] shrink-0"><TimeIcon className="w-3 h-3 mr-1"/>{timeString(clock)}</Badge>
             </div>
-            <div className="text-[9px] sm:text-xs landscape:text-[7px] text-cyan-100/90 font-bold truncate">Tap board to move • Swipe the paw • Hold a tile to inspect</div>
+            <div className="text-[9px] sm:text-xs landscape:text-[7px] text-cyan-100/90 font-bold truncate">Tap tile for info • Swipe the paw to move</div>
           </div>
           <Badge className="hidden sm:inline-flex bg-fuchsia-300/15 text-fuchsia-100 border border-fuchsia-200/25 px-2 py-1 text-[9px] landscape:text-[7px] font-black">{boardScaleMode}</Badge>
         </div>
@@ -3551,7 +3547,7 @@ function TileInfoPopup({ selected, tile, x, y, close }) {
 
 function MobileMovePad({ move }) {
   const [hidden, setHidden] = useState(() => {
-    try { return localStorage.getItem("mythbound_dpad_hidden") === "1"; } catch { return false; }
+    try { return localStorage.getItem("mythbound_dpad_hidden") !== "0"; } catch { return true; }
   });
   const readPadPos = () => {
     const w = typeof window !== "undefined" ? window.innerWidth : 390;
@@ -3819,11 +3815,11 @@ function BattleScreen({ battle, playerMon, skills, playerUse, capture, selectedC
     initial={{opacity:0}}
     animate={{opacity:1}}
     exit={{opacity:0}}
-    className={`fixed inset-0 z-[999] bg-gradient-to-br ${battlefieldTone} text-white overflow-hidden flex flex-col p-1 sm:p-3`}
+    className={`fixed inset-0 z-[999] bg-gradient-to-br ${battlefieldTone} text-white overflow-hidden flex flex-col landscape:grid landscape:grid-cols-[minmax(0,1.08fr)_minmax(320px,.92fr)] landscape:grid-rows-[1fr_auto] landscape:gap-1 p-1 sm:p-3 landscape:p-1`}
   >
     <BattleFx anim={anim}/>
 
-    <div className="relative w-full max-w-6xl mx-auto h-[39vh] min-h-[260px] sm:h-[58vh] sm:min-h-[430px] rounded-[1.25rem] overflow-hidden border border-white/10 shadow-2xl bg-gradient-to-b from-violet-900 via-fuchsia-950 to-slate-950 shrink-0" style={{ perspective: "950px", transformStyle: "preserve-3d" }}>
+    <div className="relative w-full max-w-6xl mx-auto h-[39vh] min-h-[255px] sm:h-[58vh] sm:min-h-[430px] landscape:col-start-1 landscape:row-span-2 landscape:h-[calc(100dvh-0.5rem)] landscape:min-h-0 landscape:max-w-none landscape:mx-0 rounded-[1.25rem] overflow-hidden border border-white/10 shadow-2xl bg-gradient-to-b from-violet-900 via-fuchsia-950 to-slate-950 shrink-0" style={{ perspective: "950px", transformStyle: "preserve-3d" }}>
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_78%_28%,rgba(255,255,255,.28),transparent_18%),radial-gradient(ellipse_at_24%_74%,rgba(255,255,255,.2),transparent_22%),linear-gradient(180deg,rgba(56,189,248,.12),transparent_42%,rgba(15,23,42,.72))]" />
       <div className="absolute left-[-15%] right-[-15%] top-[40%] h-24 sm:h-40 bg-fuchsia-400/20 blur-3xl" />
       <motion.div className="absolute inset-x-0 bottom-0 h-[32%] bg-gradient-to-t from-black/35 to-transparent pointer-events-none" animate={{ opacity:[0.35,0.6,0.35] }} transition={{ duration:3, repeat:Infinity }} />
@@ -3833,19 +3829,19 @@ function BattleScreen({ battle, playerMon, skills, playerUse, capture, selectedC
       <div className="absolute right-[4%] top-[36%] sm:right-[8%] sm:top-[42%] w-[43%] h-12 sm:h-24 rounded-full border-[6px] sm:border-8 border-white/35 bg-white/35 shadow-2xl shadow-white/20" style={{ transform: "rotateX(58deg) translateZ(-18px)", transformStyle: "preserve-3d" }} />
       <div className="absolute left-[1%] bottom-[8%] sm:left-[4%] sm:bottom-[10%] w-[48%] h-12 sm:h-24 rounded-full border-[6px] sm:border-8 border-white/25 bg-white/25 shadow-2xl shadow-cyan-300/10" style={{ transform: "rotateX(58deg) translateZ(-10px)", transformStyle: "preserve-3d" }} />
 
-      <div className="absolute left-1.5 top-1.5 sm:left-4 sm:top-4 z-30 w-[54%] max-w-[250px] sm:w-[330px] sm:max-w-none">
+      <div className="absolute left-1.5 top-1.5 sm:left-4 sm:top-4 landscape:left-2 landscape:top-2 z-30 w-[54%] max-w-[250px] sm:w-[330px] sm:max-w-none landscape:w-[48%] landscape:max-w-[265px]">
         <PokemonStatusBox mon={enemy} title={enemy.wild ? `Wild ${enemy.name}` : enemy.name} caught={caught} normalOwnedButShinyMissing={normalOwnedButShinyMissing} align="left" enemy />
       </div>
 
-      <div className="absolute right-1.5 bottom-1.5 sm:right-4 sm:bottom-4 z-30 w-[55%] max-w-[260px] sm:w-[340px] sm:max-w-none">
+      <div className="absolute right-1.5 bottom-1.5 sm:right-4 sm:bottom-4 landscape:right-2 landscape:bottom-2 z-30 w-[55%] max-w-[260px] sm:w-[340px] sm:max-w-none landscape:w-[50%] landscape:max-w-[285px]">
         <PokemonStatusBox mon={playerMon} title={displayName(playerMon)} align="right" showXp />
       </div>
 
-      <div className="absolute right-[-2%] top-[16%] sm:right-[6%] sm:top-[14%] z-20 scale-[0.78] sm:scale-[1.12] origin-top-right pointer-events-none drop-shadow-2xl" style={{ transform: "translateZ(70px) rotateY(-8deg)", transformStyle: "preserve-3d" }}>
+      <div className="absolute right-[-2%] top-[16%] sm:right-[6%] sm:top-[14%] landscape:right-[3%] landscape:top-[18%] z-20 scale-[0.78] sm:scale-[1.12] landscape:scale-[0.95] origin-top-right pointer-events-none drop-shadow-2xl" style={{ transform: "translateZ(70px) rotateY(-8deg)", transformStyle: "preserve-3d" }}>
         <MonsterModel mon={enemy} faint={enemy.hp<=0} anim={anim.enemy || "idle"} size="medium" />
       </div>
 
-      <div className="absolute left-[-7%] bottom-[7%] sm:left-[4%] sm:bottom-[13%] z-20 scale-[0.82] sm:scale-[1.15] origin-bottom-left pointer-events-none drop-shadow-2xl" style={{ transform: "translateZ(95px) rotateY(10deg)", transformStyle: "preserve-3d" }}>
+      <div className="absolute left-[-7%] bottom-[7%] sm:left-[4%] sm:bottom-[13%] landscape:left-[-2%] landscape:bottom-[10%] z-20 scale-[0.82] sm:scale-[1.15] landscape:scale-[1.0] origin-bottom-left pointer-events-none drop-shadow-2xl" style={{ transform: "translateZ(95px) rotateY(10deg)", transformStyle: "preserve-3d" }}>
         <MonsterModel mon={playerMon} flipped faint={playerMon.hp<=0} anim={anim.player || "idle"} size="medium" />
       </div>
 
@@ -3859,15 +3855,15 @@ function BattleScreen({ battle, playerMon, skills, playerUse, capture, selectedC
       />}
     </div>
 
-    <div className="w-full max-w-6xl mx-auto mt-1 rounded-2xl bg-slate-950/96 border-2 border-slate-700 shadow-2xl overflow-hidden flex-1 min-h-0">
-      <div className="grid grid-cols-1 md:grid-cols-[0.55fr_1.45fr] gap-1 p-1 h-full">
-        <div className="rounded-xl bg-white text-slate-800 border-2 border-slate-400 shadow-inner p-1.5 flex items-center justify-between gap-2 min-h-[36px] md:min-h-full">
-          <div className="font-black text-xs sm:text-base leading-snug flex-1">{battle.message}</div>
+    <div className="w-full max-w-6xl mx-auto mt-1 landscape:mt-0 landscape:col-start-2 landscape:row-start-1 landscape:max-w-none landscape:mx-0 landscape:h-[calc(100dvh-4rem)] rounded-2xl bg-slate-950/96 border-2 border-slate-700 shadow-2xl overflow-hidden flex-1 min-h-0">
+      <div className="grid grid-cols-1 md:grid-cols-[0.55fr_1.45fr] landscape:grid-cols-1 landscape:grid-rows-[auto_minmax(0,1fr)] gap-1 p-1 h-full">
+        <div className="rounded-xl bg-white text-slate-800 border-2 border-slate-400 shadow-inner p-1.5 flex items-center justify-between gap-2 min-h-[40px] md:min-h-full landscape:min-h-[56px] landscape:max-h-[92px] landscape:overflow-y-auto">
+          <div className="font-black text-xs sm:text-base landscape:text-sm leading-snug flex-1">{battle.message}</div>
           
         </div>
 
-        <div className="rounded-xl bg-white text-slate-800 border-2 border-slate-400 p-1 overflow-y-auto">
-          {battle.turn === "player" ? <div className="grid grid-cols-2 gap-0.5 sm:gap-1">
+        <div className="rounded-xl bg-white text-slate-800 border-2 border-slate-400 p-1 overflow-y-auto min-h-0">
+          {battle.turn === "player" ? <div className="grid grid-cols-2 landscape:grid-cols-2 gap-0.5 sm:gap-1 landscape:gap-1">
             {suggestedMove ? <div className="col-span-2 rounded-md bg-cyan-100 border border-cyan-300 text-slate-900 px-1 py-0.5 text-[9px] font-black leading-tight">Suggested move: {suggestedMove} · {moveSummary(suggestedMove, playerMon, enemy.type, dex, enemy)}</div> : <div className="col-span-2 rounded-md bg-slate-100 border border-slate-300 text-slate-700 px-1 py-0.5 text-[9px] font-bold leading-tight">Effectiveness hidden: encounter or catch this Mythling to unlock type advantage hints in the Dex.</div>}
             {skills.map((s)=>{
               const sk=SKILLS[s];
@@ -3904,7 +3900,7 @@ function BattleScreen({ battle, playerMon, skills, playerUse, capture, selectedC
       </div>
     </div>
 
-    <div className="w-full max-w-6xl mx-auto mt-1 overflow-x-auto pb-1 shrink-0">
+    <div className="w-full max-w-6xl mx-auto mt-1 landscape:mt-0 landscape:col-start-2 landscape:row-start-2 landscape:max-w-none landscape:mx-0 overflow-x-auto pb-1 shrink-0">
       <div className="flex gap-2 min-w-max">
         {party.map((m,i)=><Button key={m.uid} disabled={m.hp<=0||battle.turn!=="player"} onClick={()=>setActive(i)} variant={i===active?"default":"secondary"} className="rounded-lg text-[10px] sm:text-xs whitespace-nowrap px-2 py-1">
           {displayName(m)} <GenderMark mon={m}/> <StatusBadge status={m.status} small/> Lv.{m.level} {m.hp<=0?"FNT":`${m.hp}/${m.maxHp}`}
@@ -3951,26 +3947,35 @@ function BattleFx({ anim }) {
 }
 function PokemonStatusBox({ mon, title, caught, normalOwnedButShinyMissing = false, enemy = false, showXp = false, align = "left" }) {
   const hp = hpPercent(mon);
-  return <motion.div initial={{ opacity: 0, x: enemy ? -18 : 18 }} animate={{ opacity: 1, x: 0 }} className={`rounded-2xl bg-white/95 text-slate-900 border-4 border-slate-700 shadow-2xl p-3 ${align === "right" ? "ml-auto" : ""}`}>
-    <div className="flex items-center justify-between gap-2">
-      <div className="flex items-center gap-2 min-w-0">
-        <div className="font-black text-lg sm:text-2xl truncate">{title}</div>
-        <GenderMark mon={mon}/>
-        <StatusBadge status={mon.status}/>
-        {mon.shiny && <Badge className="bg-gradient-to-r from-yellow-200 to-fuchsia-200 text-slate-950 border-0"><Sparkles className="w-3 h-3 mr-1"/>Shiny</Badge>}
-        {BESTIARY[mon.id]?.legendary && <Badge className="bg-yellow-200 text-slate-950"><Star className="w-3 h-3 mr-1"/>Legendary</Badge>}
-        {caught && <Badge className="bg-lime-300 text-slate-950"><BadgeCheck className="w-3 h-3 mr-1"/>Owned</Badge>}
-        {normalOwnedButShinyMissing && <Badge className="bg-amber-200 text-slate-950 border border-amber-400"><Sparkles className="w-3 h-3 mr-1"/>Normal owned · Shiny new</Badge>}
+  const badges = [
+    mon.status ? <StatusBadge key="status" status={mon.status}/> : null,
+    mon.shiny ? <Badge key="shiny" className="bg-gradient-to-r from-yellow-200 to-fuchsia-200 text-slate-950 border-0 text-[8px] px-1 py-0"><Sparkles className="w-2.5 h-2.5 mr-0.5"/>Shiny</Badge> : null,
+    BESTIARY[mon.id]?.legendary ? <Badge key="legend" className="bg-yellow-200 text-slate-950 text-[8px] px-1 py-0"><Star className="w-2.5 h-2.5 mr-0.5"/>Legend</Badge> : null,
+    caught ? <Badge key="caught" className="bg-lime-300 text-slate-950 text-[8px] px-1 py-0"><BadgeCheck className="w-2.5 h-2.5 mr-0.5"/>Owned</Badge> : null,
+    normalOwnedButShinyMissing ? <Badge key="normalowned" className="bg-amber-200 text-slate-950 border border-amber-400 text-[8px] px-1 py-0"><Sparkles className="w-2.5 h-2.5 mr-0.5"/>Shiny new</Badge> : null
+  ].filter(Boolean);
+  return <motion.div
+    initial={{ opacity: 0, x: enemy ? -18 : 18 }}
+    animate={{ opacity: 1, x: 0 }}
+    className={`rounded-xl sm:rounded-2xl bg-white/95 text-slate-900 border-[3px] sm:border-4 border-slate-700 shadow-2xl p-2 sm:p-3 landscape:p-2 ${align === "right" ? "ml-auto" : ""}`}
+  >
+    <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-1.5 items-start">
+      <div className="min-w-0">
+        <div className="flex items-center gap-1 min-w-0">
+          <div className="font-black text-[15px] sm:text-xl landscape:text-[14px] leading-tight truncate min-w-0">{title}</div>
+          <span className="shrink-0"><GenderMark mon={mon}/></span>
+        </div>
+        {badges.length > 0 && <div className="mt-1 flex flex-wrap gap-1 max-h-[34px] landscape:max-h-[26px] overflow-hidden">{badges}</div>}
       </div>
-      <div className="font-black text-lg sm:text-2xl">Lv.{mon.level}</div>
+      <div className="font-black text-[15px] sm:text-xl landscape:text-[14px] leading-tight shrink-0 whitespace-nowrap">Lv.{mon.level}</div>
     </div>
-    <div className="mt-2 flex items-center gap-2">
-      <div className="text-[10px] font-black text-amber-700">HP</div>
-      <div className="flex-1 h-4 rounded-sm bg-slate-900 border-2 border-slate-800 p-0.5">
+    <div className="mt-1.5 flex items-center gap-1.5">
+      <div className="text-[9px] font-black text-amber-700 shrink-0">HP</div>
+      <div className="flex-1 h-3 sm:h-4 landscape:h-3 rounded-sm bg-slate-900 border-2 border-slate-800 p-0.5 min-w-0">
         <motion.div animate={{ width: `${hp}%` }} className={`h-full rounded-sm ${hp < 25 ? "bg-rose-500" : hp < 55 ? "bg-yellow-400" : "bg-lime-500"}`} />
       </div>
     </div>
-    <div className="text-right text-sm font-bold text-slate-600">{mon.hp}/{mon.maxHp}</div>
+    <div className="text-right text-[11px] sm:text-sm landscape:text-[11px] font-bold text-slate-600 leading-tight">{mon.hp}/{mon.maxHp}</div>
     {showXp && <XPBar mon={mon} compact />}
   </motion.div>;
 }
@@ -5265,7 +5270,7 @@ function AccountScreen({
           storage_snapshot: [],
           inventory_snapshot: {},
           dex_caught: 0,
-          save_version: 22,
+          save_version: 23,
           updated_at: new Date().toISOString()
         };
         await supabase.from("mythbound_profiles").upsert(payload, { onConflict: "id" });
@@ -5348,7 +5353,7 @@ function AccountScreen({
         throw new Error("Cloud row exists, but it does not contain party/storage save data. Upload a local save from the old device to repair it.");
       }
       hydrateSaveData(migrated, recovered._recoveredFromProfileSnapshot ? "recovered cloud snapshot" : "cloud save");
-      await uploadSaveDataToCloud({ ...migrated, version: 22, savedAt: Date.now() }, false);
+      await uploadSaveDataToCloud({ ...migrated, version: 23, savedAt: Date.now() }, false);
       setAccountStatus(`Cloud save loaded and upgraded for this version. ${cloudSaveSummary(profile)}`);
     } catch (e) {
       setAccountStatus(`Load cloud save error: ${e.message}`);
