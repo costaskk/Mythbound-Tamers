@@ -1,8 +1,8 @@
 ﻿{
-    "version":  "0.55.0",
-    "versionCode":  55,
-    "notes":  "Make battle UI more compact so monsters dominate the stage, enlarge battle scene, add more monsters/evolutions/creative obtain methods, and keep updater/release files current.",
-    "apkUrl":  "https://github.com/costaskk/Mythbound-Tamers/releases/download/v0.55.0/mythbound-tamers-v0.55.0.apk",
+    "version":  "0.56.0",
+    "versionCode":  56,
+    "notes":  "Overhaul world board to keep objectives in a separate Goals menu, make UI cleaner/gamey, rebalance damage using a Pokémon-style formula with weaker wild damage, nerf healing moves, and add new monsters/evolutions.",
+    "apkUrl":  "https://github.com/costaskk/Mythbound-Tamers/releases/download/v0.56.0/mythbound-tamers-v0.56.0.apk",
     "mandatory":  false,
     "publishedAt":  "2026-06-02",
     "autoStartNativeUpdate":  false,
