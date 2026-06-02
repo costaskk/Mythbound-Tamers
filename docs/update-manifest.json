@@ -1,5 +1,8 @@
 {
-  "version": "0.39.0",
-  "notes": "Added Shiny Dex, shiny tracking, shiny ownership badges, and save migration.",
-  "apkUrl": "https://github.com/YOUR_GITHUB_USERNAME/mythbound-tamers/releases/download/v0.39.0/app-release.apk"
+  "version": "0.40.0",
+  "versionCode": 40,
+  "notes": "New monsters, auto-update popup, update center improvements, and gameplay fixes.",
+  "apkUrl": "https://github.com/costaskk/Mythbound-Tamers/releases/download/v0.40.0/mythbound-tamers-v0.40.0.apk",
+  "mandatory": false,
+  "publishedAt": "2026-06-02"
 }
