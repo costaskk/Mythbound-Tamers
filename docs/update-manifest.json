@@ -1,8 +1,8 @@
 ﻿{
-    "version":  "0.47.0",
-    "versionCode":  47,
-    "notes":  "Correct progression routing, split area gates from wild tiles, fix Caldera/Ash Field confusion, add level-aware route recommendations, and improve gate warnings.",
-    "apkUrl":  "https://github.com/costaskk/Mythbound-Tamers/releases/download/v0.47.0/mythbound-tamers-v0.47.0.apk",
+    "version":  "0.48.0",
+    "versionCode":  48,
+    "notes":  "Fix version display, add native-updater cleanup hook, clarify latest-only update flow, and include Android native updater files.",
+    "apkUrl":  "https://github.com/costaskk/Mythbound-Tamers/releases/download/v0.48.0/mythbound-tamers-v0.48.0.apk",
     "mandatory":  false,
     "publishedAt":  "2026-06-02"
 }

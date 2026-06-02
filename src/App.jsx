@@ -8,8 +8,8 @@ import { Sparkles, PawPrint, Flame, Droplets, Leaf, Zap, Heart, Map, Backpack, G
 
 const SAVE_KEY = "mythbound_tamers_save_v4";
 const OLD_SAVE_KEYS = ["mythbound_tamers_save_v3", "mythbound_tamers_save_v2"];
-const APP_VERSION = "0.47.0";
-const APP_VERSION_CODE = 47;
+const APP_VERSION = "0.48.0";
+const APP_VERSION_CODE = 48;
 const UPDATE_MANIFEST_URL = import.meta.env.VITE_UPDATE_MANIFEST_URL || "https://costaskk.github.io/Mythbound-Tamers/update-manifest.json";
 const SHINY_RATE = 1 / 192;
 const VALID_SCREENS = new Set(["title","story","starter","world","party","pc","shop","dex","account","multiplayer","help","atlas","update","battle","gameover"]);
@@ -93,8 +93,9 @@ async function startApkDownload(rawManifest) {
   if (!url) return false;
   const fileName = `mythbound-tamers-v${manifest.version || APP_VERSION}.apk`;
 
-  // Best path: optional native Capacitor plugin can download the APK, then immediately open Android's installer UI.
-  // Android still requires user approval; a normal app cannot silently install/replace itself.
+  // Best path: native Capacitor bridge. This keeps the user inside the app:
+  // download APK -> immediately open Android package installer -> user confirms install.
+  // Android does not allow a normal APK to silently replace itself.
   try {
     const nativeUpdater = window.Capacitor?.Plugins?.MythboundUpdater;
     if (nativeUpdater?.downloadAndInstallApk) {
@@ -105,13 +106,24 @@ async function startApkDownload(rawManifest) {
     console.warn("Native updater failed, falling back to browser download.", e);
   }
 
-  // Fallback: open the latest APK URL only.
+  // Fallback: open only the latest APK URL from the manifest. Browser tabs opened by GitHub cannot
+  // be closed by this app, so native updater is required for an in-app install flow.
   try { window.location.replace(url); }
   catch {
     try { window.open(url, "_blank", "noopener,noreferrer"); }
     catch { return false; }
   }
   return true;
+}
+
+
+async function cleanupDownloadedUpdateApks() {
+  try {
+    const nativeUpdater = window.Capacitor?.Plugins?.MythboundUpdater;
+    if (nativeUpdater?.cleanupDownloadedApks) await nativeUpdater.cleanupDownloadedApks({});
+  } catch (e) {
+    console.warn("APK cleanup skipped.", e);
+  }
 }
 
 
@@ -1626,10 +1638,11 @@ function MythboundTamersJRPGInner() {
       setUpdateStatus("Update manifest has no apkUrl/downloadUrl.");
       return;
     }
-    setUpdateStatus(`Opening latest APK only: ${manifest?.version || "unknown"} / code ${manifest?.versionCode || "?"}. Android will ask for install approval.`);
+    setUpdateStatus(`Starting latest update only: ${manifest?.version || "unknown"} / code ${manifest?.versionCode || "?"}. If native updater is installed, Android installer will open after download.`);
     startApkDownload(manifest);
   }
   useEffect(() => {
+    cleanupDownloadedUpdateApks();
     const first = setTimeout(() => checkAppUpdate({ silent: true }), 350);
     const interval = setInterval(() => checkAppUpdate({ silent: true }), 6 * 60 * 60 * 1000);
     return () => { clearTimeout(first); clearInterval(interval); };
