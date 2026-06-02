@@ -8,8 +8,8 @@ import {Sparkles, PawPrint, Flame, Droplets, Leaf, Zap, Heart, Map, Backpack, Ga
 
 const SAVE_KEY = "mythbound_tamers_save_v4";
 const OLD_SAVE_KEYS = ["mythbound_tamers_save_v6", "mythbound_tamers_save_v5", "mythbound_tamers_save_v4", "mythbound_tamers_save_v3", "mythbound_tamers_save_v2", "mythbound_tamers_save"];
-const APP_VERSION = "0.62.0";
-const APP_VERSION_CODE = 62;
+const APP_VERSION = "0.63.0";
+const APP_VERSION_CODE = 63;
 const UPDATE_MANIFEST_URL = import.meta.env.VITE_UPDATE_MANIFEST_URL || "https://costaskk.github.io/Mythbound-Tamers/update-manifest.json";
 const SHINY_RATE = 1 / 192;
 const VALID_SCREENS = new Set(["title","story","starter","world","party","pc","shop","dex","account","multiplayer","friends","objectives","help","atlas","update","battle","gameover"]);
@@ -1961,7 +1961,7 @@ function MythboundTamersJRPGInner() {
   }
   function buildSaveData(g = gameRef.current) {
     const safeScreen = ["battle", "gameover", "starter"].includes(g.screen) ? "world" : g.screen;
-    return { version: 18, savedAt: Date.now(), screen: safeScreen, storyIndex: g.storyIndex, player: g.player, party: g.party, storage: g.storage || [], active: g.active, seen: g.seen, dex: g.dex, clock: g.clock, muted: g.muted };
+    return { version: 19, savedAt: Date.now(), screen: safeScreen, storyIndex: g.storyIndex, player: g.player, party: g.party, storage: g.storage || [], active: g.active, seen: g.seen, dex: g.dex, clock: g.clock, muted: g.muted };
   }
   function hydrateSaveData(data, sourceLabel = "save") {
     const migrated = migrateSave(data || {});
@@ -1972,7 +1972,7 @@ function MythboundTamersJRPGInner() {
     if (!supabase) throw new Error("Supabase env variables are missing.");
     if (!authUser) throw new Error("Sign in first.");
     const migrated = migrateSave(saveData || {});
-    const cleanSave = JSON.parse(JSON.stringify({ ...migrated, version: 18, savedAt: Date.now() }));
+    const cleanSave = JSON.parse(JSON.stringify({ ...migrated, version: 19, savedAt: Date.now() }));
     const display = accountProfile?.display_name || authUser.user_metadata?.display_name || authUser.email?.split("@")[0] || `Tamer-${authUser.id.slice(0, 6)}`;
     const syncedAt = new Date().toISOString();
 
@@ -1988,7 +1988,7 @@ function MythboundTamersJRPGInner() {
       inventory_snapshot: cleanSave.player || {},
       dex_caught: Object.keys(cleanSave.dex?.caught || {}).filter((k) => cleanSave.dex.caught[k]).length,
       save_data: cleanSave,
-      save_version: cleanSave.version || 18,
+      save_version: cleanSave.version || 19,
       last_save_at: syncedAt,
       updated_at: syncedAt
     };
@@ -3288,16 +3288,22 @@ function WorldScreen({ map, area, player, move, party, storage, seen, dex, setSc
   const headerAllowance = isLandscapeView ? 112 : 168;
   const boardFitWidth = Math.max(280, Math.min(viewport.w - (isLandscapeView ? 8 : 10), isLandscapeView ? viewport.w - 8 : 820));
   const boardFitHeight = Math.max(250, viewport.h - headerAllowance - bottomMenuAllowance);
-  const fitTileW = Math.floor((boardFitWidth - Math.max(0, mapCols - 1) * boardGap) / Math.max(1, mapCols));
-  const fitTileH = Math.floor((boardFitHeight - Math.max(0, mapRows - 1) * boardGap) / Math.max(1, mapRows));
-  const baseFit = Math.max(32, Math.min(fitTileW, fitTileH));
-  const tileW = Math.max(32, Math.min(126, Math.round(baseFit * mapZoom)));
-  const tileH = Math.max(32, Math.min(126, Math.round(baseFit * mapZoom)));
+
+  // Orientation-aware board shaping:
+  // portrait keeps taller cells; landscape widens cells and lowers height so the board fills the screen
+  // instead of leaving dead space or requiring unnecessary vertical scroll.
+  const rawTileW = (boardFitWidth - Math.max(0, mapCols - 1) * boardGap) / Math.max(1, mapCols);
+  const rawTileH = (boardFitHeight - Math.max(0, mapRows - 1) * boardGap) / Math.max(1, mapRows);
+  const landscapeBoost = isLandscapeView ? 1.08 : 1;
+  const portraitBoost = !isLandscapeView ? 1.04 : 1;
+  const tileW = Math.max(30, Math.min(132, Math.floor(rawTileW * mapZoom * landscapeBoost)));
+  const tileH = Math.max(30, Math.min(132, Math.floor(rawTileH * mapZoom * portraitBoost)));
   const tileVisual = Math.min(tileW, tileH);
   const mapPixelWidth = mapCols * tileW + Math.max(0, mapCols - 1) * boardGap;
   const mapPixelHeight = mapRows * tileH + Math.max(0, mapRows - 1) * boardGap;
-  const boardViewportHeight = Math.max(240, Math.min(boardFitHeight, Math.max(mapPixelHeight + 10, boardFitHeight)));
-  const clampZoom = (value) => Math.max(0.66, Math.min(1.85, value));
+  const boardViewportHeight = Math.max(220, Math.min(boardFitHeight, Math.max(mapPixelHeight + 8, boardFitHeight)));
+  const boardViewportWidth = Math.max(280, Math.min(boardFitWidth, Math.max(mapPixelWidth + 8, boardFitWidth)));
+  const clampZoom = (value) => Math.max(0.62, Math.min(1.85, value));
   const touchDistance = (touches) => {
     const [a, b] = touches;
     return Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY);
@@ -3315,7 +3321,7 @@ function WorldScreen({ map, area, player, move, party, storage, seen, dex, setSc
     <div className="relative mb-1 rounded-[1.35rem] sm:rounded-[1.8rem] overflow-hidden border border-cyan-200/30 bg-slate-950/88 shadow-2xl shadow-cyan-500/20">
       <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_10%_18%,rgba(103,232,249,.34),transparent_28%),radial-gradient(circle_at_86%_22%,rgba(217,70,239,.24),transparent_34%),linear-gradient(90deg,rgba(2,6,23,.98),rgba(8,47,73,.78),rgba(30,27,75,.88))]" />
       <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-gradient-to-b from-cyan-200 via-fuchsia-300 to-lime-200"/>
-      <div className="relative px-2 py-1.5 sm:px-4 sm:py-3 landscape:py-1.5">
+      <div className="relative px-2 py-1 sm:px-4 sm:py-2.5 landscape:py-1">
         <div className="flex items-center justify-between gap-1.5">
           <div className="flex items-center gap-2 min-w-0">
             <div className="w-12 h-12 sm:w-14 sm:h-14 landscape:w-9 landscape:h-9 rounded-2xl bg-gradient-to-br from-cyan-200 via-cyan-300 to-fuchsia-200 text-slate-950 flex items-center justify-center shadow-xl shadow-cyan-300/40 shrink-0 ring-2 ring-white/30">
@@ -3336,8 +3342,8 @@ function WorldScreen({ map, area, player, move, party, storage, seen, dex, setSc
             <Button onClick={() => setMapZoom((z)=>clampZoom(z + 0.15))} variant="secondary" className="rounded-xl font-black px-2 py-1 text-[10px] sm:text-xs">+</Button>
           </div>
         </div>
-        <div className="mt-1.5 landscape:mt-1 flex items-center justify-between gap-2">
-          <div className="min-w-0 flex-1 rounded-2xl bg-white/8 border border-cyan-200/20 px-2.5 py-1.5 landscape:py-1 shadow-inner">
+        <div className="mt-1 landscape:mt-0.5 flex items-center justify-between gap-2">
+          <div className="min-w-0 flex-1 rounded-2xl bg-white/8 border border-cyan-200/20 px-2.5 py-1 landscape:py-0.5 shadow-inner">
             <div className="flex items-center gap-2 min-w-0">
               <div className="min-w-0 flex-1">
                 <div className="text-[8px] sm:text-[10px] landscape:text-[7px] uppercase tracking-[0.22em] text-cyan-100/90 font-black">Current Area</div>
@@ -3362,7 +3368,7 @@ function WorldScreen({ map, area, player, move, party, storage, seen, dex, setSc
     <div className="relative">
       <div
         className="overflow-auto rounded-[1.35rem] sm:rounded-[2rem] bg-black/35 border border-white/10 shadow-2xl p-1 sm:p-1.5 overscroll-contain"
-        style={{ touchAction: "pan-x pan-y", height: boardViewportHeight, maxHeight: boardViewportHeight }}
+        style={{ touchAction: "pan-x pan-y", height: boardViewportHeight, maxHeight: boardViewportHeight, width: "100%", maxWidth: boardViewportWidth }}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={() => { pinchRef.current = null; }}
@@ -3374,7 +3380,7 @@ function WorldScreen({ map, area, player, move, party, storage, seen, dex, setSc
       >
         <div
           className="mx-auto flex items-center justify-center"
-          style={{ width: mapPixelWidth, minWidth: mapPixelWidth, height: Math.max(mapPixelHeight, boardViewportHeight - 10), minHeight: mapPixelHeight }}
+          style={{ width: mapPixelWidth, minWidth: mapPixelWidth, height: Math.max(mapPixelHeight, boardViewportHeight - 8), minHeight: mapPixelHeight }}
         >
           <div
             className="grid"
@@ -3396,7 +3402,7 @@ function WorldScreen({ map, area, player, move, party, storage, seen, dex, setSc
                 onClick={()=>setSelectedTile({ tile:t, x, y })}
                 key={`${x}-${y}`}
                 className={`relative rounded-xl border flex items-center justify-center font-black shrink-0 overflow-hidden transition shadow-lg ${tileGlow(t)} ${tileClass(t)} ${isAreaGate ? "ring-1 ring-cyan-200 shadow-md shadow-cyan-300/20" : ""} ${isObjectiveTile ? "ring-4 ring-yellow-200 shadow-2xl shadow-yellow-300/50 z-20" : ""} ${isSelected ? "ring-2 ring-white ring-offset-2 ring-offset-slate-950 z-10" : ""}`}
-                style={{ width: tileW, height: tileH, borderRadius: Math.max(12, Math.min(24, Math.round(tileVisual * 0.22))), fontSize: Math.max(10, Math.min(18, Math.round(tileVisual * 0.34))) }}
+                style={{ width: tileW, height: tileH, borderRadius: Math.max(10, Math.min(22, Math.round(tileVisual * 0.24))), fontSize: Math.max(10, Math.min(18, Math.round(tileVisual * 0.34))) }}
                 aria-label={`${TILE_NAMES[t] || "Unknown tile"} at ${x + 1}, ${y + 1}`}
               >
                 <span className={`absolute inset-0 bg-gradient-to-br ${tileOverlay(t)} pointer-events-none`}/><span className="relative z-10 opacity-95 pointer-events-none leading-none drop-shadow-[0_2px_4px_rgba(0,0,0,.65)]">{label(t)}</span>{isAreaGate && <><span className="absolute right-1 top-1 px-1 py-[1px] rounded-full bg-cyan-100 text-[7px] leading-none text-slate-950 border border-slate-950 shadow-sm z-20">GO</span><motion.span animate={{ opacity:[0.18,0.65,0.18], scale:[0.85,1.22,0.85] }} transition={{ duration:1.5, repeat:Infinity }} className="absolute inset-[5px] rounded-lg border border-cyan-100/50 pointer-events-none z-10"/></>}
@@ -4519,7 +4525,7 @@ function FriendsScreen({ party, dex, player, setScreen, authUser, accountProfile
         <Card className="rounded-3xl bg-slate-900/88 border-cyan-200/20"><CardContent className="p-4">
           <h3 className="text-2xl font-black text-white mb-3">Find tamers</h3>
           <div className="flex gap-2">
-            <Input value={query} onChange={(e)=>setQuery(e.target.value)} placeholder="Name or player code" className="rounded-2xl bg-slate-950 border-white/10"/>
+            <input value={query} onChange={(e)=>setQuery(e.target.value)} placeholder="Name or player code" className="min-w-0 flex-1 rounded-2xl bg-slate-950 border border-white/10 px-4 py-3 text-white placeholder:text-slate-500 outline-none focus:ring-2 focus:ring-cyan-300/60"/>
             <Button onClick={searchTamers} className="rounded-2xl bg-cyan-300 text-slate-950 font-black">Search</Button>
           </div>
           <div className="mt-3 space-y-2 max-h-80 overflow-y-auto pr-1">
@@ -5170,7 +5176,7 @@ function AccountScreen({
           storage_snapshot: [],
           inventory_snapshot: {},
           dex_caught: 0,
-          save_version: 18,
+          save_version: 19,
           updated_at: new Date().toISOString()
         };
         await supabase.from("mythbound_profiles").upsert(payload, { onConflict: "id" });
@@ -5253,7 +5259,7 @@ function AccountScreen({
         throw new Error("Cloud row exists, but it does not contain party/storage save data. Upload a local save from the old device to repair it.");
       }
       hydrateSaveData(migrated, recovered._recoveredFromProfileSnapshot ? "recovered cloud snapshot" : "cloud save");
-      await uploadSaveDataToCloud({ ...migrated, version: 18, savedAt: Date.now() }, false);
+      await uploadSaveDataToCloud({ ...migrated, version: 19, savedAt: Date.now() }, false);
       setAccountStatus(`Cloud save loaded and upgraded for this version. ${cloudSaveSummary(profile)}`);
     } catch (e) {
       setAccountStatus(`Load cloud save error: ${e.message}`);
