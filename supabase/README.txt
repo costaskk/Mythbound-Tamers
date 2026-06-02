@@ -1,0 +1,1 @@
+Run the v0.62 friends/presence/invites SQL migration if you have not already done so.

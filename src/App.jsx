@@ -8,8 +8,8 @@ import {Sparkles, PawPrint, Flame, Droplets, Leaf, Zap, Heart, Map, Backpack, Ga
 
 const SAVE_KEY = "mythbound_tamers_save_v4";
 const OLD_SAVE_KEYS = ["mythbound_tamers_save_v6", "mythbound_tamers_save_v5", "mythbound_tamers_save_v4", "mythbound_tamers_save_v3", "mythbound_tamers_save_v2", "mythbound_tamers_save"];
-const APP_VERSION = "0.67.0";
-const APP_VERSION_CODE = 67;
+const APP_VERSION = "0.68.0";
+const APP_VERSION_CODE = 68;
 const UPDATE_MANIFEST_URL = import.meta.env.VITE_UPDATE_MANIFEST_URL || "https://costaskk.github.io/Mythbound-Tamers/update-manifest.json";
 const SHINY_RATE = 1 / 192;
 const VALID_SCREENS = new Set(["title","story","starter","world","party","pc","shop","dex","account","multiplayer","friends","objectives","help","atlas","update","battle","gameover"]);
@@ -295,6 +295,19 @@ const BESTIARY = {
   happi: { name: "Happi", type: "Sound", species: "Joy Waver", cry: "ha-pi-pi!", stage: 1, evo: { to: "jolli", method: "Reach Lv.10" }, base: [45, 14, 12, 17], skills: ["Happy Hop", "Guard", "Confetti Pop"], capture: 0.31, body: "buddy", colors: ["#f2a443", "#ffd36a", "#7c3f16"], lore: "A tiny joy spirit said to be born whenever a child laughs during a festival. It waves constantly and brightens sad roads." },
   jolli: { name: "Jolli", type: "Sound", species: "Cheer Buddy", cry: "jol-liii!", stage: 2, evo: { to: "jubilume", method: "Reach Lv.20 after winning 3 wild battles" }, base: [73, 24, 19, 29], skills: ["Happy Hop", "Confetti Pop", "Cheer Burst"], capture: 0.11, body: "buddy", colors: ["#ef9f38", "#ffe08c", "#4a2308"], lore: "It performs little dances before battle and scatters glowing joy-ribbons that calm frightened Mythlings." },
   jubilume: { name: "Jubilume", type: "Light", species: "Festival Heart", cry: "JU-bi-LUUME!", stage: 3, base: [108, 39, 31, 41], skills: ["Confetti Pop", "Cheer Burst", "Party Parade"], capture: 0.035, body: "buddy", colors: ["#ffb347", "#fff0a6", "#5b2b10"], lore: "A radiant final evolution whose smile is said to turn entire villages into all-night celebrations. Its body glows like warm lantern paper." },
+
+  gleamouse: { name: "Gleamouse", type: "Light", species: "Lantern Mouse", cry: "glee-mii!", stage: 1, evo: { to: "glowrat", method: "Reach Lv.11 in Training Grounds" }, base: [40, 20, 12, 29], skills: ["Light Fang", "Happy Hop", "Guard"], capture: 0.34, body: "cat", colors: ["#fde68a", "#fef9c3", "#7c2d12"], lore: "A tiny glowing Mythling that appears near route lamps and teaches new tamers how to track safe paths." },
+  glowrat: { name: "Glowrat", type: "Light", species: "Neon Scout", cry: "GLOW-rat!", stage: 2, evo: { to: "luminiver", method: "Reach Lv.24 after completing a side quest" }, base: [76, 36, 22, 47], skills: ["Light Fang", "Radiant Lance", "Cheer Burst"], capture: 0.095, body: "cat", colors: ["#facc15", "#a5f3fc", "#451a03"], lore: "Its whiskers glow like map pins, making it a favorite partner for explorers." },
+  luminiver: { name: "Luminiver", type: "Light", species: "River Lantern", cry: "LU-MI-NI-VER!", stage: 3, base: [116, 54, 36, 63], skills: ["Solar Crown", "Radiant Lance", "Party Parade"], capture: 0.026, body: "fox", colors: ["#fef08a", "#67e8f9", "#020617"], lore: "A final evolution whose tails become floating lanterns over rivers and roads." },
+  glimkit: { name: "Glimkit", type: "Light", species: "Glow Kit", cry: "glim-mii!", stage: 1, evo: { to: "luminail", method: "Reach Lv.12 after catching 5 Mythlings" }, base: [42, 20, 13, 28], skills: ["Light Fang", "Happy Hop", "Guard"], capture: 0.28, body: "cat", colors: ["#fef3c7", "#facc15", "#7c2d12"], lore: "A small lantern-tailed cat that appears on beginner roads to guide lost tamers." },
+  luminail: { name: "Luminail", type: "Light", species: "Lantern Tail", cry: "LU-mi-nail!", stage: 2, evo: { to: "solarion", method: "Reach Lv.26 during Morning" }, base: [82, 38, 25, 42], skills: ["Light Fang", "Radiant Lance", "Cheer Burst"], capture: 0.08, body: "cat", colors: ["#fde047", "#fef9c3", "#451a03"], lore: "Its tail casts a circle of light that weak wild Mythlings are drawn toward." },
+  solarion: { name: "Solarion", type: "Light", species: "Sun Tail Lion", cry: "SO-LAR-RI-ON!", stage: 3, base: [122, 58, 41, 58], skills: ["Solar Crown", "Radiant Lance", "Party Parade"], capture: 0.024, body: "cat", colors: ["#facc15", "#fff7ed", "#7c2d12"], lore: "A proud solar feline whose mane shines like a portable sunrise." },
+  puddleimp: { name: "Puddleimp", type: "Aqua", species: "Puddle Imp", cry: "plip-plop!", stage: 1, evo: { to: "rainmischief", method: "Reach Lv.13 in rain or Tideglass Flats" }, base: [46, 19, 15, 24], skills: ["Bubble Bite", "Guard", "Gust Peck"], capture: 0.30, body: "slime", colors: ["#67e8f9", "#bfdbfe", "#075985"], lore: "It splashes in tiny puddles and steals shiny pebbles from bridges." },
+  rainmischief: { name: "Rainmischief", type: "Aqua", species: "Rain Imp", cry: "RAIN-MIS!", stage: 2, evo: { to: "stormjester", method: "Reach Lv.27 after winning a trainer battle" }, base: [86, 39, 29, 44], skills: ["Tidal Crush", "Bubble Bite", "Lantern Lure"], capture: 0.075, body: "goblin", colors: ["#38bdf8", "#a78bfa", "#082f49"], lore: "A prankster that drums on roof tiles to summon tiny rainclouds." },
+  stormjester: { name: "Stormjester", type: "Aqua", species: "Storm Jester", cry: "STORM-JEST!", stage: 3, base: [128, 62, 44, 66], skills: ["Tidal Crush", "Thunder Crown", "Prism Nova"], capture: 0.02, body: "goblin", colors: ["#0ea5e9", "#fde68a", "#020617"], lore: "It performs tricks inside storms and bows only after thunder applauds." },
+  cindermite: { name: "Cindermite", type: "Flame", species: "Cinder Mite", cry: "cin-cin!", stage: 1, evo: { to: "ashhopper", method: "Reach Lv.14 after using 10 Flame moves" }, base: [40, 24, 12, 30], skills: ["Cinder Paw", "Happy Hop", "Guard"], capture: 0.28, body: "bug", colors: ["#fb923c", "#facc15", "#431407"], lore: "A hot-footed bug that leaves little sparks wherever it hops." },
+  ashhopper: { name: "Ashhopper", type: "Flame", species: "Ash Hopper", cry: "ASH-HOP!", stage: 2, evo: { to: "blazejumper", method: "Reach Lv.28 near Caldera Crown" }, base: [78, 46, 25, 58], skills: ["Flare Burst", "Meteor Claw", "Sugar Rush"], capture: 0.07, body: "bug", colors: ["#f97316", "#fef08a", "#1c1917"], lore: "It launches itself through ash clouds like a living firework." },
+  blazejumper: { name: "Blazejumper", type: "Flame", species: "Blaze Jumper", cry: "BLAZE-JUMP!", stage: 3, base: [114, 68, 38, 86], skills: ["Magma Crown", "Meteor Claw", "Flare Burst"], capture: 0.022, body: "bug", colors: ["#dc2626", "#fde047", "#020617"], lore: "A festival-fire champion that leaps so fast it draws flame rings in the air." },
 
   frostcub: { name: "Frostcub", type: "Aqua", species: "Snow Cub", cry: "brr-aw!", stage: 1, evo: { to: "glaciermaw", method: "Reach Lv.12 at night" }, base: [46, 15, 12, 9], skills: ["Bubble Bite", "Guard", "Tidal Crush"], capture: 0.33, body: "bear", colors: ["#93c5fd", "#eff6ff", "#1e3a8a"], lore: "A playful cub that freezes puddles with each step. It appears near lakes after sunset." },
   glaciermaw: { name: "Glaciermaw", type: "Aqua", species: "Ice Bear", cry: "GLAWWR!", stage: 2, evo: { to: "polarune", method: "Reach Lv.22 in Frost Hollow" }, base: [88, 28, 24, 12], skills: ["Bubble Bite", "Tidal Crush", "Boulder Crash"], capture: 0.1, body: "bear", colors: ["#60a5fa", "#e0f2fe", "#0f172a"], lore: "Its claws are frozen relics from the first winter of Luminara." },
@@ -703,8 +716,8 @@ const STORY = [
 ];
 const MAP_DATA = [
   "WWWWWWWWWWWWWWWW",
-  "W..G..a..M..o.1W",
-  "W.GGj.GG.QQQGY.W",
+  "W..G..a.gM..o.1W",
+  "W.GGj.GGnQQQGY.W",
   "W..G..T..QG.SQ2W",
   "W..G..G..V..QQUW",
   "W..t.C..GQG.p3%W",
@@ -716,13 +729,13 @@ const MAP_DATA = [
   "WWWWWWWWWWWWWWWW"
 ];
 const ENCOUNTERS = {
-  G: ["emberlynx", "aquapup", "leafawn", "voltoroo", "cloudfinch", "spriggeist", "spirikit", "bellimp", "bramblepup", "happi"],
-  L: ["aquapup", "leafawn", "cloudfinch", "prismite", "frostcub", "coralisk", "neonsquid"],
+  G: ["emberlynx", "aquapup", "leafawn", "voltoroo", "cloudfinch", "spriggeist", "spirikit", "bellimp", "bramblepup", "happi", "gleamouse", "glimkit", "puddleimp", "cindermite"],
+  L: ["aquapup", "leafawn", "cloudfinch", "prismite", "frostcub", "coralisk", "neonsquid", "puddleimp", "rainmischief"],
   M: ["pebbkit", "ironboar", "cloudfinch", "sandillo", "crysteel", "cuboulder"],
   V: ["gloomander", "shadebat", "pebbkit", "nightmoth", "starwhale", "orchidimp", "spirikit", "bellimp", "noircolt", "umbrasteed"],
-  F: ["emberlynx", "voltoroo", "shadebat", "cindermole", "toxifrog", "ferroach", "sunwyrm", "heliodrake"],
+  F: ["emberlynx", "voltoroo", "shadebat", "cindermole", "toxifrog", "ferroach", "sunwyrm", "heliodrake", "cindermite", "ashhopper"],
   A: ["cloudfinch", "voltoroo", "dawnhare", "mistowl", "lumifox", "snowl", "ionwyrm", "echopup"],
-  O: ["leafawn", "spriggeist", "orchidimp", "mistowl", "spirikit", "bellimp", "happi", "jolli"],
+  O: ["leafawn", "spriggeist", "orchidimp", "mistowl", "spirikit", "bellimp", "happi", "jolli", "glimkit", "luminail", "happi", "jolli"],
   Q: ["pebbkit", "sandillo", "ironboar", "cindermole", "gearmite", "steelfang", "crysteel", "ferroach"],
   P: ["prismite", "gloomander", "starwhale", "aurorabbit", "lumifox", "gearmite", "crysteel", "phantelope", "chimegeist", "glimmernewt", "radiantoad", "gemtoad", "opaloracle"],
   H: ["frostcub", "aurorabbit", "mistowl", "snowl", "blizzowl", "cuboulder"],
@@ -743,7 +756,7 @@ const ENCOUNTERS = {
 const TILE_NAMES = {
   G: "Tall Grass", L: "Lake Shore", M: "Rocky Pass", V: "Moon Cave", F: "Ash Field", A: "Wind Hill", O: "Orchid Orchard", Q: "Crystal Quarry", P: "Prism Ruins", H: "Frost Hollow", J: "Crystal Jungle", X: "Spirit Marsh", Z: "Storm Rail", E: "Echo Grove", Y: "Beast Den", U: "Titan Pass",
   "6": "Ember Roost", "7": "Mirage Garden", "8": "Tideglass Flats", "$": "Luminous Bazaar Gate", "!": "Stormspire Gate", "%": "Sunken Archive Gate", "@": "Phoenix Roost Gate", "9": "Caldera Crown Gate",
-  a: "Skyrail Meadow Gate", e: "Echo Caves Gate", x: "Spirit Marsh Gate", p: "Prism Ruins Gate", u: "Titan Pass Gate", t: "Tideglass Flats Gate", m: "Ironrail Yard Gate", v: "Nocturne Road Gate", h: "Frostglass Peaks Gate", j: "Verdant Canopy Gate", o: "Orchid Court Gate",
+  g: "Novice Trial Gate", n: "Glowcap Grove Gate", a: "Skyrail Meadow Gate", e: "Echo Caves Gate", x: "Spirit Marsh Gate", p: "Prism Ruins Gate", u: "Titan Pass Gate", t: "Tideglass Flats Gate", m: "Ironrail Yard Gate", v: "Nocturne Road Gate", h: "Frostglass Peaks Gate", j: "Verdant Canopy Gate", o: "Orchid Court Gate",
   "0": "Return Gate", N: "Grovepath Village", R: "Rival Bridge", K: "Keeper Gate", B: "Bridge Captain", S: "Old Shrine", D: "Dragon Gate", C: "Crystal Spring", T: "Treasure Cache", W: "Wall"
 };
 const AREA_DATA = {
@@ -759,6 +772,62 @@ const AREA_DATA = {
     map: MAP_DATA,
     description: "The safe central crossroads of Luminara. Early story objectives happen here before the road opens toward caves, marshes, quarries, gardens, and finally Dracinder."
   },
+  trainingGrounds: {
+    id: "trainingGrounds",
+    name: "Novice Trial Grounds",
+    chapter: 1,
+    subtitle: "Chapter 1 · First Steps of a Tamer",
+    theme: "Bright Tutorial March",
+    bg: "from-slate-950 via-cyan-950 to-emerald-950",
+    levelMin: 3,
+    levelMax: 8,
+    start: { x: 2, y: 9 },
+    map: [
+      "WWWWWWWWWWWWWWWW",
+      "WGGGG..T..GG..0W",
+      "W.GGG..GG..GG..W",
+      "W..G..CCCC..G..W",
+      "W..G..C..C..N..W",
+      "W..GGG..G..GG..W",
+      "W..G..CCCC..G..W",
+      "W..G....G...G..W",
+      "W..G..R..GG....W",
+      "W.0GGGGGG..G...W",
+      "W....G...B..GG.W",
+      "WWWWWWWWWWWWWWWW"
+    ],
+    encounters: { G: ["emberlynx","aquapup","leafawn","voltoroo","cloudfinch","happi","gleamouse","glimkit","puddleimp","cindermite"], C: ["prismite","glimkit"], N: ["gleamouse","happi"] },
+    description: "A safe academy board where new tamers can level quickly, learn tile movement, and catch friendly early Mythlings.",
+    sideQuest: "Win three wild battles here to earn a Training Charm and learn how XP scales."
+  },
+  glowcapGrove: {
+    id: "glowcapGrove",
+    name: "Glowcap Grove",
+    chapter: 2,
+    subtitle: "Chapter 2 · Mushrooms Under Lanternlight",
+    theme: "Soft Bells and Fireflies",
+    bg: "from-slate-950 via-lime-950 to-fuchsia-950",
+    levelMin: 7,
+    levelMax: 14,
+    start: { x: 2, y: 9 },
+    map: [
+      "WWWWWWWWWWWWWWWW",
+      "WJJJJ..O..T...0W",
+      "W.JGJ..OO..JJ..W",
+      "W..J..WWWW..J..W",
+      "W..J..C..O..N..W",
+      "W..JJJ..O..JJ..W",
+      "W..J..WWWW..J..W",
+      "W..J....J...J..W",
+      "W..J..R..JJ....W",
+      "W.0JJJJJJ..J...W",
+      "W....J...B..JJ.W",
+      "WWWWWWWWWWWWWWWW"
+    ],
+    encounters: { J: ["leafawn","florantler","spriggeist","orchidimp","happi","jolli","glimkit","luminail","gleamouse","glowrat"], O: ["bellimp","chimegeist","aurorabbit","mistowl"], G: ["bramblepup","seedpuff","puddleimp"] },
+    description: "A glowing forest route that bridges early Luminara and the Prism roads with fair levels and many evolution-friendly encounters.",
+    sideQuest: "Find the three glowcaps hidden near crystal springs to unlock a bonus shop discount."
+  },
   echoCaves: {
     id: "echoCaves",
     name: "Echo Caves",
@@ -766,8 +835,8 @@ const AREA_DATA = {
     subtitle: "Chapter 2 · Songs Beneath Stone",
     theme: "Echoing Drums",
     bg: "from-indigo-950 via-fuchsia-950 to-slate-950",
-    levelMin: 7,
-    levelMax: 14,
+    levelMin: 6,
+    levelMax: 12,
     start: { x: 2, y: 9 },
     map: [
       "WWWWWWWWWWWWWWWW",
@@ -793,8 +862,8 @@ const AREA_DATA = {
     subtitle: "Chapter 3 · Lanterns in the Mire",
     theme: "Low Bells and Rain",
     bg: "from-purple-950 via-lime-950 to-slate-950",
-    levelMin: 9,
-    levelMax: 17,
+    levelMin: 8,
+    levelMax: 15,
     start: { x: 2, y: 9 },
     map: [
       "WWWWWWWWWWWWWWWW",
@@ -820,8 +889,8 @@ const AREA_DATA = {
     subtitle: "Chapter 4 · The Broken Light",
     theme: "Glass Choir",
     bg: "from-violet-950 via-cyan-950 to-slate-950",
-    levelMin: 15,
-    levelMax: 24,
+    levelMin: 12,
+    levelMax: 20,
     start: { x: 2, y: 9 },
     map: [
       "WWWWWWWWWWWWWWWW",
@@ -847,8 +916,8 @@ const AREA_DATA = {
     subtitle: "Chapter 5 · Steps of Giants",
     theme: "Mountain War Drums",
     bg: "from-stone-950 via-orange-950 to-slate-950",
-    levelMin: 21,
-    levelMax: 33,
+    levelMin: 18,
+    levelMax: 28,
     start: { x: 2, y: 9 },
     map: [
       "WWWWWWWWWWWWWWWW",
@@ -874,8 +943,8 @@ const AREA_DATA = {
     subtitle: "Chapter 3 · Mirror of the Sea",
     theme: "Glass Tide",
     bg: "from-blue-950 via-cyan-950 to-slate-950",
-    levelMin: 13,
-    levelMax: 22,
+    levelMin: 11,
+    levelMax: 19,
     start: { x: 2, y: 9 },
     map: [
       "WWWWWWWWWWWWWWWW",
@@ -901,8 +970,8 @@ const AREA_DATA = {
     subtitle: "Chapter 2 · Rails Above the Grass",
     theme: "Windbells Over Green",
     bg: "from-sky-950 via-emerald-950 to-slate-950",
-    levelMin: 5,
-    levelMax: 11,
+    levelMin: 4,
+    levelMax: 10,
     start: { x: 2, y: 9 },
     map: [
       "WWWWWWWWWWWWWWWW",
@@ -928,8 +997,8 @@ const AREA_DATA = {
     subtitle: "Chapter 4 · Engines Under the Prism",
     theme: "Steam and Steel",
     bg: "from-slate-950 via-zinc-900 to-cyan-950",
-    levelMin: 19,
-    levelMax: 30,
+    levelMin: 15,
+    levelMax: 24,
     start: { x: 2, y: 9 },
     map: [
       "WWWWWWWWWWWWWWWW",
@@ -955,8 +1024,8 @@ const AREA_DATA = {
     subtitle: "Chapter 5 · The Long Shadow",
     theme: "Black Star Road",
     bg: "from-black via-purple-950 to-slate-950",
-    levelMin: 23,
-    levelMax: 35,
+    levelMin: 19,
+    levelMax: 30,
     start: { x: 2, y: 9 },
     map: [
       "WWWWWWWWWWWWWWWW",
@@ -982,8 +1051,8 @@ const AREA_DATA = {
     subtitle: "Chapter 5 · Bells Below the Tide",
     theme: "Drowned Library Chimes",
     bg: "from-blue-950 via-cyan-950 to-slate-950",
-    levelMin: 20,
-    levelMax: 34,
+    levelMin: 17,
+    levelMax: 27,
     start: { x: 2, y: 9 },
     sideQuest: "Find three drowned tablets and awaken the Abyssal Coil.",
     map: [
@@ -1010,8 +1079,8 @@ const AREA_DATA = {
     subtitle: "Chapter 6 · Feathers of Rebirth",
     theme: "Ashen Sunrise Hymn",
     bg: "from-orange-950 via-red-950 to-slate-950",
-    levelMin: 24,
-    levelMax: 38,
+    levelMin: 20,
+    levelMax: 31,
     start: { x: 2, y: 9 },
     sideQuest: "Light the three sunrise braziers to unlock Phoenixar evolution.",
     map: [
@@ -1039,8 +1108,8 @@ const AREA_DATA = {
     subtitle: "Chapter 6 · Fire at the World's Rim",
     theme: "Crown of Ash",
     bg: "from-red-950 via-orange-950 to-black",
-    levelMin: 28,
-    levelMax: 42,
+    levelMin: 22,
+    levelMax: 34,
     start: { x: 2, y: 9 },
     map: [
       "WWWWWWWWWWWWWWWW",
@@ -1066,8 +1135,8 @@ const AREA_DATA = {
     subtitle: "Chapter 4 Side Route · The Mirror Snow",
     theme: "Aurora Bells",
     bg: "from-cyan-950 via-blue-950 to-slate-950",
-    levelMin: 17,
-    levelMax: 27,
+    levelMin: 14,
+    levelMax: 23,
     start: { x: 2, y: 9 },
     sideQuest: "Recover the Aurora Lens from the frozen watchtower.",
     map: [
@@ -1094,8 +1163,8 @@ const AREA_DATA = {
     subtitle: "Chapter 3 Side Route · Roots Above the World",
     theme: "Canopy Flutes",
     bg: "from-emerald-950 via-lime-950 to-slate-950",
-    levelMin: 11,
-    levelMax: 19,
+    levelMin: 9,
+    levelMax: 17,
     start: { x: 2, y: 9 },
     sideQuest: "Find the three Seed Bells and wake the sleeping root bridge.",
     map: [
@@ -1122,8 +1191,8 @@ const AREA_DATA = {
     subtitle: "Chapter 5 Side Route · The Singing Garden",
     theme: "Orchid Waltz",
     bg: "from-pink-950 via-fuchsia-950 to-indigo-950",
-    levelMin: 24,
-    levelMax: 36,
+    levelMin: 18,
+    levelMax: 29,
     start: { x: 2, y: 9 },
     sideQuest: "Defeat the three court performers to earn the Harmony Charm.",
     map: [
@@ -1151,8 +1220,8 @@ const AREA_DATA = {
     subtitle: "Side Route · The Market of Living Light",
     theme: "Golden Lantern Waltz",
     bg: "from-yellow-950 via-orange-950 to-slate-950",
-    levelMin: 11,
-    levelMax: 20,
+    levelMin: 9,
+    levelMax: 18,
     start: { x: 2, y: 9 },
     sideQuest: "Find the three Bell Merchants and earn the Lucky Prism tag.",
     map: [
@@ -1179,8 +1248,8 @@ const AREA_DATA = {
     subtitle: "Side Route · The Singing Thunder Cliffs",
     theme: "Choir of Lightning",
     bg: "from-sky-950 via-indigo-950 to-slate-950",
-    levelMin: 26,
-    levelMax: 39,
+    levelMin: 21,
+    levelMax: 33,
     start: { x: 2, y: 9 },
     sideQuest: "Ring the three storm bells to awaken Stormglass.",
     map: [
@@ -1205,6 +1274,8 @@ const AREA_DATA = {
 };
 
 const AREA_EXITS = {
+  g: "trainingGrounds",
+  n: "glowcapGrove",
   a: "skyrailMeadow",
   e: "echoCaves",
   x: "spiritMarsh",
@@ -1227,6 +1298,8 @@ const AREA_EXITS = {
 
 const WORLD_ROUTE = [
   { id: "luminara", gate: "Start", story: "Choose a starter and speak to Elder Nima." },
+  { id: "trainingGrounds", gate: "Novice Trial / g", story: "Optional early training board with safe XP and beginner Mythlings." },
+  { id: "glowcapGrove", gate: "Glowcap Gate / n", story: "A gentle mid-early grove for Light, Sound, and Verdant evolutions." },
   { id: "skyrailMeadow", gate: "Skyrail Gate / a", story: "Learn route travel and fight early tamers." },
   { id: "echoCaves", gate: "Echo Gate / e", story: "Defeat Rival Ren and hear the first Prism song." },
   { id: "spiritMarsh", gate: "Spirit Marsh Gate / x", story: "Find Moon Keeper Sola and unlock shrine shadows." },
@@ -1269,20 +1342,26 @@ function maxPartyLevel(party = []) {
 function recommendedStoryAreaId(player, seen, party = []) {
   const avg = averagePartyLevel(party);
   if (!seen?.elder || !seen?.rival) return "luminara";
-  if (!seen?.keeper) return avg < 7 ? "skyrailMeadow" : "echoCaves";
-  if (!seen?.shrine) return avg < 9 ? "echoCaves" : "spiritMarsh";
+  if (!seen?.keeper) {
+    if (avg < 5) return "trainingGrounds";
+    if (avg < 7) return "skyrailMeadow";
+    return "echoCaves";
+  }
+  if (!seen?.shrine) return avg < 8 ? "echoCaves" : "spiritMarsh";
   if (!seen?.bridgeCaptain) {
-    if (avg < 13) return "verdantCanopy";
-    if (avg < 17) return "prismRuins";
-    if (avg < 21) return "ironrailYard";
+    if (avg < 9) return "glowcapGrove";
+    if (avg < 11) return "verdantCanopy";
+    if (avg < 13) return "tideglassFlats";
+    if (avg < 15) return "prismRuins";
+    if (avg < 17) return "luminousBazaar";
+    if (avg < 19) return "ironrailYard";
     return "titanPass";
   }
   if (!seen?.dragon) {
-    if (avg < 18) return "prismRuins";
-    if (avg < 22) return "ironrailYard";
-    if (avg < 24) return "sunkenArchive";
-    if (avg < 26) return "nocturneRoad";
-    if (avg < 28) return "phoenixRoost";
+    if (avg < 18) return "ironrailYard";
+    if (avg < 20) return "sunkenArchive";
+    if (avg < 21) return "nocturneRoad";
+    if (avg < 22) return "phoenixRoost";
     return "calderaCrown";
   }
   return "postgame";
@@ -1310,15 +1389,15 @@ function areaGateSafety(areaId, party = [], seen = {}, player = {}) {
     warnings.push(`This route is much later than your current story step. Recommended next story area: ${AREA_DATA[recommendedId]?.name || "Luminara"}.`);
   }
 
-  if (avg < min - 8) {
+  if (avg < min - 6) {
     severity = severity === "locked" ? "locked" : "danger";
     title = severity === "locked" ? title : "Way too strong";
     warnings.push(`Your team's average level is about ${avg}. This area starts around Lv.${min}, so wild battles can overwhelm you quickly.`);
-  } else if (avg < min - 4) {
+  } else if (avg < min - 3) {
     severity = severity === "locked" ? "locked" : "danger";
     title = severity === "locked" ? title : "Overpowered area";
     warnings.push(`Your team's average level is about ${avg}. This area starts around Lv.${min}.`);
-  } else if (avg < min - 1) {
+  } else if (avg < min) {
     severity = severity === "safe" ? "caution" : severity;
     title = severity === "caution" ? "Slightly underleveled" : title;
     warnings.push(`Your team's average level is about ${avg}. This area is recommended around Lv.${min}-${maxRec}.`);
@@ -1418,7 +1497,23 @@ function rollGender(id) {
   const bias = b.body === "cat" ? 0.5 : b.body === "deer" ? 0.55 : b.body === "bird" ? 0.48 : 0.5;
   return Math.random() < bias ? "♀" : "♂";
 }
-function makeMon(id, level = 1, wild = false) { const b = BESTIARY[id] || BESTIARY.emberlynx; const [bhp, batk, bdef, bspd] = b.base; const hp = Math.floor(bhp + level * 7); return ensureMovePP({ uid: `${id}_${uid()}`, id, nickname: "", name: b.name, type: b.type, gender: rollGender(id), shiny: rollShiny(wild), level, xp: 0, nextXp: 42 + level * 22, hp, maxHp: hp, atk: Math.floor(batk + level * 2.4), def: Math.floor(bdef + level * 1.8), spd: Math.floor(bspd + level * 1.5), status: null, wild }); }
+function xpToNextLevel(level = 1, id = "emberlynx") {
+  const b = BESTIARY[id] || {};
+  const stage = Math.max(1, Number(b.stage || 1));
+  const evolvedFactor = b.legendary ? 1.45 : stage >= 3 ? 1.25 : stage === 2 ? 1.08 : 0.82;
+  const lvl = Math.max(1, Number(level || 1));
+  return Math.max(34, Math.floor((28 + lvl * 7 + Math.pow(lvl, 1.68) * 1.2) * evolvedFactor));
+}
+function battleXpReward(defeated, mode = "wild") {
+  const b = BESTIARY[defeated?.id] || {};
+  const stage = Math.max(1, Number(b.stage || 1));
+  const lvl = Math.max(1, Number(defeated?.level || 1));
+  const evolvedBonus = stage === 1 ? 0 : stage === 2 ? 38 : 86;
+  if (mode === "legend") return 470 + lvl * 20 + evolvedBonus;
+  if (mode === "trainer") return 295 + lvl * 22 + evolvedBonus;
+  return 155 + lvl * 19 + evolvedBonus;
+}
+function makeMon(id, level = 1, wild = false) { const b = BESTIARY[id] || BESTIARY.emberlynx; const [bhp, batk, bdef, bspd] = b.base; const hp = Math.floor(bhp + level * 7); return ensureMovePP({ uid: `${id}_${uid()}`, id, nickname: "", name: b.name, type: b.type, gender: rollGender(id), shiny: rollShiny(wild), level, xp: 0, nextXp: xpToNextLevel(level, id), hp, maxHp: hp, atk: Math.floor(batk + level * 2.4), def: Math.floor(bdef + level * 1.8), spd: Math.floor(bspd + level * 1.5), status: null, wild }); }
 function displayName(m) { return m?.nickname || m?.name || BESTIARY[m?.id]?.name || "Mythling"; }
 function normalizeMon(m) {
   const safeId = BESTIARY[m?.id] ? m.id : "emberlynx";
@@ -1437,11 +1532,13 @@ function normalizeMon(m) {
     name: b.name,
     type: b.type,
     level: safeLevel,
+    xp: Math.max(0, Number(m?.xp || 0)),
+    nextXp: Math.min(Math.max(1, Number(m?.nextXp || mon.nextXp)), xpToNextLevel(safeLevel, safeId)),
     hp: Math.max(0, Math.min(maxHp, Number.isFinite(rawHp) ? rawHp : maxHp)),
     maxHp
   });
 }
-function scaleMonToSpecies(old, newId) { const next = makeMon(newId, old.level, false); const ratio = old.hp / Math.max(1, old.maxHp); return ensureMovePP({ ...next, nickname: old.nickname || "", gender: old.gender || next.gender, shiny: Boolean(old.shiny), status: normalizeStatus(old.status), xp: old.xp, hp: Math.max(1, Math.floor(next.maxHp * ratio)) }); }
+function scaleMonToSpecies(old, newId) { const next = makeMon(newId, old.level, false); const ratio = old.hp / Math.max(1, old.maxHp); return ensureMovePP({ ...next, nickname: old.nickname || "", gender: old.gender || next.gender, shiny: Boolean(old.shiny), status: normalizeStatus(old.status), xp: old.xp, nextXp: xpToNextLevel(old.level, newId), hp: Math.max(1, Math.floor(next.maxHp * ratio)) }); }
 function migrateSave(input) {
   const data = input && typeof input === "object" ? input : {};
   const player = { ...freshPlayer(), ...(data.player || data.tamer || {}) }; player.items = { ...freshPlayer().items, ...(player.items || {}) }; if (!AREA_DATA[player.area]) player.area = "luminara"; if (typeof player.chapter !== "number") player.chapter = currentAreaData(player).chapter || 1; player.captureItems = { ...DEFAULT_CAPTURE_ITEMS, ...(player.captureItems || {}) }; if (typeof player.balls === "number" && !data.player?.captureItems) player.captureItems["Prism Capsule"] = player.balls; player.balls = Object.values(player.captureItems || {}).reduce((a,b)=>a + Number(b || 0), 0); if (typeof player.money !== "number") player.money = 1200; let party = Array.isArray(data.party) ? data.party.map(normalizeMon).filter((m) => BESTIARY[m.id]).slice(0, 6) : [];
@@ -1451,7 +1548,7 @@ function migrateSave(input) {
   if (!party.length && storage.length) {
     party = storage.slice(0, 6);
     storage = storage.slice(6);
-  } const dex = ensureDexShape(data.dex || freshDex()); party.concat(storage).forEach((m) => { dex.seen[m.id] = true; dex.caught[m.id] = true; if (m.shiny) { dex.shinySeen[m.id] = true; dex.shinyCaught[m.id] = true; } }); const safeScreen = VALID_SCREENS.has(data.screen) ? data.screen : ((party.length || storage.length) ? "world" : "title"); return { version: 9, savedAt: Date.now(), screen: party.length ? (safeScreen === "battle" || safeScreen === "gameover" || safeScreen === "starter" ? "world" : safeScreen || "world") : "title", storyIndex: data.storyIndex || 0, player, party, storage, active: Math.min(data.active || 0, Math.max(0, party.length - 1)), seen: { ...freshSeen(), ...(data.seen || {}) }, dex, clock: data.clock || freshClock(), muted: Boolean(data.muted) }; }
+  } const dex = ensureDexShape(data.dex || freshDex()); party.concat(storage).forEach((m) => { dex.seen[m.id] = true; dex.caught[m.id] = true; if (m.shiny) { dex.shinySeen[m.id] = true; dex.shinyCaught[m.id] = true; } }); const safeScreen = VALID_SCREENS.has(data.screen) ? data.screen : ((party.length || storage.length) ? "world" : "title"); return { version: 23, savedAt: Date.now(), screen: party.length ? (safeScreen === "battle" || safeScreen === "gameover" || safeScreen === "starter" ? "world" : safeScreen || "world") : "title", storyIndex: data.storyIndex || 0, player, party, storage, active: Math.min(data.active || 0, Math.max(0, party.length - 1)), seen: { ...freshSeen(), ...(data.seen || {}) }, dex, clock: data.clock || freshClock(), muted: Boolean(data.muted) }; }
 function typeMult(a, d) {
   const chart = TYPE_MATCHUPS[a] || {};
   let mult = 1;
@@ -1487,7 +1584,8 @@ function resolveMove(attacker, defender, skillName, guarding = false) {
   const crit = Math.random() < critChance(attacker, defender, skill);
   const critMult = crit ? 1.6 : 1;
   const guardMult = guarding ? 0.48 : 1;
-  const wildAttackerMult = attacker.wild ? 0.92 : 1;
+  const wildAttackerMult = attacker.wild ? 0.70 : 1;
+  const wildDefenderMult = defender.wild ? 1.55 : 1;
   const level = Math.max(1, Math.floor(attacker.level || 1));
   const offense = Math.max(1, effectiveAttack(attacker));
   const defense = Math.max(1, defender.def || 1);
@@ -1497,8 +1595,8 @@ function resolveMove(attacker, defender, skillName, guarding = false) {
   const levelGap = Math.max(0.72, Math.min(1.32, 1 + ((level - (defender.level || 1)) * 0.018)));
   const attackTempo = power >= 70 ? 1.12 : power >= 50 ? 1.18 : 1.10;
   const effectivenessBonus = mult > 1 ? 1.15 : mult < 1 ? 0.92 : 1;
-  const raw = base * randomSpread * stab * mult * effectivenessBonus * critMult * guardMult * wildAttackerMult * levelGap * attackTempo;
-  const damage = Math.max(2, Math.floor(raw));
+  const raw = base * randomSpread * stab * mult * effectivenessBonus * critMult * guardMult * wildAttackerMult * wildDefenderMult * levelGap * attackTempo;
+  const damage = Math.max(3, Math.floor(raw));
   return { hit: true, damage, mult, crit, stab, accuracy };
 }
 function hasDexBattleInfo(dex, enemy) {
@@ -1787,6 +1885,9 @@ function MonsterModel({ mon, size = "large", flipped = false, faint = false, ani
         {data.body === "phoenix" && <><path d="M78 115 C18 72 34 28 105 76 C86 92 83 104 78 115Z" fill={b} opacity=".88" stroke="white" strokeOpacity=".3" strokeWidth="2"/><path d="M154 115 C214 72 198 28 127 76 C146 92 149 104 154 115Z" fill={b} opacity=".88" stroke="white" strokeOpacity=".3" strokeWidth="2"/><path d="M113 56 L122 20 L136 58 L124 51" fill={c} stroke="white" strokeOpacity=".4" strokeWidth="2"/><path d="M96 164 C110 199 130 198 145 164" fill={c} opacity=".78"/></>}
         {data.body === "wolf" && <><path d="M64 90 L55 46 L90 76" fill={c} stroke="white" strokeOpacity=".28" strokeWidth="2"/><path d="M143 76 L176 46 L164 96" fill={c} stroke="white" strokeOpacity=".28" strokeWidth="2"/><path d="M158 137 C206 128 207 164 168 164" fill="none" stroke={c} strokeWidth="13" strokeLinecap="round"/><path d="M78 154 L55 184" stroke={c} strokeWidth="10" strokeLinecap="round"/><path d="M149 154 L170 184" stroke={c} strokeWidth="10" strokeLinecap="round"/></>}
         {data.body === "flower" && <><circle cx="116" cy="86" r="34" fill={b} opacity=".75"/><circle cx="88" cy="104" r="28" fill={b} opacity=".55"/><circle cx="146" cy="104" r="28" fill={b} opacity=".55"/><path d="M116 117 C101 146 100 167 116 184 C133 167 132 146 116 117Z" fill={c} opacity=".75"/><path d="M86 151 C58 139 49 159 68 177" stroke={c} strokeWidth="9" strokeLinecap="round"/><path d="M146 151 C174 139 183 159 164 177" stroke={c} strokeWidth="9" strokeLinecap="round"/></>}
+        {data.body === "slime" && <><path d="M75 151 C52 129 55 97 83 82 C103 71 135 73 154 88 C181 111 174 150 143 164 C119 176 94 171 75 151Z" fill={b} opacity=".55"/><circle cx="79" cy="89" r="10" fill={c} opacity=".9"/><circle cx="154" cy="99" r="7" fill="white" opacity=".45"/></>}
+        {data.body === "goblin" && <><path d="M67 95 L34 75 L70 71" fill={c} opacity=".9" stroke="white" strokeOpacity=".25" strokeWidth="2"/><path d="M161 95 L197 74 L157 72" fill={c} opacity=".9" stroke="white" strokeOpacity=".25" strokeWidth="2"/><path d="M92 61 L115 33 L139 63" fill={b} opacity=".9"/><path d="M73 152 L50 176" stroke={c} strokeWidth="10" strokeLinecap="round"/><path d="M151 152 L176 176" stroke={c} strokeWidth="10" strokeLinecap="round"/></>}
+        {data.body === "bug" && <><path d="M64 137 L35 125" stroke={c} strokeWidth="8" strokeLinecap="round"/><path d="M70 154 L42 178" stroke={c} strokeWidth="8" strokeLinecap="round"/><path d="M162 137 L192 125" stroke={c} strokeWidth="8" strokeLinecap="round"/><path d="M154 154 L184 178" stroke={c} strokeWidth="8" strokeLinecap="round"/><path d="M92 61 L84 35" stroke={b} strokeWidth="5" strokeLinecap="round"/><path d="M138 61 L148 35" stroke={b} strokeWidth="5" strokeLinecap="round"/><circle cx="82" cy="32" r="6" fill={b}/><circle cx="151" cy="32" r="6" fill={b}/></>}
         {data.body === "buddy" && <><path d="M114 36 L108 12 L119 24 L127 10 L128 34" fill={c} stroke="white" strokeOpacity=".35" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/><path d="M158 138 C194 128 200 156 172 158" fill="none" stroke={c} strokeWidth="11" strokeLinecap="round"/><path d="M92 148 C71 162 68 180 91 181" fill="none" stroke={b} strokeWidth="10" strokeLinecap="round"/><path d="M60 118 C40 104 42 86 63 89" fill="none" stroke={b} strokeWidth="9" strokeLinecap="round"/><path d="M51 56 C40 47 42 32 55 29" fill="none" stroke={c} strokeWidth="4" strokeLinecap="round" opacity=".7"/><path d="M45 68 C31 62 30 47 41 40" fill="none" stroke={c} strokeWidth="4" strokeLinecap="round" opacity=".55"/></>}
 
 
@@ -2414,7 +2515,7 @@ function playCry(id) { const isLegend = !!BESTIARY[id]?.legendary; const base = 
     if (!b) return;
     sfx("success");
     stepTime(25);
-    const xp = b.mode === "legend" ? 210 : b.mode === "trainer" ? 120 + defeated.level * 5 : 52 + defeated.level * 9;
+    const xp = battleXpReward(defeated, b.mode);
     let levelUps = [];
     let xpTrack = null;
     const beforeMon = g.party[g.active];
@@ -2425,7 +2526,7 @@ function playCry(id) { const isLegend = !!BESTIARY[id]?.legendary; const base = 
       while (nm.xp >= nm.nextXp) {
         nm.xp -= nm.nextXp;
         nm.level += 1;
-        nm.nextXp += 28 + Math.floor(nm.level * 2);
+        nm.nextXp = xpToNextLevel(nm.level, nm.id);
         nm.maxHp += 7;
         nm.hp = nm.maxHp;
         nm.atk += 3;
@@ -2719,7 +2820,7 @@ function playCry(id) { const isLegend = !!BESTIARY[id]?.legendary; const base = 
     }
     setScreen(next);
   }
-  return <div className="h-[100dvh] max-h-[100dvh] bg-slate-950 text-white p-1 sm:p-3 landscape:p-0 overflow-hidden relative"><div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(34,211,238,.16),transparent_28%),radial-gradient(circle_at_80%_15%,rgba(217,70,239,.13),transparent_25%),radial-gradient(circle_at_55%_85%,rgba(132,204,22,.11),transparent_28%)]"/><div className="relative max-w-7xl mx-auto grid lg:grid-cols-[1fr_350px] gap-4"><Card className="rounded-2xl sm:rounded-3xl landscape:rounded-none overflow-hidden bg-slate-900/80 border-white/10 shadow-2xl shadow-cyan-500/10 h-[calc(100dvh-0.5rem)] sm:h-[calc(100dvh-1.5rem)] landscape:h-[100dvh]"><CardContent className="p-0 h-full overflow-hidden"><div className="h-full overflow-y-scroll overscroll-contain touch-pan-y pb-56 sm:pb-10" style={{ WebkitOverflowScrolling: "touch" }}><AnimatePresence mode="wait">{screen === "title" && <TitleScreen startStory={startStory} loadGame={loadGame} hasSave={hasSave}/>} {screen === "story" && <StoryScreen item={STORY[storyIndex]} nextStory={nextStory} index={storyIndex} total={STORY.length}/>} {screen === "starter" && <StarterScreen chooseStarter={chooseStarter}/>} {screen === "world" && party.length > 0 && <WorldScreen map={currentAreaMap(player)} area={currentAreaData(player)} player={player} move={move} party={party} storage={storage} seen={seen} dex={dex} setScreen={setScreen} saveGame={saveGame} clock={clock} viewport={viewport} onObjectiveClick={setObjectiveModal} objectiveMapFocus={objectiveMapFocus} clearObjectiveFocus={() => setObjectiveMapFocus(null)}/>} {screen === "party" && <PartyScreen party={party} active={active} setActive={setActive} setScreen={setScreen} player={player} seen={seen} evolve={evolve} clock={clock} useStatusItem={useStatusItem}/>} {screen === "pc" && <PCStorageScreen party={party} storage={storage} setScreen={setScreen} swapWithStorage={swapWithStorage} withdrawFromStorage={withdrawFromStorage}/>} {screen === "shop" && <ShopScreen player={player} setScreen={setScreen} buyStock={buyStock}/>} {screen === "dex" && <DexScreen dex={dex} setScreen={setScreen}/>} {screen === "account" && <AccountScreen setScreen={setScreen} authUser={authUser} accountProfile={accountProfile} accountStatus={accountStatus} setAccountStatus={setAccountStatus} findValidSave={findValidSave} hydrateSaveData={hydrateSaveData} uploadSaveDataToCloud={uploadSaveDataToCloud} loadAccountProfile={loadAccountProfile} cloudSyncStatus={cloudSyncStatus} lastCloudSyncAt={lastCloudSyncAt}/>} {screen === "multiplayer" && <MultiplayerScreen party={party} setParty={setParty} dex={dex} player={player} setScreen={setScreen} authUser={authUser} accountProfile={accountProfile} saveGame={saveGame}/>} {screen === "friends" && <FriendsScreen party={party} dex={dex} player={player} setScreen={setScreen} authUser={authUser} accountProfile={accountProfile}/>} {screen === "objectives" && <ObjectivesScreen setScreen={setScreen} player={player} seen={seen} dex={dex} party={party} storage={storage} clock={clock} onObjectiveClick={setObjectiveModal}/>} {screen === "help" && <HelpScreen setScreen={setScreen}/>} {screen === "update" && <UpdateCenterScreen setScreen={setScreen} availableUpdate={availableUpdate} status={updateStatus} checkUpdates={() => checkAppUpdate({ silent: false })} downloadUpdate={() => downloadAvailableUpdate(availableUpdate)} />} {screen === "atlas" && <AtlasScreen player={player} seen={seen} dex={dex} party={party} setScreen={setScreen}/>} {screen === "battle" && battle && current && <BattleScreen battle={battle} playerMon={current} skills={skills(current)} playerUse={playerUse} capture={capture} selectedCaptureItem={selectedCaptureItem} setSelectedCaptureItem={setSelectedCaptureItem} usePotion={usePotion} useStatusCure={useStatusCureInBattle} usePPItem={usePPItemInBattle} run={run} player={player} party={party} active={active} setActive={setActive} anim={battleAnim} dex={dex} clock={clock} onBattleResultContinue={finishBattleResult}/>} {screen === "gameover" && <GameOver reset={reset}/>} {screen === "world" && party.length === 0 && <StartRequiredScreen setScreen={setScreen} loadGame={loadGame} hasSave={hasSave}/>} {!VALID_SCREENS.has(screen) && <RecoveryScreen reset={reset} setScreen={setScreen} party={party}/>} {screen === "battle" && (!battle || !current) && <RecoveryScreen reset={reset} setScreen={setScreen} party={party} message="Battle data was missing, so the app can safely return to the map."/>}</AnimatePresence></div></CardContent></Card><div className="hidden lg:block"><SidePanel player={player} party={party} active={active} setScreen={requestScreen} reset={reset} saveGame={saveGame} loadGame={loadGame} clearSave={clearSave} hasSave={hasSave} muted={muted} setMuted={setMuted} stats={stats} clock={clock} authUser={authUser} accountProfile={accountProfile} cloudSyncStatus={cloudSyncStatus} lastCloudSyncAt={lastCloudSyncAt} storage={storage} seen={seen} dex={dex} onObjectiveClick={setObjectiveModal}/></div></div><MobileNav setScreen={requestScreen} saveGame={saveGame} muted={muted} setMuted={setMuted} authUser={authUser}/><AnimatePresence>{cinematic && <CinematicOverlay cinematic={cinematic}/>}</AnimatePresence><AnimatePresence>{evolutionScene && <EvolutionOverlay scene={evolutionScene}/>}</AnimatePresence><AnimatePresence>{toast && <motion.div initial={{ y: 30, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 30, opacity: 0 }} className="fixed bottom-5 left-1/2 -translate-x-1/2 px-5 py-3 rounded-2xl bg-slate-900 border border-cyan-300/30 shadow-xl text-cyan-100 font-bold z-50">{toast}</motion.div>}</AnimatePresence><AnimatePresence>{npc && <NpcModal npc={npc} close={() => { if (npc.reward) npc.reward(); setNpc(null); saveGame(false); }}/>}</AnimatePresence><AnimatePresence>{pendingAreaGate && <AreaGateModal gate={pendingAreaGate} enter={confirmAreaGate} stay={cancelAreaGate}/>}</AnimatePresence><AnimatePresence>{objectiveModal && <ObjectiveDetailModal info={objectiveModal} close={() => setObjectiveModal(null)} showOnMap={(target) => { if (!target) return; setObjectiveMapFocus(target); setObjectiveModal(null); setScreen("world"); setToast(`Map target highlighted: ${target.label || "Objective"}`); }}/>}</AnimatePresence><AnimatePresence>{battleResult && <BattleResultModal result={battleResult} onContinue={finishBattleResult} />}</AnimatePresence><AnimatePresence>{updateModalVisible && availableUpdate && <UpdateAvailableModal manifest={availableUpdate} status={updateStatus} nativeReady={nativeUpdaterReady} download={() => downloadAvailableUpdate(availableUpdate)} later={() => setUpdateModalVisible(false)} checkAgain={() => checkAppUpdate({ silent: false })}/>}</AnimatePresence><AnimatePresence>{renameMon && <RenameModal nickname={nickname} setNickname={setNickname} notice={renameNotice} applyNickname={applyNickname} skip={() => { setRenameMon(null); setNickname(""); setRenameNotice(""); setTimeout(() => saveGame(false), 50); }}/>}</AnimatePresence></div>;
+  return <div className="h-[100dvh] max-h-[100dvh] bg-slate-950 text-white p-1 sm:p-3 landscape:p-0 overflow-hidden relative"><div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(34,211,238,.16),transparent_28%),radial-gradient(circle_at_80%_15%,rgba(217,70,239,.13),transparent_25%),radial-gradient(circle_at_55%_85%,rgba(132,204,22,.11),transparent_28%)]"/><div className="relative max-w-7xl mx-auto grid lg:grid-cols-[1fr_350px] gap-4"><Card className="rounded-2xl sm:rounded-3xl landscape:rounded-none overflow-hidden bg-slate-900/80 border-white/10 shadow-2xl shadow-cyan-500/10 h-[calc(100dvh-0.5rem)] sm:h-[calc(100dvh-1.5rem)] landscape:h-[100dvh]"><CardContent className="p-0 h-full overflow-hidden"><div className="h-full overflow-y-scroll overscroll-contain touch-pan-y pb-56 sm:pb-10" style={{ WebkitOverflowScrolling: "touch" }}><AnimatePresence mode="wait">{screen === "title" && <TitleScreen startStory={startStory} loadGame={loadGame} hasSave={hasSave}/>} {screen === "story" && <StoryScreen item={STORY[storyIndex]} nextStory={nextStory} index={storyIndex} total={STORY.length}/>} {screen === "starter" && <StarterScreen chooseStarter={chooseStarter}/>} {screen === "world" && party.length > 0 && <WorldScreen map={currentAreaMap(player)} area={currentAreaData(player)} player={player} move={move} party={party} storage={storage} seen={seen} dex={dex} setScreen={setScreen} saveGame={saveGame} clock={clock} viewport={viewport} onObjectiveClick={setObjectiveModal} setObjectiveMapFocus={setObjectiveMapFocus} objectiveMapFocus={objectiveMapFocus} clearObjectiveFocus={() => setObjectiveMapFocus(null)}/>} {screen === "party" && <PartyScreen party={party} active={active} setActive={setActive} setScreen={setScreen} player={player} seen={seen} evolve={evolve} clock={clock} useStatusItem={useStatusItem}/>} {screen === "pc" && <PCStorageScreen party={party} storage={storage} setScreen={setScreen} swapWithStorage={swapWithStorage} withdrawFromStorage={withdrawFromStorage}/>} {screen === "shop" && <ShopScreen player={player} setScreen={setScreen} buyStock={buyStock}/>} {screen === "dex" && <DexScreen dex={dex} setScreen={setScreen}/>} {screen === "account" && <AccountScreen setScreen={setScreen} authUser={authUser} accountProfile={accountProfile} accountStatus={accountStatus} setAccountStatus={setAccountStatus} findValidSave={findValidSave} hydrateSaveData={hydrateSaveData} uploadSaveDataToCloud={uploadSaveDataToCloud} loadAccountProfile={loadAccountProfile} cloudSyncStatus={cloudSyncStatus} lastCloudSyncAt={lastCloudSyncAt}/>} {screen === "multiplayer" && <MultiplayerScreen party={party} setParty={setParty} dex={dex} player={player} setScreen={setScreen} authUser={authUser} accountProfile={accountProfile} saveGame={saveGame}/>} {screen === "friends" && <FriendsScreen party={party} dex={dex} player={player} setScreen={setScreen} authUser={authUser} accountProfile={accountProfile}/>} {screen === "objectives" && <ObjectivesScreen setScreen={setScreen} player={player} seen={seen} dex={dex} party={party} storage={storage} clock={clock} onObjectiveClick={setObjectiveModal}/>} {screen === "help" && <HelpScreen setScreen={setScreen}/>} {screen === "update" && <UpdateCenterScreen setScreen={setScreen} availableUpdate={availableUpdate} status={updateStatus} checkUpdates={() => checkAppUpdate({ silent: false })} downloadUpdate={() => downloadAvailableUpdate(availableUpdate)} />} {screen === "atlas" && <AtlasScreen player={player} seen={seen} dex={dex} party={party} setScreen={setScreen}/>} {screen === "battle" && battle && current && <BattleScreen battle={battle} playerMon={current} skills={skills(current)} playerUse={playerUse} capture={capture} selectedCaptureItem={selectedCaptureItem} setSelectedCaptureItem={setSelectedCaptureItem} usePotion={usePotion} useStatusCure={useStatusCureInBattle} usePPItem={usePPItemInBattle} run={run} player={player} party={party} active={active} setActive={setActive} anim={battleAnim} dex={dex} clock={clock} onBattleResultContinue={finishBattleResult}/>} {screen === "gameover" && <GameOver reset={reset}/>} {screen === "world" && party.length === 0 && <StartRequiredScreen setScreen={setScreen} loadGame={loadGame} hasSave={hasSave}/>} {!VALID_SCREENS.has(screen) && <RecoveryScreen reset={reset} setScreen={setScreen} party={party}/>} {screen === "battle" && (!battle || !current) && <RecoveryScreen reset={reset} setScreen={setScreen} party={party} message="Battle data was missing, so the app can safely return to the map."/>}</AnimatePresence></div></CardContent></Card><div className="hidden lg:block"><SidePanel player={player} party={party} active={active} setScreen={requestScreen} reset={reset} saveGame={saveGame} loadGame={loadGame} clearSave={clearSave} hasSave={hasSave} muted={muted} setMuted={setMuted} stats={stats} clock={clock} authUser={authUser} accountProfile={accountProfile} cloudSyncStatus={cloudSyncStatus} lastCloudSyncAt={lastCloudSyncAt} storage={storage} seen={seen} dex={dex} onObjectiveClick={setObjectiveModal}/></div></div><MobileNav setScreen={requestScreen} saveGame={saveGame} muted={muted} setMuted={setMuted} authUser={authUser}/><AnimatePresence>{cinematic && <CinematicOverlay cinematic={cinematic}/>}</AnimatePresence><AnimatePresence>{evolutionScene && <EvolutionOverlay scene={evolutionScene}/>}</AnimatePresence><AnimatePresence>{toast && <motion.div initial={{ y: 30, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 30, opacity: 0 }} className="fixed bottom-5 left-1/2 -translate-x-1/2 px-5 py-3 rounded-2xl bg-slate-900 border border-cyan-300/30 shadow-xl text-cyan-100 font-bold z-50">{toast}</motion.div>}</AnimatePresence><AnimatePresence>{npc && <NpcModal npc={npc} close={() => { if (npc.reward) npc.reward(); setNpc(null); saveGame(false); }}/>}</AnimatePresence><AnimatePresence>{pendingAreaGate && <AreaGateModal gate={pendingAreaGate} enter={confirmAreaGate} stay={cancelAreaGate}/>}</AnimatePresence><AnimatePresence>{objectiveModal && <ObjectiveDetailModal info={objectiveModal} close={() => setObjectiveModal(null)} showOnMap={(target) => { if (!target) return; setObjectiveMapFocus(target); setObjectiveModal(null); setScreen("world"); setToast(`Map target highlighted: ${target.label || "Objective"}`); }}/>}</AnimatePresence><AnimatePresence>{battleResult && <BattleResultModal result={battleResult} onContinue={finishBattleResult} />}</AnimatePresence><AnimatePresence>{updateModalVisible && availableUpdate && <UpdateAvailableModal manifest={availableUpdate} status={updateStatus} nativeReady={nativeUpdaterReady} download={() => downloadAvailableUpdate(availableUpdate)} later={() => setUpdateModalVisible(false)} checkAgain={() => checkAppUpdate({ silent: false })}/>}</AnimatePresence><AnimatePresence>{renameMon && <RenameModal nickname={nickname} setNickname={setNickname} notice={renameNotice} applyNickname={applyNickname} skip={() => { setRenameMon(null); setNickname(""); setRenameNotice(""); setTimeout(() => saveGame(false), 50); }}/>}</AnimatePresence></div>;
 }
 
 
@@ -2877,7 +2978,7 @@ function nextProgressionHint(player, seen, dex) {
   if (!seen?.keeper) return "Next: reach Spirit Marsh and defeat Moon Keeper Sola.";
   if (!seen?.shrine) return "Next: visit the Old Shrine and restore the Prism Key.";
   if (!seen?.bridgeCaptain) return "Next: train through Tideglass Flats / Prism Ruins, then beat Bridge Captain Brann.";
-  if (!seen?.dragon) return "Next: cross Titan Pass, Nocturne Road, and Caldera Crown to challenge Dracinder.";
+  if (!seen?.dragon) return "Next: follow the tracked route step by step. Train into the low 20s before Dragon Gate; Caldera Crown now starts around Lv.22.";
   return "Post-game: hunt the five legendary dungeons and complete the Prism Dex.";
 }
 
@@ -2974,14 +3075,18 @@ function areaIdByName(name) {
   const found = Object.values(AREA_DATA || {}).find((area) => area.name.toLowerCase() === normalized || area.id.toLowerCase() === normalized.replace(/\s+/g, ""));
   return found?.id || null;
 }
-function mainObjectiveTarget(player, seen) {
+function mainObjectiveTarget(player, seen, party = []) {
   if (!player || !(player.area)) player = freshPlayer();
   if (!seen?.elder) return { areaId: "luminara", tile: "N", label: "Grovepath Village / Elder Nima", icon: "E", detail: "Find an Elder tile marked E. On Luminara this is Grovepath Village." };
   if (!seen?.rival) return { areaId: "luminara", tile: "R", label: "Rival Ren Bridge", icon: "R", detail: "Find the Rival tile marked R. Prepare before entering the trainer battle." };
   if (!seen?.keeper) return { areaId: "luminara", tile: "K", label: "Moon Keeper Gate", icon: "K", detail: "Find the Keeper tile marked K. If it is in another route, follow the highlighted area gate first." };
   if (!seen?.shrine) return { areaId: "luminara", tile: "S", label: "Old Shrine", icon: "⌂", detail: "Find the shrine tile marked ⌂ and interact with it to restore the Prism Key." };
   if (!seen?.bridgeCaptain) return { areaId: "luminara", tile: "B", label: "Bridge Captain Brann", icon: "B", detail: "Find the Captain tile marked B. Train first if your lead Mythling is underleveled." };
-  if (!seen?.dragon) return { areaId: "calderaCrown", tile: "D", label: "Dragon Gate / Dracinder", icon: "龍", detail: "Travel toward Caldera Crown and find the Dragon Gate marked 龍." };
+  if (!seen?.dragon) {
+    const rec = recommendedStoryAreaId(player, seen, party);
+    if (rec && rec !== "calderaCrown") return routeTargetForArea(rec);
+    return { areaId: "calderaCrown", tile: "D", label: "Dragon Gate / Dracinder", icon: "龍", detail: "Travel toward Caldera Crown and find the Dragon Gate marked 龍." };
+  }
   return { areaId: "luminara", tile: "1", label: "Legendary Seals", icon: "★", detail: "Post-game legendary seals are marked by numbers 1-5. Use the Atlas to pick one." };
 }
 function sideObjectiveTarget(data) {
@@ -3077,7 +3182,7 @@ function buildStepObjectivePayload(parentInfo, step) {
 function buildObjectivePayload(type, data, player, seen, dex, party = []) {
   const visual = progressionVisualState(player, seen, dex, party);
   if (type === "main") {
-    const target = mainObjectiveTarget(player, seen);
+    const target = mainObjectiveTarget(player, seen, party);
     return {
       title: visual.stepTitle,
       badge: visual.priority,
@@ -3237,8 +3342,11 @@ function tileDetails(tile, clock, area = null) {
   return { name, ...base, pool, timed };
 }
 
-function WorldScreen({ map, area, player, move, party, storage, seen, dex, setScreen, saveGame, clock, viewport: viewportProp, onObjectiveClick, objectiveMapFocus, clearObjectiveFocus }) {
+function WorldScreen({ map, area, player, move, party, storage, seen, dex, setScreen, saveGame, clock, viewport: viewportProp, onObjectiveClick, setObjectiveMapFocus, objectiveMapFocus, clearObjectiveFocus }) {
   const viewport = viewportProp || { w: typeof window !== "undefined" ? window.innerWidth : 390, h: typeof window !== "undefined" ? window.innerHeight : 780 };
+  const [autoObjectiveHidden, setAutoObjectiveHidden] = useState(() => {
+    try { return localStorage.getItem("mythbound_auto_objective_hidden") === "1"; } catch { return false; }
+  });
   const [selectedTile, setSelectedTile] = useState(null);
   const [mapZoom, setMapZoom] = useState(1);
   const pinchRef = useRef(null);
@@ -3253,9 +3361,9 @@ function WorldScreen({ map, area, player, move, party, storage, seen, dex, setSc
     T:"bg-yellow-500/80 border-yellow-200", L:"bg-blue-700/80 border-blue-300", M:"bg-stone-600 border-stone-300",
     V:"bg-indigo-900 border-indigo-300", F:"bg-red-800/80 border-red-300", A:"bg-sky-700/80 border-sky-200",
     O:"bg-pink-700/80 border-pink-300", Q:"bg-amber-700/80 border-yellow-300", P:"bg-violet-800/90 border-cyan-200",
-    H:"bg-cyan-900/80 border-blue-100", J:"bg-teal-700/80 border-fuchsia-200", X:"bg-purple-950 border-lime-300", Z:"bg-cyan-950 border-fuchsia-300", E:"bg-pink-950 border-fuchsia-300", Y:"bg-orange-950 border-yellow-300", U:"bg-stone-900 border-orange-300", "1":"bg-yellow-950 border-yellow-200", "2":"bg-black border-purple-300", "3":"bg-blue-950 border-cyan-200", "4":"bg-emerald-950 border-lime-200", "5":"bg-slate-950 border-fuchsia-200", "6":"bg-red-950 border-orange-300", "7":"bg-fuchsia-950 border-cyan-200", "8":"bg-blue-950 border-sky-200", "$":"bg-yellow-950 border-amber-200", "!":"bg-sky-950 border-yellow-200", "9":"bg-red-950 border-yellow-200", a:"bg-sky-950 border-sky-200", e:"bg-indigo-950 border-fuchsia-200", x:"bg-purple-950 border-lime-300", p:"bg-violet-950 border-cyan-200", u:"bg-stone-950 border-orange-200", t:"bg-blue-950 border-cyan-200", m:"bg-zinc-900 border-stone-200", v:"bg-slate-950 border-purple-300", h:"bg-cyan-950 border-blue-100", j:"bg-teal-950 border-lime-200", o:"bg-pink-950 border-pink-200", "0":"bg-cyan-950 border-cyan-200"
+    H:"bg-cyan-900/80 border-blue-100", J:"bg-teal-700/80 border-fuchsia-200", X:"bg-purple-950 border-lime-300", Z:"bg-cyan-950 border-fuchsia-300", E:"bg-pink-950 border-fuchsia-300", Y:"bg-orange-950 border-yellow-300", U:"bg-stone-900 border-orange-300", "1":"bg-yellow-950 border-yellow-200", "2":"bg-black border-purple-300", "3":"bg-blue-950 border-cyan-200", "4":"bg-emerald-950 border-lime-200", "5":"bg-slate-950 border-fuchsia-200", "6":"bg-red-950 border-orange-300", "7":"bg-fuchsia-950 border-cyan-200", "8":"bg-blue-950 border-sky-200", "$":"bg-yellow-950 border-amber-200", "!":"bg-sky-950 border-yellow-200", "9":"bg-red-950 border-yellow-200", a:"bg-sky-950 border-sky-200", e:"bg-indigo-950 border-fuchsia-200", x:"bg-purple-950 border-lime-300", p:"bg-violet-950 border-cyan-200", u:"bg-stone-950 border-orange-200", t:"bg-blue-950 border-cyan-200", m:"bg-zinc-900 border-stone-200", v:"bg-slate-950 border-purple-300", h:"bg-cyan-950 border-blue-100", j:"bg-teal-950 border-lime-200", o:"bg-pink-950 border-pink-200", g:"bg-cyan-950 border-lime-200", n:"bg-emerald-950 border-yellow-200", "0":"bg-cyan-950 border-cyan-200"
   }[t] || "bg-lime-700/60 border-lime-500/30");
-  const label = (t) => ({ C:"✦", N:"E", R:"R", K:"K", B:"B", S:"⌂", D:"龍", T:"?", G:"♣", L:"≈", M:"▲", V:"☾", F:"火", A:"~", O:"✿", Q:"◆", P:"✧", H:"❄", J:"晶", X:"☠", Z:"⚡", E:"♫", Y:"爪", U:"巨", "1":"☀", "2":"◐", "3":"♒", "4":"根", "5":"⌛", "6":"羽", "7":"幻", "8":"≋", "$":"¤", "!":"ϟ", "9":"🔥", "%":"☊", "@":"☉", a:"☁", e:"◈", x:"☾", p:"✧", u:"巨", t:"≋", m:"⚙", v:"♬", h:"❄", j:"♣", o:"✿", "0":"↩", W:"" }[t] || "");
+  const label = (t) => ({ C:"✦", N:"E", R:"R", K:"K", B:"B", S:"⌂", D:"龍", T:"?", G:"♣", L:"≈", M:"▲", V:"☾", F:"火", A:"~", O:"✿", Q:"◆", P:"✧", H:"❄", J:"晶", X:"☠", Z:"⚡", E:"♫", Y:"爪", U:"巨", "1":"☀", "2":"◐", "3":"♒", "4":"根", "5":"⌛", "6":"羽", "7":"幻", "8":"≋", "$":"¤", "!":"ϟ", "9":"🔥", "%":"☊", "@":"☉", a:"☁", e:"◈", x:"☾", p:"✧", u:"巨", t:"≋", m:"⚙", v:"♬", h:"❄", j:"♣", o:"✿", g:"◎", n:"✺", "0":"↩", W:"" }[t] || "");
   const tileOverlay = (t) => ({
     W:"from-slate-800/60 via-slate-900/25 to-slate-950/35",
     G:"from-lime-300/20 via-emerald-600/15 to-emerald-950/35",
@@ -3266,12 +3374,12 @@ function WorldScreen({ map, area, player, move, party, storage, seen, dex, setSc
     V:"from-violet-300/20 via-indigo-800/15 to-black/45",
     "$":"from-yellow-200/35 via-amber-500/20 to-orange-950/45",
     "!":"from-cyan-200/25 via-yellow-300/15 to-indigo-950/45",
-    "9":"from-yellow-200/20 via-red-500/25 to-black/55", "%":"from-cyan-200/25 via-blue-600/20 to-black/45", "@":"from-yellow-200/25 via-orange-500/25 to-red-950/45", a:"from-sky-200/30 via-cyan-500/20 to-indigo-950/45", e:"from-violet-200/25 via-indigo-500/20 to-black/40", x:"from-fuchsia-200/25 via-purple-700/20 to-black/45", p:"from-cyan-200/25 via-fuchsia-400/20 to-indigo-950/45", u:"from-stone-200/25 via-orange-700/20 to-black/45", t:"from-blue-200/25 via-cyan-600/20 to-blue-950/45", m:"from-zinc-200/25 via-slate-600/20 to-black/45", v:"from-pink-200/25 via-purple-700/20 to-black/45", h:"from-blue-100/25 via-sky-400/20 to-slate-950/45", j:"from-lime-200/25 via-emerald-700/20 to-black/45", o:"from-rose-200/25 via-pink-500/20 to-black/45",
+    "9":"from-yellow-200/20 via-red-500/25 to-black/55", "%":"from-cyan-200/25 via-blue-600/20 to-black/45", "@":"from-yellow-200/25 via-orange-500/25 to-red-950/45", a:"from-sky-200/30 via-cyan-500/20 to-indigo-950/45", e:"from-violet-200/25 via-indigo-500/20 to-black/40", x:"from-fuchsia-200/25 via-purple-700/20 to-black/45", p:"from-cyan-200/25 via-fuchsia-400/20 to-indigo-950/45", u:"from-stone-200/25 via-orange-700/20 to-black/45", t:"from-blue-200/25 via-cyan-600/20 to-blue-950/45", m:"from-zinc-200/25 via-slate-600/20 to-black/45", v:"from-pink-200/25 via-purple-700/20 to-black/45", h:"from-blue-100/25 via-sky-400/20 to-slate-950/45", j:"from-lime-200/25 via-emerald-700/20 to-black/45", o:"from-rose-200/25 via-pink-500/20 to-black/45", g:"from-cyan-200/28 via-lime-400/18 to-emerald-950/45", n:"from-yellow-200/25 via-lime-400/20 to-fuchsia-950/45",
   }[t] || "from-white/10 via-transparent to-black/20");
   const tileGlow = (t) => ({
     "$":"shadow-amber-300/30",
     "!":"shadow-cyan-300/30",
-    "9":"shadow-red-300/40", "%":"shadow-cyan-300/35", "@":"shadow-amber-300/35", a:"shadow-cyan-300/35", e:"shadow-violet-300/35", x:"shadow-purple-300/35", p:"shadow-fuchsia-300/35", u:"shadow-orange-300/35", t:"shadow-blue-300/35", m:"shadow-zinc-300/30", v:"shadow-pink-300/35", h:"shadow-sky-200/35", j:"shadow-lime-300/35", o:"shadow-rose-300/35",
+    "9":"shadow-red-300/40", "%":"shadow-cyan-300/35", "@":"shadow-amber-300/35", a:"shadow-cyan-300/35", e:"shadow-violet-300/35", x:"shadow-purple-300/35", p:"shadow-fuchsia-300/35", u:"shadow-orange-300/35", t:"shadow-blue-300/35", m:"shadow-zinc-300/30", v:"shadow-pink-300/35", h:"shadow-sky-200/35", j:"shadow-lime-300/35", o:"shadow-rose-300/35", g:"shadow-lime-300/35", n:"shadow-yellow-300/35",
     C:"shadow-cyan-300/30",
     T:"shadow-yellow-300/30",
     N:"shadow-amber-300/30",
@@ -3282,6 +3390,10 @@ function WorldScreen({ map, area, player, move, party, storage, seen, dex, setSc
   }[t] || "shadow-black/20");
 
   const TimeIcon = timeIcon(clock);
+  const autoObjective = buildObjectivePayload("main", null, player, seen, dex, party);
+  const autoTarget = autoObjective?.target || mainObjectiveTarget(player, seen, party);
+  const autoTargetArea = AREA_DATA[autoTarget?.areaId];
+  const autoIsCurrentMap = (autoTarget?.areaId || player.area) === (area?.id || player.area || "luminara");
   const selected = selectedTile ? tileDetails(selectedTile.tile, clock, area) : null;
   const objectiveFocusOnMap = objectiveTargetForCurrentMap(objectiveMapFocus, area?.id || player.area || "luminara");
   const mapRows = map.length;
@@ -3352,8 +3464,12 @@ function WorldScreen({ map, area, player, move, party, storage, seen, dex, setSc
   const tapTile = (t, x, y) => {
     clearTileHold();
     if (swipeHandledRef.current) return;
-    longPressedRef.current = false;
-    setSelectedTile({ tile: t, x, y });
+    if (longPressedRef.current) {
+      longPressedRef.current = false;
+      return;
+    }
+    const didMove = stepTowardTile(x, y);
+    if (!didMove) setSelectedTile({ tile: t, x, y });
   };
   const startPlayerSwipe = (e) => {
     e.preventDefault();
@@ -3413,7 +3529,7 @@ function WorldScreen({ map, area, player, move, party, storage, seen, dex, setSc
               </div>
               <Badge className="bg-slate-900/85 text-cyan-100 border border-cyan-300/25 px-2 py-1 text-[10px] landscape:text-[8px] shrink-0"><TimeIcon className="w-3 h-3 mr-1"/>{timeString(clock)}</Badge>
             </div>
-            <div className="text-[9px] sm:text-xs landscape:text-[7px] text-cyan-100/90 font-bold truncate">Tap tile for info • Swipe the paw to move</div>
+            <div className="text-[9px] sm:text-xs landscape:text-[7px] text-cyan-100/90 font-bold truncate">Tap board to move • Swipe the paw • Hold a tile to inspect</div>
           </div>
           <Badge className="hidden sm:inline-flex bg-fuchsia-300/15 text-fuchsia-100 border border-fuchsia-200/25 px-2 py-1 text-[9px] landscape:text-[7px] font-black">{boardScaleMode}</Badge>
         </div>
@@ -3427,6 +3543,24 @@ function WorldScreen({ map, area, player, move, party, storage, seen, dex, setSc
       </div>
       <Button onClick={clearObjectiveFocus} variant="secondary" className="rounded-xl text-xs font-black">Clear Target</Button>
     </div>}
+
+    {autoObjectiveHidden ? <div className="mb-1 flex justify-end"><Button onClick={() => { setAutoObjectiveHidden(false); try { localStorage.setItem("mythbound_auto_objective_hidden", "0"); } catch {} }} variant="secondary" className="rounded-xl px-3 py-1.5 text-xs font-black border-cyan-200/20 bg-slate-900/70">Show next objective</Button></div> : <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} className="mb-1 rounded-2xl border border-cyan-200/30 bg-slate-950/80 backdrop-blur-xl shadow-xl shadow-cyan-500/10 overflow-hidden">
+      <div className="p-2 sm:p-3 flex items-center justify-between gap-2">
+        <div className="min-w-0 flex items-center gap-2">
+          <div className={`w-10 h-10 rounded-2xl bg-gradient-to-br ${autoObjective.color || "from-cyan-200 to-fuchsia-300"} text-slate-950 flex items-center justify-center font-black text-xl shrink-0`}>{autoObjective.icon || "✦"}</div>
+          <div className="min-w-0">
+            <div className="text-[9px] uppercase tracking-[0.24em] text-cyan-100 font-black">Next objective</div>
+            <div className="text-sm sm:text-lg font-black text-white truncate">{autoObjective.title}</div>
+            <div className="text-[11px] sm:text-xs text-slate-200 truncate">{autoObjective.body}</div>
+            <div className="text-[10px] text-cyan-200 font-bold truncate">Go to: {autoTargetArea?.name || autoTarget?.label || "Objective"} {autoIsCurrentMap ? `· find ${autoTarget?.icon || autoTarget?.tile || "★"}` : "· use the highlighted route gate"}</div>
+          </div>
+        </div>
+        <div className="flex items-center gap-1 shrink-0">
+          <Button onClick={() => { if (setObjectiveMapFocus && autoTarget) setObjectiveMapFocus(autoTarget); }} className="rounded-xl bg-cyan-300 text-slate-950 font-black text-xs px-3 py-2">Track</Button>
+          <Button onClick={() => { setAutoObjectiveHidden(true); try { localStorage.setItem("mythbound_auto_objective_hidden", "1"); } catch {} }} variant="secondary" className="rounded-xl text-xs px-2 py-2">Hide</Button>
+        </div>
+      </div>
+    </motion.div>}
 
     <div className="relative">
       <div
@@ -3497,7 +3631,7 @@ function WorldScreen({ map, area, player, move, party, storage, seen, dex, setSc
             <div className="text-xs uppercase tracking-wider text-slate-400 mb-2">Possible Mythlings</div>
             {selected.pool.length ? <div className="flex flex-wrap gap-2">{selected.pool.slice(0, 10).map((id)=><Badge key={id} className="bg-slate-800 text-slate-100 border border-white/10">{BESTIARY[id]?.name || id}</Badge>)}</div> : <p className="text-slate-400 text-sm">No normal wild encounters here.</p>}
             {selected.timed.length > 0 && <div className="mt-3 p-3 rounded-2xl bg-fuchsia-400/10 border border-fuchsia-300/20 text-sm text-fuchsia-100">{selected.timed.join(" ")}</div>}
-          </div> : <div><h3 className="text-2xl font-black mb-2">Tile Scanner</h3><p className="text-slate-300">Tap any map block to see the location type, danger, special function, and possible encounters.</p></div>}
+          </div> : <div><h3 className="text-2xl font-black mb-2">Tile Scanner</h3><p className="text-slate-300">Hold / long-press any map block to inspect it, or tap a distant tile to step toward it.</p></div>}
         </CardContent>
       </Card>
     </div>

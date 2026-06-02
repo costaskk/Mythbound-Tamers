@@ -1,8 +1,8 @@
 ﻿{
-    "version":  "0.67.0",
-    "versionCode":  67,
-    "notes":  "Restore tap-tile info popouts, make movement happen by swiping the player paw, fix battle HP/name badge overlap, and rebuild battle layout for landscape screens.",
-    "apkUrl":  "https://github.com/costaskk/Mythbound-Tamers/releases/download/v0.67.0/mythbound-tamers-v0.67.0.apk",
+    "version":  "0.68.0",
+    "versionCode":  68,
+    "notes":  "Merge the uploaded App.jsx base with faster XP/leveling, stronger player damage against wild Mythlings, safer progression routing, automatic next-objective tracking, more monsters, two new reachable areas, and UI/logic fixes.",
+    "apkUrl":  "https://github.com/costaskk/Mythbound-Tamers/releases/download/v0.68.0/mythbound-tamers-v0.68.0.apk",
     "mandatory":  false,
     "publishedAt":  "2026-06-02",
     "autoStartNativeUpdate":  false,
