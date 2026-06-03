@@ -1,8 +1,8 @@
 ﻿{
-    "version":  "0.70.0",
-    "versionCode":  70,
-    "notes":  "Improve main board HUD so Current Area spans the full line, smooth battle/evolution animations, keep post-battle evolutions using the same evolution sequence, improve single-stage monster scaling, add more monsters/evolutions, and polish beta-stage stability/visibility.",
-    "apkUrl":  "https://github.com/costaskk/Mythbound-Tamers/releases/download/v0.70.0/mythbound-tamers-v0.70.0.apk",
+    "version":  "0.71.0",
+    "versionCode":  71,
+    "notes":  "Improve portrait/landscape board fit, move the directional pad to the side in landscape and centered below in portrait, fix landscape battle switching access, prevent player monster cut-off, expand Dex unlocked research pages with stats/progress/future moves/locations, add monsters/evolutions, and tune heal/damage balance.",
+    "apkUrl":  "https://github.com/costaskk/Mythbound-Tamers/releases/download/v0.71.0/mythbound-tamers-v0.71.0.apk",
     "mandatory":  false,
     "publishedAt":  "2026-06-03",
     "autoStartNativeUpdate":  false,

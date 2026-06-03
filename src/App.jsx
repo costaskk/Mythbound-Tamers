@@ -8,8 +8,8 @@ import {Sparkles, PawPrint, Flame, Droplets, Leaf, Zap, Heart, Map, Backpack, Ga
 
 const SAVE_KEY = "mythbound_tamers_save_v4";
 const OLD_SAVE_KEYS = ["mythbound_tamers_save_v6", "mythbound_tamers_save_v5", "mythbound_tamers_save_v4", "mythbound_tamers_save_v3", "mythbound_tamers_save_v2", "mythbound_tamers_save"];
-const APP_VERSION = "0.70.0";
-const APP_VERSION_CODE = 70;
+const APP_VERSION = "0.71.0";
+const APP_VERSION_CODE = 71;
 const UPDATE_MANIFEST_URL = import.meta.env.VITE_UPDATE_MANIFEST_URL || "https://costaskk.github.io/Mythbound-Tamers/update-manifest.json";
 const SHINY_RATE = 1 / 192;
 const VALID_SCREENS = new Set(["title","story","starter","world","party","pc","shop","dex","account","multiplayer","friends","objectives","help","atlas","update","battle","gameover"]);
@@ -326,6 +326,13 @@ const BESTIARY = {
   runepup: { name: "Runepup", type: "Mystic", species: "Rune Pup", cry: "ruu-pup!", stage: 1, evo: { to: "glyphound", method: "Reach Lv.20 after seeing 25 Mythlings" }, base: [54, 24, 20, 30], skills: ["Moon Tap", "Rune Bite", "Guard"], capture: 0.20, body: "dog", colors: ["#c4b5fd", "#fef3c7", "#312e81"], lore: "A curious pup whose pawprints briefly glow with little letters." },
   glyphound: { name: "Glyphound", type: "Mystic", species: "Glyph Hound", cry: "GLYPH-HOUND!", stage: 2, evo: { to: "codexwolf", method: "Reach Lv.37 after main story" }, base: [96, 50, 38, 58], skills: ["Rune Bite", "Dream Pulse", "Prism Nova"], capture: 0.05, body: "dog", colors: ["#8b5cf6", "#fde68a", "#020617"], lore: "It can read forgotten dungeon doors by sniffing the symbols carved into them." },
   codexwolf: { name: "Codexwolf", type: "Mystic", species: "Codex Wolf", cry: "CO-DEX-WOLF!", stage: 3, base: [138, 74, 58, 82], skills: ["Rune Bite", "Prism Nova", "Dream Pulse"], capture: 0.015, body: "dog", colors: ["#7c3aed", "#fef9c3", "#020617"], lore: "A late-game wolf said to remember every route ever walked by a Prism Tamer." },
+
+  mossprout: { name: "Mossprout", type: "Verdant", species: "Moss Sprout", cry: "moss-mii!", stage: 1, evo: { to: "mossguard", method: "Reach Lv.18 in Verdant Canopy" }, base: [52, 21, 24, 20], skills: ["Vine Kick", "Bloom Heal", "Guard"], capture: 0.28, body: "plant", colors: ["#86efac", "#bbf7d0", "#064e3b"], lore: "A shy sprout that grows tiny moss shields when praised by its tamer." },
+  mossguard: { name: "Mossguard", type: "Verdant", species: "Moss Guardian", cry: "MOSS-GUARD!", stage: 2, evo: { to: "eldermoss", method: "Reach Lv.36 after clearing Verdant Canopy" }, base: [96, 42, 52, 32], skills: ["Vine Kick", "Worldroot Ram", "Bloom Heal"], capture: 0.07, body: "plant", colors: ["#22c55e", "#d9f99d", "#052e16"], lore: "Its moss cloak can soften boulders and protect smaller Mythlings from storms." },
+  eldermoss: { name: "Eldermoss", type: "Verdant", species: "Ancient Moss", cry: "EL-DER-MOSS!", stage: 3, base: [150, 62, 78, 42], skills: ["Worldroot Ram", "Bloom Heal", "Prism Nova"], capture: 0.018, body: "plant", colors: ["#15803d", "#ecfccb", "#022c22"], lore: "An ancient forest sentry said to remember every path beneath Luminara." },
+  sparkit: { name: "Sparkit", type: "Volt", species: "Pocket Spark", cry: "zi-ki!", stage: 1, evo: { to: "voltrix", method: "Reach Lv.17 after using 8 Volt moves" }, base: [44, 26, 14, 36], skills: ["Static Jolt", "Quick Zap", "Guard"], capture: 0.25, body: "cat", colors: ["#fde047", "#a7f3d0", "#0f172a"], lore: "A kitten-sized spark that naps inside old lantern batteries." },
+  voltrix: { name: "Voltrix", type: "Volt", species: "Arc Fox", cry: "VOL-TRIX!", stage: 2, evo: { to: "thunderlynx", method: "Reach Lv.34 during storm routes" }, base: [82, 50, 28, 68], skills: ["Static Jolt", "Thunder Crown", "Prism Nova"], capture: 0.06, body: "cat", colors: ["#facc15", "#67e8f9", "#020617"], lore: "It runs ahead of storms and leaves zig-zag pawprints of light." },
+  thunderlynx: { name: "Thunderlynx", type: "Volt", species: "Thunder Lynx", cry: "THUN-DER-LYNX!", stage: 3, base: [124, 76, 46, 96], skills: ["Thunder Crown", "Prism Nova", "Quick Zap"], capture: 0.016, body: "cat", colors: ["#eab308", "#22d3ee", "#111827"], lore: "A dazzling late-route hunter that can vanish inside a thunderclap." },
   frostcub: { name: "Frostcub", type: "Aqua", species: "Snow Cub", cry: "brr-aw!", stage: 1, evo: { to: "glaciermaw", method: "Reach Lv.12 at night" }, base: [46, 15, 12, 9], skills: ["Bubble Bite", "Guard", "Tidal Crush"], capture: 0.33, body: "bear", colors: ["#93c5fd", "#eff6ff", "#1e3a8a"], lore: "A playful cub that freezes puddles with each step. It appears near lakes after sunset." },
   glaciermaw: { name: "Glaciermaw", type: "Aqua", species: "Ice Bear", cry: "GLAWWR!", stage: 2, evo: { to: "polarune", method: "Reach Lv.22 in Frost Hollow" }, base: [88, 28, 24, 12], skills: ["Bubble Bite", "Tidal Crush", "Boulder Crash"], capture: 0.1, body: "bear", colors: ["#60a5fa", "#e0f2fe", "#0f172a"], lore: "Its claws are frozen relics from the first winter of Luminara." },
   cindermole: { name: "Cindermole", type: "Flame", species: "Coal Mole", cry: "murk-fwoom!", stage: 1, evo: { to: "magmole", method: "Use Sun Fossil" }, base: [52, 17, 16, 7], skills: ["Cinder Paw", "Guard", "Boulder Crash"], capture: 0.3, body: "mole", colors: ["#fb923c", "#111827", "#7f1d1d"], lore: "It digs warm tunnels beneath Ash Field and leaves glowing pawprints." },
@@ -750,7 +757,7 @@ const ENCOUNTERS = {
   L: ["aquapup", "leafawn", "cloudfinch", "prismite", "frostcub", "coralisk", "neonsquid", "puddleimp", "rainmischief"],
   M: ["pebbkit", "ironboar", "cloudfinch", "sandillo", "crysteel", "cuboulder"],
   V: ["gloomander", "shadebat", "pebbkit", "nightmoth", "starwhale", "orchidimp", "spirikit", "bellimp", "noircolt", "umbrasteed"],
-  F: ["emberlynx", "voltoroo", "shadebat", "cindermole", "toxifrog", "ferroach", "sunwyrm", "heliodrake", "cindermite", "ashhopper"],
+  F: ["emberlynx", "voltoroo", "sparkit", "shadebat", "cindermole", "toxifrog", "ferroach", "sunwyrm", "heliodrake", "cindermite", "ashhopper"],
   A: ["cloudfinch", "voltoroo", "dawnhare", "mistowl", "lumifox", "snowl", "ionwyrm", "echopup"],
   O: ["leafawn", "spriggeist", "orchidimp", "mistowl", "spirikit", "bellimp", "happi", "jolli", "glimkit", "luminail", "happi", "jolli"],
   Q: ["pebbkit", "sandillo", "ironboar", "cindermole", "gearmite", "steelfang", "crysteel", "ferroach"],
@@ -813,7 +820,7 @@ const AREA_DATA = {
       "W....G...B..GG.W",
       "WWWWWWWWWWWWWWWW"
     ],
-    encounters: { G: ["emberlynx","aquapup","leafawn","voltoroo","cloudfinch","happi","gleamouse","glimkit","puddleimp","cindermite","dewdillo","embergoat","pebblit","runepup"], C: ["prismite","glimkit","runepup"], N: ["gleamouse","happi"] },
+    encounters: { G: ["emberlynx","aquapup","leafawn","voltoroo","cloudfinch","happi","gleamouse","glimkit","puddleimp","cindermite","dewdillo","embergoat","pebblit","runepup","mossprout","sparkit"], C: ["prismite","glimkit","runepup","mossprout","sparkit"], N: ["gleamouse","happi"] },
     description: "A safe academy board where new tamers can level quickly, learn tile movement, and catch friendly early Mythlings.",
     sideQuest: "Win three wild battles here to earn a Training Charm and learn how XP scales."
   },
@@ -841,7 +848,7 @@ const AREA_DATA = {
       "W....J...B..JJ.W",
       "WWWWWWWWWWWWWWWW"
     ],
-    encounters: { J: ["leafawn","florantler","spriggeist","orchidimp","happi","jolli","glimkit","luminail","gleamouse","glowrat","runepup"], O: ["bellimp","chimegeist","aurorabbit","mistowl"], G: ["bramblepup","seedpuff","puddleimp"] },
+    encounters: { J: ["leafawn","florantler","spriggeist","orchidimp","happi","jolli","glimkit","luminail","gleamouse","glowrat","runepup","mossprout","sparkit"], O: ["bellimp","chimegeist","aurorabbit","mistowl"], G: ["bramblepup","seedpuff","puddleimp"] },
     description: "A glowing forest route that bridges early Luminara and the Prism roads with fair levels and many evolution-friendly encounters.",
     sideQuest: "Find the three glowcaps hidden near crystal springs to unlock a bonus shop discount."
   },
@@ -1659,7 +1666,7 @@ function migrateSave(input) {
   if (!party.length && storage.length) {
     party = storage.slice(0, 6);
     storage = storage.slice(6);
-  } const dex = ensureDexShape(data.dex || freshDex()); party.concat(storage).forEach((m) => { dex.seen[m.id] = true; dex.caught[m.id] = true; if (m.shiny) { dex.shinySeen[m.id] = true; dex.shinyCaught[m.id] = true; } }); const safeScreen = VALID_SCREENS.has(data.screen) ? data.screen : ((party.length || storage.length) ? "world" : "title"); return { version: 25, savedAt: Date.now(), screen: party.length ? (safeScreen === "battle" || safeScreen === "gameover" || safeScreen === "starter" ? "world" : safeScreen || "world") : "title", storyIndex: data.storyIndex || 0, player, party, storage, active: Math.min(data.active || 0, Math.max(0, party.length - 1)), seen: { ...freshSeen(), ...(data.seen || {}) }, dex, clock: data.clock || freshClock(), muted: Boolean(data.muted) }; }
+  } const dex = ensureDexShape(data.dex || freshDex()); party.concat(storage).forEach((m) => { dex.seen[m.id] = true; dex.caught[m.id] = true; if (m.shiny) { dex.shinySeen[m.id] = true; dex.shinyCaught[m.id] = true; } }); const safeScreen = VALID_SCREENS.has(data.screen) ? data.screen : ((party.length || storage.length) ? "world" : "title"); return { version: 26, savedAt: Date.now(), screen: party.length ? (safeScreen === "battle" || safeScreen === "gameover" || safeScreen === "starter" ? "world" : safeScreen || "world") : "title", storyIndex: data.storyIndex || 0, player, party, storage, active: Math.min(data.active || 0, Math.max(0, party.length - 1)), seen: { ...freshSeen(), ...(data.seen || {}) }, dex, clock: data.clock || freshClock(), muted: Boolean(data.muted) }; }
 function typeMult(a, d) {
   const chart = TYPE_MATCHUPS[a] || {};
   let mult = 1;
@@ -1696,7 +1703,7 @@ function resolveMove(attacker, defender, skillName, guarding = false) {
   const critMult = crit ? 1.6 : 1;
   const guardMult = guarding ? 0.48 : 1;
   const wildAttackerMult = attacker.wild ? 0.70 : 1;
-  const wildDefenderMult = defender.wild ? 1.55 : 1;
+  const wildDefenderMult = defender.wild ? 1.62 : 1;
   const level = Math.max(1, Math.floor(attacker.level || 1));
   const offense = Math.max(1, effectiveAttack(attacker));
   const defense = Math.max(1, defender.def || 1);
@@ -2202,7 +2209,7 @@ function MythboundTamersJRPGInner() {
       inventory_snapshot: cleanSave.player || {},
       dex_caught: Object.keys(cleanSave.dex?.caught || {}).filter((k) => cleanSave.dex.caught[k]).length,
       save_data: cleanSave,
-      save_version: cleanSave.version || 25,
+      save_version: cleanSave.version || 26,
       last_save_at: syncedAt,
       updated_at: syncedAt
     };
@@ -2269,7 +2276,7 @@ function startBgm() {
     bgmTimerRef.current = null;
   }
 
-function playCry(id) { const isLegend = !!BESTIARY[id]?.legendary; const base = { emberlynx:520, pyrolynx:420, solarynx:360, aquapup:340, tidemast:260, leviamast:220, leafawn:620, florantler:540, gaianhart:470, voltoroo:760, stormaroo:920, thundaroo:980, gloomander:260, lunamander:310, eclipsander:230, ironboar:180, elderboar:145, cloudfinch:700, galegryph:500, pebbkit:210, granitus:120, shadebat:330, noctyra:240, prismite:850, dawnhare:790, nightmoth:250, dracinder:140, regaldrake:110, frostcub:410, glaciermaw:180, polarune:155, cindermole:250, magmole:160, calderox:120, spriggeist:760, starwhale:95, coralisk:420, reefserpent:160, sandillo:260, duneguard:130, mistowl:610, orchidimp:690, thistlefiend:300, aurorabbit:780, crysteel:620, prismhorn:260, toxifrog:360, venomire:210, spirikit:730, phantelope:510, neonsquid:680, ionwyrm:120, echopup:500, howlitzer:300, resonark:190, cuboulder:190, titanursa:105, worldursa:80, bellimp:640, chimegeist:360, ferroach:260, mantitan:180, mechamane:145, solguard:95, umbraclaw:70, thalassor:55, gaialith:65, chronova:880, auroracalf:720, aurorox:260, glacimarch:150, sirenfin:680, melodray:480, drillbug:230, cometitan:120, miragebud:760, dreamorchid:520, goldkit:760, aurumane:520, solarchon:330, stormkid:840, thunderchoir:460, glasswyrm:380, stormglass:165, incensemoth:560, censeraph:240, runeling:720, glyphsage:380, mossgolem:145, ruingrove:90, coinwyrm:620, treasuredrake:210, shelltide:300, reefguard:190, tsunamora:85, kitspark:760, vulpyr:520, pebblit:240, craggle:150, mountoracle:70, snowlit:620, frostelle:430, auroravale:260, runepup:650, glyphound:390, codexwolf:170, dewdillo:330, rainroll:210, monsoondillo:95, embergoat:460, forgecapra:240, volcanor:115, kitsunova:900, abyssnake:130, leviacoil:70, glintcrab:640, prismclaw:360, ashchick:820, cinderwing:610, phoenixar:980, budbyte:720, florabyte:560, prismbloom:880, wolfrune:390, howlglyph:260, runewarden:180, snowkit:740, frostvulp:500, auroravulp:920, hornmite:250, drillhorn:160, railguard:95, miragecub:690, dreamlynx:450, mirageon:780, vaultick:680, lockroach:320, vaultitan:120, balletfin:760, swanlume:620, auroradiva:980, relicalf:260, reliceros:140, templehorn:70, pufflora:710, drowsibloom:520, somniflora:820, stardeer:760, cometstag:360, stellarch:160, inklot:230, eclipsquid:120, candypup:780, caramutt:540, ticktad:620, chronofrog:340, hourglassor:180, lanternimp:690, glowgremlin:500, mudmunch:210, bogjaw:115, happi: 760, jolli: 620, jubilume: 980, }[id] || 440; beep(base, isLegend ? 0.18 : 0.09, isLegend ? "square" : "sawtooth", isLegend ? 0.07 : 0.045); setTimeout(()=>beep(base*1.33, isLegend ? 0.16 : 0.08, "triangle", isLegend ? 0.065 : 0.04),90); if (isLegend) { setTimeout(()=>beep(base*0.66,0.22,"sawtooth",0.055),230); setTimeout(()=>beep(base*1.9,0.18,"sine",0.05),450); } }
+function playCry(id) { const isLegend = !!BESTIARY[id]?.legendary; const base = { emberlynx:520, pyrolynx:420, solarynx:360, aquapup:340, tidemast:260, leviamast:220, leafawn:620, florantler:540, gaianhart:470, voltoroo:760, stormaroo:920, thundaroo:980, gloomander:260, lunamander:310, eclipsander:230, ironboar:180, elderboar:145, cloudfinch:700, galegryph:500, pebbkit:210, granitus:120, shadebat:330, noctyra:240, prismite:850, dawnhare:790, nightmoth:250, dracinder:140, regaldrake:110, frostcub:410, glaciermaw:180, polarune:155, cindermole:250, magmole:160, calderox:120, spriggeist:760, starwhale:95, coralisk:420, reefserpent:160, sandillo:260, duneguard:130, mistowl:610, orchidimp:690, thistlefiend:300, aurorabbit:780, crysteel:620, prismhorn:260, toxifrog:360, venomire:210, spirikit:730, phantelope:510, neonsquid:680, ionwyrm:120, echopup:500, howlitzer:300, resonark:190, cuboulder:190, titanursa:105, worldursa:80, bellimp:640, chimegeist:360, ferroach:260, mantitan:180, mechamane:145, solguard:95, umbraclaw:70, thalassor:55, gaialith:65, chronova:880, auroracalf:720, aurorox:260, glacimarch:150, sirenfin:680, melodray:480, drillbug:230, cometitan:120, miragebud:760, dreamorchid:520, goldkit:760, aurumane:520, solarchon:330, stormkid:840, thunderchoir:460, glasswyrm:380, stormglass:165, incensemoth:560, censeraph:240, runeling:720, glyphsage:380, mossgolem:145, ruingrove:90, coinwyrm:620, treasuredrake:210, shelltide:300, reefguard:190, tsunamora:85, kitspark:760, vulpyr:520, mossprout:410, mossguard:250, eldermoss:120, sparkit:760, voltrix:480, thunderlynx:210, pebblit:240, craggle:150, mountoracle:70, snowlit:620, frostelle:430, auroravale:260, runepup:650, glyphound:390, codexwolf:170, dewdillo:330, rainroll:210, monsoondillo:95, embergoat:460, forgecapra:240, volcanor:115, kitsunova:900, abyssnake:130, leviacoil:70, glintcrab:640, prismclaw:360, ashchick:820, cinderwing:610, phoenixar:980, budbyte:720, florabyte:560, prismbloom:880, wolfrune:390, howlglyph:260, runewarden:180, snowkit:740, frostvulp:500, auroravulp:920, hornmite:250, drillhorn:160, railguard:95, miragecub:690, dreamlynx:450, mirageon:780, vaultick:680, lockroach:320, vaultitan:120, balletfin:760, swanlume:620, auroradiva:980, relicalf:260, reliceros:140, templehorn:70, pufflora:710, drowsibloom:520, somniflora:820, stardeer:760, cometstag:360, stellarch:160, inklot:230, eclipsquid:120, candypup:780, caramutt:540, ticktad:620, chronofrog:340, hourglassor:180, lanternimp:690, glowgremlin:500, mudmunch:210, bogjaw:115, happi: 760, jolli: 620, jubilume: 980, }[id] || 440; beep(base, isLegend ? 0.18 : 0.09, isLegend ? "square" : "sawtooth", isLegend ? 0.07 : 0.045); setTimeout(()=>beep(base*1.33, isLegend ? 0.16 : 0.08, "triangle", isLegend ? 0.065 : 0.04),90); if (isLegend) { setTimeout(()=>beep(base*0.66,0.22,"sawtooth",0.055),230); setTimeout(()=>beep(base*1.9,0.18,"sine",0.05),450); } }
   function playEvolutionSound(fromMon, toMon, style) {
     const fromType = BESTIARY[fromMon?.id]?.type || "Mystic";
     const toType = BESTIARY[toMon?.id]?.type || fromType;
@@ -3842,30 +3849,44 @@ function TileInfoPopup({ selected, tile, x, y, close }) {
 }
 
 function MobileMovePad({ move }) {
+  const isLandscape = () => typeof window !== "undefined" && window.innerWidth > window.innerHeight;
   const [hidden, setHidden] = useState(() => {
-    try { return localStorage.getItem("mythbound_dpad_hidden") !== "0"; } catch { return true; }
+    try { return localStorage.getItem("mythbound_dpad_hidden") === "1"; } catch { return false; }
   });
-  const readPadPos = () => {
-    const w = typeof window !== "undefined" ? window.innerWidth : 390;
-    const h = typeof window !== "undefined" ? window.innerHeight : 800;
-    try {
-      const saved = JSON.parse(localStorage.getItem("mythbound_dpad_pos") || "null");
-      if (saved && Number.isFinite(saved.x) && Number.isFinite(saved.y)) {
-        return { x: Math.max(8, Math.min(w - 146, saved.x)), y: Math.max(68, Math.min(h - 170, saved.y)) };
-      }
-    } catch {}
-    return { x: Math.max(8, Math.round((w - 140) / 2)), y: Math.max(88, h - 190) };
-  };
-  const [pos, setPos] = useState(readPadPos);
-  const dragRef = useRef(null);
-  const tapMove = (dx, dy) => {
-    move(dx, dy);
-    if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate(18);
-  };
   const clampPos = (x, y) => {
     const w = typeof window !== "undefined" ? window.innerWidth : 390;
     const h = typeof window !== "undefined" ? window.innerHeight : 800;
-    return { x: Math.max(8, Math.min(w - 146, x)), y: Math.max(68, Math.min(h - 170, y)) };
+    const size = isLandscape() ? 124 : 146;
+    return { x: Math.max(6, Math.min(w - size - 6, x)), y: Math.max(62, Math.min(h - size - 18, y)) };
+  };
+  const defaultPos = () => {
+    const w = typeof window !== "undefined" ? window.innerWidth : 390;
+    const h = typeof window !== "undefined" ? window.innerHeight : 800;
+    if (w > h) return clampPos(w - 142, Math.round((h - 126) / 2)); // landscape: side of board
+    return clampPos(Math.round((w - 146) / 2), h - 192); // portrait: centered under board
+  };
+  const readPadPos = () => {
+    const orient = isLandscape() ? "landscape" : "portrait";
+    try {
+      const saved = JSON.parse(localStorage.getItem(`mythbound_dpad_pos_${orient}`) || "null");
+      if (saved && Number.isFinite(saved.x) && Number.isFinite(saved.y)) return clampPos(saved.x, saved.y);
+    } catch {}
+    return defaultPos();
+  };
+  const [pos, setPos] = useState(readPadPos);
+  const dragRef = useRef(null);
+  useEffect(() => {
+    const resetForOrientation = () => setPos(readPadPos());
+    window.addEventListener("resize", resetForOrientation);
+    window.addEventListener("orientationchange", resetForOrientation);
+    return () => {
+      window.removeEventListener("resize", resetForOrientation);
+      window.removeEventListener("orientationchange", resetForOrientation);
+    };
+  }, []);
+  const tapMove = (dx, dy) => {
+    move(dx, dy);
+    if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate(18);
   };
   const startDrag = (e) => {
     e.preventDefault();
@@ -3879,8 +3900,13 @@ function MobileMovePad({ move }) {
   };
   const endDrag = () => {
     if (!dragRef.current) return;
-    try { localStorage.setItem("mythbound_dpad_pos", JSON.stringify(pos)); } catch {}
+    try { localStorage.setItem(`mythbound_dpad_pos_${isLandscape() ? "landscape" : "portrait"}`, JSON.stringify(pos)); } catch {}
     dragRef.current = null;
+  };
+  const resetPad = () => {
+    const p = defaultPos();
+    setPos(p);
+    try { localStorage.setItem(`mythbound_dpad_pos_${isLandscape() ? "landscape" : "portrait"}`, JSON.stringify(p)); } catch {}
   };
   const toggleHidden = () => {
     const next = !hidden;
@@ -3888,12 +3914,15 @@ function MobileMovePad({ move }) {
     try { localStorage.setItem("mythbound_dpad_hidden", next ? "1" : "0"); } catch {}
   };
   if (hidden) {
-    return <button onClick={toggleHidden} className="lg:hidden fixed right-3 bottom-[calc(env(safe-area-inset-bottom)+110px)] z-50 rounded-full bg-cyan-300 text-slate-950 font-black px-4 py-3 shadow-2xl shadow-cyan-300/30 border-2 border-white/50">Move</button>;
+    return <button onClick={toggleHidden} className="lg:hidden fixed right-3 landscape:right-4 bottom-[calc(env(safe-area-inset-bottom)+110px)] landscape:bottom-4 z-50 rounded-full bg-cyan-300 text-slate-950 font-black px-4 py-3 shadow-2xl shadow-cyan-300/30 border-2 border-white/50">Move</button>;
   }
-  const buttonClass = "rounded-xl w-10 h-10 text-xl font-black bg-slate-900/95 border border-cyan-200/30 shadow-lg shadow-cyan-500/10 active:scale-95 flex items-center justify-center";
-  return <div className="lg:hidden fixed z-50 rounded-2xl bg-slate-950/72 border border-white/10 backdrop-blur-xl p-1.5 shadow-2xl select-none touch-none" style={{ left: pos.x, top: pos.y }}>
+  const compact = isLandscape();
+  const buttonClass = `${compact ? "w-9 h-9 text-lg" : "w-11 h-11 text-xl"} rounded-xl font-black bg-slate-900/95 border border-cyan-200/30 shadow-lg shadow-cyan-500/10 active:scale-95 flex items-center justify-center`;
+  return <div className="lg:hidden fixed z-50 rounded-2xl bg-slate-950/76 border border-white/10 backdrop-blur-xl p-1.5 shadow-2xl select-none touch-none" style={{ left: pos.x, top: pos.y }}>
     <div onPointerDown={startDrag} onPointerMove={moveDrag} onPointerUp={endDrag} onPointerCancel={endDrag} className="cursor-move text-[8px] uppercase tracking-wider text-cyan-100 text-center mb-1 font-black rounded-lg py-0.5 bg-cyan-300/10 border border-cyan-200/10 flex items-center justify-between gap-1 px-1">
-      <span>Drag</span><button type="button" onClick={(e)=>{e.stopPropagation(); toggleHidden();}} className="text-[10px] bg-white/10 rounded-md px-1">×</button>
+      <button type="button" onClick={(e)=>{e.stopPropagation(); resetPad();}} className="text-[9px] bg-white/10 rounded-md px-1">Reset</button>
+      <span>Drag</span>
+      <button type="button" onClick={(e)=>{e.stopPropagation(); toggleHidden();}} className="text-[10px] bg-white/10 rounded-md px-1">×</button>
     </div>
     <div className="grid grid-cols-3 gap-1">
       <div />
@@ -3980,7 +4009,7 @@ function DexScreen({ dex, setScreen }) {
       <p className="text-sm text-yellow-100/90 mt-1">Shiny silhouettes unlock only after encountering a shiny. A normal-owned Mythling does not count as shiny-owned, but it is marked so you know you already own the regular form.</p>
     </div>}
 
-    <div className="grid xl:grid-cols-[1fr_420px] gap-4">
+    <div className="grid xl:grid-cols-[minmax(0,1fr)_minmax(430px,520px)] gap-4">
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {DEX_ORDER.map((id,idx)=>{
           const d=BESTIARY[id];
@@ -4019,75 +4048,127 @@ function DexScreen({ dex, setScreen }) {
   </motion.div>;
 }
 
+function DexStatBars({ data }) {
+  const labels = ["HP", "ATK", "DEF", "SPD"];
+  const values = data?.base || [0,0,0,0];
+  const max = Math.max(80, ...values, 150);
+  return <div className="space-y-2">
+    {labels.map((label, i) => <div key={label}>
+      <div className="flex justify-between text-[11px] text-slate-300 mb-1"><span>{label}</span><span>{values[i]}</span></div>
+      <div className="h-2.5 rounded-full bg-black/35 border border-white/10 overflow-hidden">
+        <motion.div initial={{ width: 0 }} animate={{ width: `${Math.min(100, Math.round((values[i] / max) * 100))}%` }} transition={{ duration: .65, ease: "easeOut" }} className="h-full bg-gradient-to-r from-cyan-300 via-lime-200 to-fuchsia-300"/>
+      </div>
+    </div>)}
+  </div>;
+}
+function DexProgressGraph({ id, dex, reveal }) {
+  const chain = evolutionChainForMonster(id);
+  const idx = chain.indexOf(id);
+  const completion = reveal ? Math.round(((idx + 1) / Math.max(1, chain.length)) * 100) : 0;
+  return <div className="rounded-2xl bg-white/5 border border-white/10 p-3">
+    <div className="flex justify-between text-xs text-slate-300 mb-2"><span>Evolution research progress</span><b>{completion}%</b></div>
+    <div className="relative h-3 rounded-full bg-black/35 overflow-hidden border border-white/10">
+      <motion.div initial={{ width: 0 }} animate={{ width: `${completion}%` }} transition={{ duration: .75 }} className="absolute inset-y-0 left-0 bg-gradient-to-r from-cyan-300 to-fuchsia-300"/>
+    </div>
+    <div className="mt-3 flex flex-wrap gap-2">{chain.map((cid, i)=><Badge key={cid} className={`${cid === id ? "bg-cyan-300 text-slate-950" : "bg-slate-800 text-slate-100"} border border-white/10`}>{i+1}. {BESTIARY[cid]?.name || cid}</Badge>)}</div>
+  </div>;
+}
 function DexDetailPanel({ id, data, seen, caught, shinySeen = false, shinyCaught = false, shinyMode = false, close }) {
-  if (!id || !data) return <Card className="rounded-3xl bg-white/5 border-white/10"><CardContent className="p-5"><h3 className="text-2xl font-black mb-2">Research Page</h3><p className="text-slate-300">Select a Mythling from the Prism Dex to view its locations, learnset, evolution chain, type, capture difficulty, and lore.</p></CardContent></Card>;
-  const mon = { ...makeMon(id, 8), shiny: shinyMode && shinySeen };
+  if (!id || !data) return <Card className="rounded-3xl bg-white/5 border-white/10"><CardContent className="p-5"><h3 className="text-2xl font-black mb-2">Research Page</h3><p className="text-slate-300">Select a Mythling from the Prism Dex to view its locations, stats, research progress, learnset, evolution chain, capture difficulty, and lore.</p></CardContent></Card>;
+  const mon = { ...makeMon(id, 12), shiny: shinyMode && shinySeen };
   const found = foundLocationsForMonster(id);
   const learnset = learnsetForMonster(id);
+  const futureMoves = learnset.filter(m => m.level > 12);
+  const earlyMoves = learnset.filter(m => m.level <= 12);
   const chain = evolutionChainForMonster(id);
   const reveal = shinyMode ? shinySeen : seen;
   const owned = shinyMode ? shinyCaught : caught;
   const normalOwnedOnly = shinyMode && caught && !shinyCaught;
 
-  return <Card className="rounded-3xl bg-slate-900/95 border-cyan-300/20 shadow-2xl">
-    <CardContent className="p-5">
-      <div className="flex justify-between items-start gap-3 mb-3">
-        <div>
-          <div className="text-xs text-slate-400 uppercase tracking-wider">Dex Research</div>
-          <h3 className="text-3xl font-black text-white">{reveal ? (shinyMode ? `✦ ${data.name}` : data.name) : "Unknown Mythling"}</h3>
-          <p className="text-slate-400">{reveal ? data.species : shinyMode ? "Encounter the shiny version to reveal its shiny record." : "Encounter this Mythling to reveal its data."}</p>
+  return <Card className="rounded-3xl bg-slate-900/95 border-cyan-300/20 shadow-2xl overflow-hidden">
+    <CardContent className="p-0">
+      <div className={`p-5 bg-gradient-to-br ${reveal ? TYPES[data.type]?.color || TYPES.Mystic.color : "from-slate-800 to-black"} text-slate-950`}>
+        <div className="flex justify-between items-start gap-3">
+          <div>
+            <div className="text-xs uppercase tracking-[0.24em] font-black opacity-80">Dex Research</div>
+            <h3 className="text-3xl sm:text-4xl font-black">{reveal ? (shinyMode ? `✦ ${data.name}` : data.name) : "Unknown Mythling"}</h3>
+            <p className="font-bold opacity-85">{reveal ? data.species : shinyMode ? "Encounter the shiny version to reveal its shiny record." : "Encounter this Mythling to reveal its data."}</p>
+          </div>
+          <Button onClick={close} variant="secondary" className="rounded-xl xl:hidden bg-white/55 text-slate-950">Close</Button>
         </div>
-        <Button onClick={close} variant="secondary" className="rounded-xl xl:hidden">Close</Button>
+        <div className="mt-4 flex items-center justify-center min-h-[210px]">
+          <MonsterModel mon={mon} size="medium" silhouette={!reveal}/>
+        </div>
       </div>
 
-      <div className={`rounded-3xl p-4 mb-4 bg-gradient-to-br ${reveal ? TYPES[data.type]?.color || TYPES.Mystic.color : "from-slate-800 to-black"} flex items-center justify-center min-h-[210px]`}>
-        <MonsterModel mon={mon} size="medium" silhouette={!reveal}/>
+      <div className="p-5">
+        <div className="flex flex-wrap gap-2 mb-4">
+          {reveal ? <TypeBadge type={data.type}/> : <Badge className="bg-slate-800 text-slate-300">Type unknown</Badge>}
+          <Badge className={owned ? "bg-lime-300 text-slate-950" : reveal ? "bg-cyan-300 text-slate-950" : "bg-slate-800 text-slate-300"}>{owned ? (shinyMode ? "Shiny owned" : "Caught") : reveal ? (shinyMode ? "Shiny seen" : "Seen") : "Not seen"}</Badge>
+          {shinyMode && normalOwnedOnly && <Badge className="bg-amber-200 text-slate-950"><Sparkles className="w-3 h-3 mr-1"/>Normal owned · shiny missing</Badge>}
+          {!data.evo && !data.legendary && <Badge className="bg-fuchsia-200 text-slate-950">Single-stage boosted</Badge>}
+          {data.legendary && <Badge className="bg-yellow-200 text-slate-950"><Star className="w-3 h-3 mr-1"/>Legendary</Badge>}
+        </div>
+
+        <p className="text-slate-200 mb-4 leading-relaxed">{reveal ? data.lore : shinyMode ? "Find a shiny version of this Mythling to unlock its shiny record." : "Defeat, catch, or encounter this Mythling in the world to unlock its research page."}</p>
+
+        <div className="grid sm:grid-cols-2 gap-3 mb-4">
+          <div className="rounded-2xl bg-white/5 border border-white/10 p-3">
+            <h4 className="font-black text-cyan-100 mb-3">Base stats</h4>
+            {reveal ? <DexStatBars data={data}/> : <p className="text-slate-400 text-sm">Unknown until seen.</p>}
+          </div>
+          <div className="rounded-2xl bg-white/5 border border-white/10 p-3 text-sm">
+            <h4 className="font-black text-cyan-100 mb-3">Profile</h4>
+            <div className="grid grid-cols-2 gap-2">
+              <InfoBox label="Stage" value={reveal ? (data.stage || 1) : "?"}/>
+              <InfoBox label="Capture" value={reveal ? `${Math.round((data.capture || 0) * 100)}% base` : "?"}/>
+              <InfoBox label="Type" value={reveal ? data.type : "?"}/>
+              <InfoBox label="Scale" value={reveal ? (!data.evo && !data.legendary ? "Strong single" : data.legendary ? "Legend" : "Evolves") : "?"}/>
+            </div>
+          </div>
+        </div>
+
+        {reveal && <div className="mb-4"><DexProgressGraph id={id} reveal={reveal}/></div>}
+
+        <section className="mb-4">
+          <h4 className="font-black text-cyan-100 mb-2">Where discoverable</h4>
+          {seen ? <div className="flex flex-wrap gap-2">
+            {found.locations.length ? found.locations.map((loc)=><Badge key={loc} className="bg-slate-800 text-slate-100 border border-white/10">{loc}</Badge>) : <span className="text-slate-400 text-sm">Special, evolved, shop, trade, boss, or story-only Mythling.</span>}
+          </div> : <p className="text-slate-400 text-sm">Unknown until seen.</p>}
+          {reveal && found.timedHints.length > 0 && <div className="mt-2 text-sm text-fuchsia-100 bg-fuchsia-400/10 border border-fuchsia-300/20 rounded-2xl p-3">{found.timedHints.join(" ")}</div>}
+        </section>
+
+        <section className="mb-4">
+          <h4 className="font-black text-cyan-100 mb-2">Evolution chain</h4>
+          {seen ? <div className="flex flex-wrap gap-2 items-center">
+            {chain.map((cid, idx)=><React.Fragment key={cid}><Badge className={`${cid===id ? "bg-cyan-300 text-slate-950" : "bg-slate-800 text-slate-100"}`}>{BESTIARY[cid]?.name}</Badge>{idx<chain.length-1 && <span className="text-slate-400">→</span>}</React.Fragment>)}
+          </div> : <p className="text-slate-400 text-sm">Unknown until seen.</p>}
+          {seen && data.evo ? <p className="text-sm text-slate-300 mt-2">Next evolution: {BESTIARY[data.evo.to]?.name} — {data.evo.method}</p> : seen && <p className="text-sm text-slate-300 mt-2">No further evolution. This Mythling receives stronger single-stage scaling if it is not legendary.</p>}
+        </section>
+
+        <section>
+          <h4 className="font-black text-cyan-100 mb-2">Moves learned by level</h4>
+          {seen ? <div className="space-y-3 max-h-96 overflow-auto pr-1">
+            <div>
+              <div className="text-[11px] uppercase tracking-wider text-slate-400 mb-1">Known / early moves</div>
+              <div className="space-y-2">{earlyMoves.length ? earlyMoves.map((mv)=><DexMoveCard key={mv.name} mv={mv}/>) : <p className="text-slate-400 text-sm">No early moves listed.</p>}</div>
+            </div>
+            <div>
+              <div className="text-[11px] uppercase tracking-wider text-slate-400 mb-1">Future moves</div>
+              <div className="space-y-2">{futureMoves.length ? futureMoves.map((mv)=><DexMoveCard key={mv.name} mv={mv}/>) : <p className="text-slate-400 text-sm">No later moves listed.</p>}</div>
+            </div>
+          </div> : <p className="text-slate-400 text-sm">Unknown until seen.</p>}
+        </section>
       </div>
-
-      <div className="flex flex-wrap gap-2 mb-4">
-        {reveal ? <TypeBadge type={data.type}/> : <Badge className="bg-slate-800 text-slate-300">Type unknown</Badge>}
-        <Badge className={owned ? "bg-lime-300 text-slate-950" : reveal ? "bg-cyan-300 text-slate-950" : "bg-slate-800 text-slate-300"}>{owned ? (shinyMode ? "Shiny owned" : "Caught") : reveal ? (shinyMode ? "Shiny seen" : "Seen") : "Not seen"}</Badge>
-        {shinyMode && normalOwnedOnly && <Badge className="bg-amber-200 text-slate-950"><Sparkles className="w-3 h-3 mr-1"/>Normal owned · shiny missing</Badge>}
-        {data.legendary && <Badge className="bg-yellow-200 text-slate-950"><Star className="w-3 h-3 mr-1"/>Legendary</Badge>}
-      </div>
-
-      <p className="text-slate-200 mb-4">{reveal ? data.lore : shinyMode ? "Find a shiny version of this Mythling to unlock its shiny record." : "Defeat, catch, or encounter this Mythling in the world to unlock its research page."}</p>
-
-      <div className="grid grid-cols-2 gap-2 mb-4 text-sm">
-        <InfoBox label="Stage" value={reveal ? (data.stage || 1) : "?"}/>
-        <InfoBox label="Capture" value={reveal ? `${Math.round((data.capture || 0) * 100)}% base` : "?"}/>
-        <InfoBox label="Base HP" value={reveal ? data.base?.[0] : "?"}/>
-        <InfoBox label="Base ATK" value={reveal ? data.base?.[1] : "?"}/>
-      </div>
-
-      <section className="mb-4">
-        <h4 className="font-black text-cyan-100 mb-2">Where to find</h4>
-        {seen ? <div className="flex flex-wrap gap-2">
-          {found.locations.length ? found.locations.map((loc)=><Badge key={loc} className="bg-slate-800 text-slate-100 border border-white/10">{loc}</Badge>) : <span className="text-slate-400 text-sm">Special, evolved, shop, or story-only Mythling.</span>}
-        </div> : <p className="text-slate-400 text-sm">Unknown until seen.</p>}
-        {reveal && found.timedHints.length > 0 && <div className="mt-2 text-sm text-fuchsia-100 bg-fuchsia-400/10 border border-fuchsia-300/20 rounded-2xl p-3">{found.timedHints.join(" ")}</div>}
-      </section>
-
-      <section className="mb-4">
-        <h4 className="font-black text-cyan-100 mb-2">Evolution chain</h4>
-        {seen ? <div className="flex flex-wrap gap-2 items-center">
-          {chain.map((cid, idx)=><React.Fragment key={cid}><Badge className={`${cid===id ? "bg-cyan-300 text-slate-950" : "bg-slate-800 text-slate-100"}`}>{BESTIARY[cid]?.name}</Badge>{idx<chain.length-1 && <span className="text-slate-400">→</span>}</React.Fragment>)}
-        </div> : <p className="text-slate-400 text-sm">Unknown until seen.</p>}
-        {seen && data.evo && <p className="text-sm text-slate-300 mt-2">Next evolution: {BESTIARY[data.evo.to]?.name} — {data.evo.method}</p>}
-      </section>
-
-      <section>
-        <h4 className="font-black text-cyan-100 mb-2">Learned moves</h4>
-        {seen ? <div className="space-y-2 max-h-72 overflow-auto pr-1">
-          {learnset.map((mv)=><div key={mv.name} className={`rounded-2xl bg-gradient-to-br ${TYPES[mv.type]?.color || TYPES.Mystic.color} border border-white/20 p-3 text-slate-950 shadow-lg`}>
-            <div className="flex justify-between gap-2"><div className="font-black">Lv.{mv.level} · {mv.name}</div><Badge className="bg-white/55 text-slate-950 border border-white/50">{mv.type}</Badge></div>
-            <div className="text-xs font-bold mt-1">{mv.kind === "attack" ? `Power ${mv.power} · Acc ${mv.accuracy}% · Crit ${mv.crit}%` : mv.kind}</div>
-            <div className="text-sm font-semibold mt-1">{mv.text}{mv.status ? ` Status: ${mv.status}.` : ""}</div>
-          </div>)}
-        </div> : <p className="text-slate-400 text-sm">Unknown until seen.</p>}
-      </section>
     </CardContent>
   </Card>;
+}
+function DexMoveCard({ mv }) {
+  return <div className={`rounded-2xl bg-gradient-to-br ${TYPES[mv.type]?.color || TYPES.Mystic.color} border border-white/20 p-3 text-slate-950 shadow-lg`}>
+    <div className="flex justify-between gap-2"><div className="font-black">Lv.{mv.level} · {mv.name}</div><Badge className="bg-white/55 text-slate-950 border border-white/50">{mv.type}</Badge></div>
+    <div className="text-xs font-bold mt-1">{mv.kind === "attack" ? `Power ${mv.power} · Acc ${mv.accuracy}% · Crit ${mv.crit}%` : mv.kind === "heal" ? "Healing/support move" : mv.kind}</div>
+    <div className="text-sm font-semibold mt-1">{mv.text}{mv.status ? ` Status: ${mv.status}.` : ""}</div>
+  </div>;
 }
 
 function BattleScreen({ battle, playerMon, skills, playerUse, capture, selectedCaptureItem, setSelectedCaptureItem, usePotion, useStatusCure, usePPItem, run, player, party, active, setActive, anim, dex, clock, onBattleResultContinue }) {
@@ -4112,7 +4193,7 @@ function BattleScreen({ battle, playerMon, skills, playerUse, capture, selectedC
     animate={{opacity:1}}
     exit={{opacity:0}}
     transition={{duration:0.18}}
-    className={`fixed inset-0 z-[999] bg-gradient-to-br ${battlefieldTone} text-white overflow-y-auto landscape:overflow-hidden flex flex-col landscape:grid landscape:grid-cols-[minmax(0,1.08fr)_minmax(320px,.92fr)] landscape:grid-rows-[1fr_auto] landscape:gap-1 p-1 sm:p-3 landscape:p-1`}
+    className={`fixed inset-0 z-[999] bg-gradient-to-br ${battlefieldTone} text-white overflow-y-auto landscape:overflow-hidden flex flex-col landscape:grid landscape:grid-cols-[minmax(0,1.02fr)_minmax(340px,.98fr)] landscape:grid-rows-[minmax(0,1fr)_auto] landscape:gap-1 p-1 sm:p-3 landscape:p-1`}
   >
     <BattleFx anim={anim}/>
 
@@ -4124,7 +4205,7 @@ function BattleScreen({ battle, playerMon, skills, playerUse, capture, selectedC
 
 
       <div className="absolute right-[4%] top-[36%] sm:right-[8%] sm:top-[42%] w-[43%] h-12 sm:h-24 rounded-full border-[6px] sm:border-8 border-white/35 bg-white/35 shadow-2xl shadow-white/20" style={{ transform: "rotateX(58deg) translateZ(-18px)", transformStyle: "preserve-3d" }} />
-      <div className="absolute left-[1%] bottom-[8%] sm:left-[4%] sm:bottom-[10%] w-[48%] h-12 sm:h-24 rounded-full border-[6px] sm:border-8 border-white/25 bg-white/25 shadow-2xl shadow-cyan-300/10" style={{ transform: "rotateX(58deg) translateZ(-10px)", transformStyle: "preserve-3d" }} />
+      <div className="absolute left-[7%] bottom-[8%] sm:left-[8%] sm:bottom-[10%] w-[48%] h-12 sm:h-24 rounded-full border-[6px] sm:border-8 border-white/25 bg-white/25 shadow-2xl shadow-cyan-300/10" style={{ transform: "rotateX(58deg) translateZ(-10px)", transformStyle: "preserve-3d" }} />
 
       <div className="absolute left-1.5 top-1.5 sm:left-4 sm:top-4 landscape:left-2 landscape:top-2 z-30 w-[54%] max-w-[250px] sm:w-[330px] sm:max-w-none landscape:w-[48%] landscape:max-w-[265px]">
         <PokemonStatusBox mon={enemy} title={enemy.wild ? `Wild ${enemy.name}` : enemy.name} caught={caught} normalOwnedButShinyMissing={normalOwnedButShinyMissing} align="left" enemy />
@@ -4152,7 +4233,7 @@ function BattleScreen({ battle, playerMon, skills, playerUse, capture, selectedC
       />}
     </div>
 
-    <div className="w-full max-w-6xl mx-auto mt-1 landscape:mt-0 landscape:col-start-2 landscape:row-start-1 landscape:max-w-none landscape:mx-0 landscape:h-[calc(100dvh-3.1rem)] rounded-2xl bg-slate-950/96 border-2 border-slate-700 shadow-2xl overflow-y-auto flex-1 min-h-0">
+    <div className="w-full max-w-6xl mx-auto mt-1 landscape:mt-0 landscape:col-start-2 landscape:row-start-1 landscape:max-w-none landscape:mx-0 landscape:h-[calc(100dvh-3.1rem)] rounded-2xl bg-slate-950/96 border-2 border-slate-700 shadow-2xl overflow-y-auto flex-1 min-h-0 landscape:max-h-[calc(100dvh-4.5rem)]">
       <div className="grid grid-cols-1 md:grid-cols-[0.55fr_1.45fr] landscape:grid-cols-1 landscape:grid-rows-[auto_minmax(0,1fr)] gap-1 p-1 h-full">
         <div className="rounded-xl bg-white text-slate-800 border-2 border-slate-400 shadow-inner p-1.5 flex items-center justify-between gap-2 min-h-[40px] md:min-h-full landscape:min-h-[42px] landscape:max-h-[72px] landscape:overflow-y-auto">
           <div className="font-black text-xs sm:text-base landscape:text-sm leading-snug flex-1">{battle.message}</div>
@@ -4197,9 +4278,9 @@ function BattleScreen({ battle, playerMon, skills, playerUse, capture, selectedC
       </div>
     </div>
 
-    <div className="w-full max-w-6xl mx-auto mt-1 landscape:mt-0 landscape:col-start-2 landscape:row-start-2 landscape:max-w-none landscape:mx-0 overflow-x-auto pb-1 shrink-0">
-      <div className="flex gap-2 min-w-max">
-        {party.map((m,i)=><Button key={m.uid} disabled={m.hp<=0||battle.turn!=="player"} onClick={()=>setActive(i)} variant={i===active?"default":"secondary"} className="rounded-lg text-[10px] sm:text-xs whitespace-nowrap px-2 py-1">
+    <div className="w-full max-w-6xl mx-auto mt-1 landscape:mt-0 landscape:col-start-2 landscape:row-start-2 landscape:max-w-none landscape:mx-0 overflow-x-auto overflow-y-visible pb-2 landscape:pb-2 shrink-0 landscape:bg-slate-950/80 landscape:rounded-2xl landscape:border landscape:border-white/10 landscape:p-1">
+      <div className="flex gap-2 min-w-max landscape:flex-wrap landscape:min-w-0">
+        {party.map((m,i)=><Button key={m.uid} disabled={m.hp<=0||battle.turn!=="player"} onClick={()=>setActive(i)} variant={i===active?"default":"secondary"} className="rounded-lg text-[10px] sm:text-xs whitespace-nowrap px-2 py-1 landscape:text-[9px] landscape:px-1.5 landscape:py-1">
           {displayName(m)} <GenderMark mon={m}/> <StatusBadge status={m.status} small/> Lv.{m.level} {m.hp<=0?"FNT":`${m.hp}/${m.maxHp}`}
         </Button>)}
       </div>
@@ -5600,7 +5681,7 @@ function AccountScreen({
           storage_snapshot: [],
           inventory_snapshot: {},
           dex_caught: 0,
-          save_version: 25,
+          save_version: 26,
           updated_at: new Date().toISOString()
         };
         await supabase.from("mythbound_profiles").upsert(payload, { onConflict: "id" });
