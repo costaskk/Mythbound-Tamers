@@ -8,8 +8,8 @@ import {Sparkles, PawPrint, Flame, Droplets, Leaf, Zap, Heart, Map, Backpack, Ga
 
 const SAVE_KEY = "mythbound_tamers_save_v4";
 const OLD_SAVE_KEYS = ["mythbound_tamers_save_v6", "mythbound_tamers_save_v5", "mythbound_tamers_save_v4", "mythbound_tamers_save_v3", "mythbound_tamers_save_v2", "mythbound_tamers_save"];
-const APP_VERSION = "0.69.0";
-const APP_VERSION_CODE = 69;
+const APP_VERSION = "0.70.0";
+const APP_VERSION_CODE = 70;
 const UPDATE_MANIFEST_URL = import.meta.env.VITE_UPDATE_MANIFEST_URL || "https://costaskk.github.io/Mythbound-Tamers/update-manifest.json";
 const SHINY_RATE = 1 / 192;
 const VALID_SCREENS = new Set(["title","story","starter","world","party","pc","shop","dex","account","multiplayer","friends","objectives","help","atlas","update","battle","gameover"]);
@@ -316,6 +316,16 @@ const BESTIARY = {
   embergoat: { name: "Embergoat", type: "Flame", species: "Lantern Kid", cry: "mee-fwo!", stage: 1, evo: { to: "forgecapra", method: "Reach Lv.17 near Ash Field" }, base: [50, 27, 18, 25], skills: ["Cinder Paw", "Headbutt Spark", "Guard"], capture: 0.23, body: "deer", colors: ["#fb923c", "#fef3c7", "#451a03"], lore: "A stubborn little goat with ember horns that glows brighter when challenged." },
   forgecapra: { name: "Forgecapra", type: "Flame", species: "Forge Ibex", cry: "FORGE-CAPRA!", stage: 2, evo: { to: "volcanor", method: "Reach Lv.33 after defeating Bridge Captain Brann" }, base: [92, 49, 34, 42], skills: ["Headbutt Spark", "Flare Burst", "Magma Crown"], capture: 0.065, body: "deer", colors: ["#ea580c", "#fde68a", "#1c1917"], lore: "It sharpens its horns on warm stone and protects mountain forges." },
   volcanor: { name: "Volcanor", type: "Flame", species: "Volcano Ram", cry: "VOL-CA-NOR!", stage: 3, base: [134, 74, 50, 52], skills: ["Headbutt Spark", "Magma Crown", "Solar Crown"], capture: 0.018, body: "deer", colors: ["#b91c1c", "#facc15", "#020617"], lore: "A late-route ram whose hornbeats sound like distant eruptions." },
+
+  pebblit: { name: "Pebblit", type: "Stone", species: "Pebble Sprite", cry: "plok-plok!", stage: 1, evo: { to: "craggle", method: "Reach Lv.18 in Echo Caves" }, base: [58, 22, 30, 12], skills: ["Pebble Toss", "Guard", "Boulder Crash"], capture: 0.26, body: "sprite", colors: ["#a8a29e", "#f5f5f4", "#292524"], lore: "A tiny cave sprite that stacks pebbles into little trail signs for lost tamers." },
+  craggle: { name: "Craggle", type: "Stone", species: "Crag Sprite", cry: "CRAG-glok!", stage: 2, evo: { to: "mountoracle", method: "Reach Lv.34 after clearing Titan Pass" }, base: [98, 44, 56, 20], skills: ["Boulder Crash", "Root Ram", "Guard"], capture: 0.07, body: "sprite", colors: ["#78716c", "#d6d3d1", "#1c1917"], lore: "It carves prophecy marks on cliffs with its stone fingers." },
+  mountoracle: { name: "Mountoracle", type: "Stone", species: "Mountain Oracle", cry: "MOUNT-ORACLE!", stage: 3, base: [148, 68, 84, 34], skills: ["Boulder Crash", "Worldroot Ram", "Prism Nova"], capture: 0.018, body: "sprite", colors: ["#57534e", "#fef3c7", "#020617"], lore: "A mountain spirit whose body contains old road maps and broken shrine bells." },
+  snowlit: { name: "Snowlit", type: "Ice", species: "Snow Lantern", cry: "sno-li!", stage: 1, evo: { to: "frostelle", method: "Reach Lv.18 at Frostglass Peaks" }, base: [48, 21, 18, 28], skills: ["Ice Nibble", "Light Fang", "Guard"], capture: 0.22, body: "slime", colors: ["#dbeafe", "#bae6fd", "#1e3a8a"], lore: "A small lantern of snow that shines blue when a blizzard is near." },
+  frostelle: { name: "Frostelle", type: "Ice", species: "Frost Star", cry: "FRO-stelle!", stage: 2, evo: { to: "auroravale", method: "Reach Lv.35 during Morning" }, base: [86, 44, 34, 52], skills: ["Ice Nibble", "Aurora Veil", "Prism Nova"], capture: 0.06, body: "slime", colors: ["#93c5fd", "#f0f9ff", "#312e81"], lore: "It freezes mist into star shapes and leaves them floating above snowfields." },
+  auroravale: { name: "Auroravale", type: "Ice", species: "Aurora Vale", cry: "AU-RO-RA-VALE!", stage: 3, base: [126, 68, 54, 78], skills: ["Aurora Veil", "Ice Nibble", "Solar Crown"], capture: 0.018, body: "slime", colors: ["#60a5fa", "#f0abfc", "#020617"], lore: "A rare glacial spirit that paints the sky whenever it moves." },
+  runepup: { name: "Runepup", type: "Mystic", species: "Rune Pup", cry: "ruu-pup!", stage: 1, evo: { to: "glyphound", method: "Reach Lv.20 after seeing 25 Mythlings" }, base: [54, 24, 20, 30], skills: ["Moon Tap", "Rune Bite", "Guard"], capture: 0.20, body: "dog", colors: ["#c4b5fd", "#fef3c7", "#312e81"], lore: "A curious pup whose pawprints briefly glow with little letters." },
+  glyphound: { name: "Glyphound", type: "Mystic", species: "Glyph Hound", cry: "GLYPH-HOUND!", stage: 2, evo: { to: "codexwolf", method: "Reach Lv.37 after main story" }, base: [96, 50, 38, 58], skills: ["Rune Bite", "Dream Pulse", "Prism Nova"], capture: 0.05, body: "dog", colors: ["#8b5cf6", "#fde68a", "#020617"], lore: "It can read forgotten dungeon doors by sniffing the symbols carved into them." },
+  codexwolf: { name: "Codexwolf", type: "Mystic", species: "Codex Wolf", cry: "CO-DEX-WOLF!", stage: 3, base: [138, 74, 58, 82], skills: ["Rune Bite", "Prism Nova", "Dream Pulse"], capture: 0.015, body: "dog", colors: ["#7c3aed", "#fef9c3", "#020617"], lore: "A late-game wolf said to remember every route ever walked by a Prism Tamer." },
   frostcub: { name: "Frostcub", type: "Aqua", species: "Snow Cub", cry: "brr-aw!", stage: 1, evo: { to: "glaciermaw", method: "Reach Lv.12 at night" }, base: [46, 15, 12, 9], skills: ["Bubble Bite", "Guard", "Tidal Crush"], capture: 0.33, body: "bear", colors: ["#93c5fd", "#eff6ff", "#1e3a8a"], lore: "A playful cub that freezes puddles with each step. It appears near lakes after sunset." },
   glaciermaw: { name: "Glaciermaw", type: "Aqua", species: "Ice Bear", cry: "GLAWWR!", stage: 2, evo: { to: "polarune", method: "Reach Lv.22 in Frost Hollow" }, base: [88, 28, 24, 12], skills: ["Bubble Bite", "Tidal Crush", "Boulder Crash"], capture: 0.1, body: "bear", colors: ["#60a5fa", "#e0f2fe", "#0f172a"], lore: "Its claws are frozen relics from the first winter of Luminara." },
   cindermole: { name: "Cindermole", type: "Flame", species: "Coal Mole", cry: "murk-fwoom!", stage: 1, evo: { to: "magmole", method: "Use Sun Fossil" }, base: [52, 17, 16, 7], skills: ["Cinder Paw", "Guard", "Boulder Crash"], capture: 0.3, body: "mole", colors: ["#fb923c", "#111827", "#7f1d1d"], lore: "It digs warm tunnels beneath Ash Field and leaves glowing pawprints." },
@@ -803,7 +813,7 @@ const AREA_DATA = {
       "W....G...B..GG.W",
       "WWWWWWWWWWWWWWWW"
     ],
-    encounters: { G: ["emberlynx","aquapup","leafawn","voltoroo","cloudfinch","happi","gleamouse","glimkit","puddleimp","cindermite","dewdillo","embergoat"], C: ["prismite","glimkit"], N: ["gleamouse","happi"] },
+    encounters: { G: ["emberlynx","aquapup","leafawn","voltoroo","cloudfinch","happi","gleamouse","glimkit","puddleimp","cindermite","dewdillo","embergoat","pebblit","runepup"], C: ["prismite","glimkit","runepup"], N: ["gleamouse","happi"] },
     description: "A safe academy board where new tamers can level quickly, learn tile movement, and catch friendly early Mythlings.",
     sideQuest: "Win three wild battles here to earn a Training Charm and learn how XP scales."
   },
@@ -831,7 +841,7 @@ const AREA_DATA = {
       "W....J...B..JJ.W",
       "WWWWWWWWWWWWWWWW"
     ],
-    encounters: { J: ["leafawn","florantler","spriggeist","orchidimp","happi","jolli","glimkit","luminail","gleamouse","glowrat"], O: ["bellimp","chimegeist","aurorabbit","mistowl"], G: ["bramblepup","seedpuff","puddleimp"] },
+    encounters: { J: ["leafawn","florantler","spriggeist","orchidimp","happi","jolli","glimkit","luminail","gleamouse","glowrat","runepup"], O: ["bellimp","chimegeist","aurorabbit","mistowl"], G: ["bramblepup","seedpuff","puddleimp"] },
     description: "A glowing forest route that bridges early Luminara and the Prism roads with fair levels and many evolution-friendly encounters.",
     sideQuest: "Find the three glowcaps hidden near crystal springs to unlock a bonus shop discount."
   },
@@ -1582,14 +1592,46 @@ function battleXpReward(defeated, mode = "wild", winner = null) {
   if (mode === "trainer") return 330 + lvl * 27 + evolvedBonus + underdogBonus + shinyBonus;
   return 185 + lvl * 22 + evolvedBonus + underdogBonus + shinyBonus;
 }
-function makeMon(id, level = 1, wild = false) { const b = BESTIARY[id] || BESTIARY.emberlynx; const [bhp, batk, bdef, bspd] = b.base; const hp = Math.floor(bhp + level * 7); return ensureMovePP({ uid: `${id}_${uid()}`, id, nickname: "", name: b.name, type: b.type, gender: rollGender(id), shiny: rollShiny(wild), level, xp: 0, nextXp: xpToNextLevel(level, id), hp, maxHp: hp, atk: Math.floor(batk + level * 2.4), def: Math.floor(bdef + level * 1.8), spd: Math.floor(bspd + level * 1.5), status: null, wild }); }
+function singleStageBoost(id) {
+  const b = BESTIARY[id] || {};
+  if (b.legendary) return 1;
+  if (b.evo) return 1;
+  const stage = Number(b.stage || 1);
+  return stage === 1 ? 1.18 : 1;
+}
+function makeMon(id, level = 1, wild = false) {
+  const b = BESTIARY[id] || BESTIARY.emberlynx;
+  const [bhp, batk, bdef, bspd] = b.base;
+  const boost = singleStageBoost(id);
+  const lvl = Math.max(1, Number(level || 1));
+  const hp = Math.floor((bhp + lvl * (7 + (boost > 1 ? 1.4 : 0))) * boost);
+  return ensureMovePP({
+    uid: `${id}_${uid()}`,
+    id,
+    nickname: "",
+    name: b.name,
+    type: b.type,
+    gender: rollGender(id),
+    shiny: rollShiny(wild),
+    level: lvl,
+    xp: 0,
+    nextXp: xpToNextLevel(lvl, id),
+    hp,
+    maxHp: hp,
+    atk: Math.floor((batk + lvl * (2.4 + (boost > 1 ? 0.28 : 0))) * boost),
+    def: Math.floor((bdef + lvl * (1.8 + (boost > 1 ? 0.25 : 0))) * boost),
+    spd: Math.floor((bspd + lvl * (1.5 + (boost > 1 ? 0.22 : 0))) * boost),
+    status: null,
+    wild
+  });
+}
 function displayName(m) { return m?.nickname || m?.name || BESTIARY[m?.id]?.name || "Mythling"; }
 function normalizeMon(m) {
   const safeId = BESTIARY[m?.id] ? m.id : "emberlynx";
   const b = BESTIARY[safeId] || BESTIARY.emberlynx;
   const safeLevel = Math.max(1, Number(m?.level || 1));
   const mon = makeMon(safeId, safeLevel, Boolean(m?.wild));
-  const maxHp = Math.max(1, Number(m?.maxHp || mon.maxHp || 1));
+  const maxHp = Math.max(1, Number(m?.maxHp || mon.maxHp || 1), mon.maxHp || 1);
   const rawHp = Number(m?.hp ?? maxHp);
   return ensureMovePP({
     ...mon,
@@ -1617,7 +1659,7 @@ function migrateSave(input) {
   if (!party.length && storage.length) {
     party = storage.slice(0, 6);
     storage = storage.slice(6);
-  } const dex = ensureDexShape(data.dex || freshDex()); party.concat(storage).forEach((m) => { dex.seen[m.id] = true; dex.caught[m.id] = true; if (m.shiny) { dex.shinySeen[m.id] = true; dex.shinyCaught[m.id] = true; } }); const safeScreen = VALID_SCREENS.has(data.screen) ? data.screen : ((party.length || storage.length) ? "world" : "title"); return { version: 24, savedAt: Date.now(), screen: party.length ? (safeScreen === "battle" || safeScreen === "gameover" || safeScreen === "starter" ? "world" : safeScreen || "world") : "title", storyIndex: data.storyIndex || 0, player, party, storage, active: Math.min(data.active || 0, Math.max(0, party.length - 1)), seen: { ...freshSeen(), ...(data.seen || {}) }, dex, clock: data.clock || freshClock(), muted: Boolean(data.muted) }; }
+  } const dex = ensureDexShape(data.dex || freshDex()); party.concat(storage).forEach((m) => { dex.seen[m.id] = true; dex.caught[m.id] = true; if (m.shiny) { dex.shinySeen[m.id] = true; dex.shinyCaught[m.id] = true; } }); const safeScreen = VALID_SCREENS.has(data.screen) ? data.screen : ((party.length || storage.length) ? "world" : "title"); return { version: 25, savedAt: Date.now(), screen: party.length ? (safeScreen === "battle" || safeScreen === "gameover" || safeScreen === "starter" ? "world" : safeScreen || "world") : "title", storyIndex: data.storyIndex || 0, player, party, storage, active: Math.min(data.active || 0, Math.max(0, party.length - 1)), seen: { ...freshSeen(), ...(data.seen || {}) }, dex, clock: data.clock || freshClock(), muted: Boolean(data.muted) }; }
 function typeMult(a, d) {
   const chart = TYPE_MATCHUPS[a] || {};
   let mult = 1;
@@ -1892,13 +1934,13 @@ function MonsterModel({ mon, size = "large", flipped = false, faint = false, ani
   const scale = size === "tiny" ? 0.42 : size === "small" ? 0.55 : size === "medium" ? 0.78 : 1;
   const stage = data.stage || 1;
   const uid = mon.uid || mon.id;
-  const motionAnim = anim === "captured" ? { scale: 0.05, opacity: 0, y: -30 } : anim === "captureIn" ? { scale: [1, 0.45, 0.08], opacity: [1, 0.7, 0], y: [0, -18, -34] } : anim === "escape" ? { scale: [0.08, 1.15, 1], opacity: [0, 1, 1], y: [-34, -10, 0] } : anim === "attack"
-    ? { x: flipped ? -36 : 36, scale: 1.08 }
+  const motionAnim = anim === "captured" ? { scale: 0.05, opacity: 0, y: -30 } : anim === "captureIn" ? { scale: [1, 0.45, 0.08], opacity: [1, 0.7, 0], y: [0, -18, -34] } : anim === "escape" ? { scale: [0.08, 1.08, 1], opacity: [0, 1, 1], y: [-34, -8, 0] } : anim === "attack"
+    ? { x: flipped ? -24 : 24, scale: 1.045 }
     : anim === "hit"
-    ? { x: [0, -10, 10, -6, 6, 0], filter: ["brightness(1)", "brightness(2)", "brightness(1)"] }
+    ? { x: [0, -6, 5, -3, 0], filter: ["brightness(1)", "brightness(1.55)", "brightness(1)"] }
     : anim === "heal"
-    ? { y: [0, -14, 0], scale: [1, 1.08, 1] }
-    : { y: faint ? 18 : [0, -7, 0], rotate: faint ? -10 : [0, 1.5, 0, -1.5, 0] };
+    ? { y: [0, -10, 0], scale: [1, 1.045, 1] }
+    : { y: faint ? 18 : [0, -4, 0], rotate: faint ? -10 : [0, 0.8, 0, -0.8, 0] };
   const eyeY = data.body === "bird" ? 92 : data.body === "buddy" ? 97 : 104;
   const bodyScale = stage === 3 ? 1.12 : stage === 2 ? 1.04 : 1;
   const status = normalizeStatus(mon.status);
@@ -1911,11 +1953,11 @@ function MonsterModel({ mon, size = "large", flipped = false, faint = false, ani
     paralyzed: ["ϟ", "⚡", "ϟ"],
     confuse: ["?", "↺", "?"],
   };
-  return <motion.div animate={{ ...motionAnim, opacity: faint ? 0.45 : 1 }} transition={{ duration: anim === "idle" ? 3 : 0.38, repeat: anim === "idle" && !faint ? Infinity : 0 }} className={`relative ${flipped ? "scale-x-[-1]" : ""}`} style={{ width: 220 * scale, height: 200 * scale }}>
+  return <motion.div animate={{ ...motionAnim, opacity: faint ? 0.45 : 1 }} transition={{ duration: anim === "idle" ? 4.6 : 0.42, repeat: anim === "idle" && !faint ? Infinity : 0, ease: "easeInOut" }} className={`relative ${flipped ? "scale-x-[-1]" : ""}`} style={{ width: 220 * scale, height: 200 * scale }}>
     <div className="absolute inset-0 rounded-full blur-2xl opacity-50" style={{ background: silhouette ? "#000" : a }} />
     {isLegendModel && !silhouette && <motion.div className="absolute inset-[-12px] rounded-full border-4 border-yellow-200/30 z-10 pointer-events-none" animate={{ rotate:360, scale:[0.95,1.05,0.95] }} transition={{ rotate:{duration:7,repeat:Infinity,ease:"linear"}, scale:{duration:1.8,repeat:Infinity} }}/>} 
     {stage >= 3 && !silhouette && <motion.div className="absolute inset-[-8px] rounded-full border-2 border-white/20 z-10 pointer-events-none" animate={{ opacity:[0.25,0.7,0.25], scale:[0.92,1.08,0.92] }} transition={{ duration:2.2, repeat:Infinity }}/>} 
-    {mon.shiny && !silhouette && <div className="absolute inset-0 z-30 pointer-events-none">{[0,1,2,3,4].map((i)=><motion.div key={i} className="absolute text-yellow-100 drop-shadow-lg font-black" style={{left:`${18+i*16}%`, top:`${8+(i%2)*18}%`}} animate={{scale:[0.5,1.25,0.5], opacity:[0.25,1,0.25], rotate:[0,180,360]}} transition={{duration:1.25+i*0.15, repeat:Infinity, delay:i*0.12}}>✦</motion.div>)}</div>}
+    {mon.shiny && !silhouette && <div className="absolute inset-0 z-30 pointer-events-none">{[0,1,2,3,4].map((i)=><motion.div key={i} className="absolute text-yellow-100 drop-shadow-lg font-black" style={{left:`${18+i*16}%`, top:`${8+(i%2)*18}%`}} animate={{scale:[0.75,1.08,0.75], opacity:[0.35,0.82,0.35], rotate:[0,120,240]}} transition={{duration:2.4+i*0.18, repeat:Infinity, delay:i*0.18, ease:"easeInOut"}}>✦</motion.div>)}</div>}
     {status && <div className="absolute inset-0 z-20 pointer-events-none">
       {(statusGlyphs[status.key] || ["✦","✧","✦"]).map((g, i) => <motion.div
         key={i}
@@ -2160,7 +2202,7 @@ function MythboundTamersJRPGInner() {
       inventory_snapshot: cleanSave.player || {},
       dex_caught: Object.keys(cleanSave.dex?.caught || {}).filter((k) => cleanSave.dex.caught[k]).length,
       save_data: cleanSave,
-      save_version: cleanSave.version || 24,
+      save_version: cleanSave.version || 25,
       last_save_at: syncedAt,
       updated_at: syncedAt
     };
@@ -2227,7 +2269,7 @@ function startBgm() {
     bgmTimerRef.current = null;
   }
 
-function playCry(id) { const isLegend = !!BESTIARY[id]?.legendary; const base = { emberlynx:520, pyrolynx:420, solarynx:360, aquapup:340, tidemast:260, leviamast:220, leafawn:620, florantler:540, gaianhart:470, voltoroo:760, stormaroo:920, thundaroo:980, gloomander:260, lunamander:310, eclipsander:230, ironboar:180, elderboar:145, cloudfinch:700, galegryph:500, pebbkit:210, granitus:120, shadebat:330, noctyra:240, prismite:850, dawnhare:790, nightmoth:250, dracinder:140, regaldrake:110, frostcub:410, glaciermaw:180, polarune:155, cindermole:250, magmole:160, calderox:120, spriggeist:760, starwhale:95, coralisk:420, reefserpent:160, sandillo:260, duneguard:130, mistowl:610, orchidimp:690, thistlefiend:300, aurorabbit:780, crysteel:620, prismhorn:260, toxifrog:360, venomire:210, spirikit:730, phantelope:510, neonsquid:680, ionwyrm:120, echopup:500, howlitzer:300, resonark:190, cuboulder:190, titanursa:105, worldursa:80, bellimp:640, chimegeist:360, ferroach:260, mantitan:180, mechamane:145, solguard:95, umbraclaw:70, thalassor:55, gaialith:65, chronova:880, auroracalf:720, aurorox:260, glacimarch:150, sirenfin:680, melodray:480, drillbug:230, cometitan:120, miragebud:760, dreamorchid:520, goldkit:760, aurumane:520, solarchon:330, stormkid:840, thunderchoir:460, glasswyrm:380, stormglass:165, incensemoth:560, censeraph:240, runeling:720, glyphsage:380, mossgolem:145, ruingrove:90, coinwyrm:620, treasuredrake:210, shelltide:300, reefguard:190, tsunamora:85, kitspark:760, vulpyr:520, dewdillo:330, rainroll:210, monsoondillo:95, embergoat:460, forgecapra:240, volcanor:115, kitsunova:900, abyssnake:130, leviacoil:70, glintcrab:640, prismclaw:360, ashchick:820, cinderwing:610, phoenixar:980, budbyte:720, florabyte:560, prismbloom:880, wolfrune:390, howlglyph:260, runewarden:180, snowkit:740, frostvulp:500, auroravulp:920, hornmite:250, drillhorn:160, railguard:95, miragecub:690, dreamlynx:450, mirageon:780, vaultick:680, lockroach:320, vaultitan:120, balletfin:760, swanlume:620, auroradiva:980, relicalf:260, reliceros:140, templehorn:70, pufflora:710, drowsibloom:520, somniflora:820, stardeer:760, cometstag:360, stellarch:160, inklot:230, eclipsquid:120, candypup:780, caramutt:540, ticktad:620, chronofrog:340, hourglassor:180, lanternimp:690, glowgremlin:500, mudmunch:210, bogjaw:115, happi: 760, jolli: 620, jubilume: 980, }[id] || 440; beep(base, isLegend ? 0.18 : 0.09, isLegend ? "square" : "sawtooth", isLegend ? 0.07 : 0.045); setTimeout(()=>beep(base*1.33, isLegend ? 0.16 : 0.08, "triangle", isLegend ? 0.065 : 0.04),90); if (isLegend) { setTimeout(()=>beep(base*0.66,0.22,"sawtooth",0.055),230); setTimeout(()=>beep(base*1.9,0.18,"sine",0.05),450); } }
+function playCry(id) { const isLegend = !!BESTIARY[id]?.legendary; const base = { emberlynx:520, pyrolynx:420, solarynx:360, aquapup:340, tidemast:260, leviamast:220, leafawn:620, florantler:540, gaianhart:470, voltoroo:760, stormaroo:920, thundaroo:980, gloomander:260, lunamander:310, eclipsander:230, ironboar:180, elderboar:145, cloudfinch:700, galegryph:500, pebbkit:210, granitus:120, shadebat:330, noctyra:240, prismite:850, dawnhare:790, nightmoth:250, dracinder:140, regaldrake:110, frostcub:410, glaciermaw:180, polarune:155, cindermole:250, magmole:160, calderox:120, spriggeist:760, starwhale:95, coralisk:420, reefserpent:160, sandillo:260, duneguard:130, mistowl:610, orchidimp:690, thistlefiend:300, aurorabbit:780, crysteel:620, prismhorn:260, toxifrog:360, venomire:210, spirikit:730, phantelope:510, neonsquid:680, ionwyrm:120, echopup:500, howlitzer:300, resonark:190, cuboulder:190, titanursa:105, worldursa:80, bellimp:640, chimegeist:360, ferroach:260, mantitan:180, mechamane:145, solguard:95, umbraclaw:70, thalassor:55, gaialith:65, chronova:880, auroracalf:720, aurorox:260, glacimarch:150, sirenfin:680, melodray:480, drillbug:230, cometitan:120, miragebud:760, dreamorchid:520, goldkit:760, aurumane:520, solarchon:330, stormkid:840, thunderchoir:460, glasswyrm:380, stormglass:165, incensemoth:560, censeraph:240, runeling:720, glyphsage:380, mossgolem:145, ruingrove:90, coinwyrm:620, treasuredrake:210, shelltide:300, reefguard:190, tsunamora:85, kitspark:760, vulpyr:520, pebblit:240, craggle:150, mountoracle:70, snowlit:620, frostelle:430, auroravale:260, runepup:650, glyphound:390, codexwolf:170, dewdillo:330, rainroll:210, monsoondillo:95, embergoat:460, forgecapra:240, volcanor:115, kitsunova:900, abyssnake:130, leviacoil:70, glintcrab:640, prismclaw:360, ashchick:820, cinderwing:610, phoenixar:980, budbyte:720, florabyte:560, prismbloom:880, wolfrune:390, howlglyph:260, runewarden:180, snowkit:740, frostvulp:500, auroravulp:920, hornmite:250, drillhorn:160, railguard:95, miragecub:690, dreamlynx:450, mirageon:780, vaultick:680, lockroach:320, vaultitan:120, balletfin:760, swanlume:620, auroradiva:980, relicalf:260, reliceros:140, templehorn:70, pufflora:710, drowsibloom:520, somniflora:820, stardeer:760, cometstag:360, stellarch:160, inklot:230, eclipsquid:120, candypup:780, caramutt:540, ticktad:620, chronofrog:340, hourglassor:180, lanternimp:690, glowgremlin:500, mudmunch:210, bogjaw:115, happi: 760, jolli: 620, jubilume: 980, }[id] || 440; beep(base, isLegend ? 0.18 : 0.09, isLegend ? "square" : "sawtooth", isLegend ? 0.07 : 0.045); setTimeout(()=>beep(base*1.33, isLegend ? 0.16 : 0.08, "triangle", isLegend ? 0.065 : 0.04),90); if (isLegend) { setTimeout(()=>beep(base*0.66,0.22,"sawtooth",0.055),230); setTimeout(()=>beep(base*1.9,0.18,"sine",0.05),450); } }
   function playEvolutionSound(fromMon, toMon, style) {
     const fromType = BESTIARY[fromMon?.id]?.type || "Mystic";
     const toType = BESTIARY[toMon?.id]?.type || fromType;
@@ -3628,10 +3670,10 @@ function WorldScreen({ map, area, player, move, party, storage, seen, dex, setSc
             </motion.div>
             <div className="min-w-0">
               <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
-                <span className="text-[18px] sm:text-3xl landscape:text-[15px] font-black tracking-[0.15em] sm:tracking-[0.24em] text-white leading-[0.9] drop-shadow-[0_2px_12px_rgba(34,211,238,.70)]">MYTHBOUND</span>
-                <span className="text-[18px] sm:text-3xl landscape:text-[15px] font-black tracking-[0.16em] sm:tracking-[0.26em] text-cyan-100 leading-[0.9] drop-shadow-[0_2px_12px_rgba(34,211,238,.70)]">TAMERS</span>
+                <span className="text-[20px] sm:text-3xl landscape:text-[15px] font-black tracking-[0.12em] sm:tracking-[0.20em] text-white leading-[0.9] drop-shadow-[0_2px_12px_rgba(34,211,238,.70)]">MYTHBOUND</span>
+                <span className="text-[20px] sm:text-3xl landscape:text-[15px] font-black tracking-[0.12em] sm:tracking-[0.20em] text-cyan-100 leading-[0.9] drop-shadow-[0_2px_12px_rgba(34,211,238,.70)]">TAMERS</span>
               </div>
-              <div className="text-[8px] sm:text-[10px] landscape:text-[7px] uppercase tracking-[0.20em] text-lime-100 font-black mt-0.5">Monster-taming RPG · catch, train, evolve</div>
+              <div className="text-[8px] sm:text-[10px] landscape:text-[7px] uppercase tracking-[0.20em] text-lime-100 font-black mt-0.5">Monster-taming RPG</div>
             </div>
           </div>
           <div className="flex items-center gap-1 shrink-0">
@@ -3641,18 +3683,17 @@ function WorldScreen({ map, area, player, move, party, storage, seen, dex, setSc
             <Button onClick={() => setMapZoom((z)=>clampZoom(z + 0.15))} variant="secondary" className="rounded-xl font-black px-2 py-1 text-[10px] sm:text-xs">+</Button>
           </div>
         </div>
-        <div className="mt-1 landscape:mt-0.5 grid grid-cols-[1fr_auto] gap-2 items-center">
-          <div className="min-w-0 rounded-2xl bg-white/9 border border-cyan-200/25 px-2.5 py-1 landscape:py-0.5 shadow-inner">
-            <div className="flex items-center gap-2 min-w-0">
+        <div className="mt-1 landscape:mt-0.5">
+          <div className="w-full rounded-2xl bg-white/9 border border-cyan-200/25 px-3 py-2 landscape:py-1.5 shadow-inner">
+            <div className="flex items-center justify-between gap-2 min-w-0">
               <div className="min-w-0 flex-1">
-                <div className="text-[8px] sm:text-[10px] landscape:text-[7px] uppercase tracking-[0.22em] text-cyan-100/90 font-black">Current Area</div>
-                <div className="text-lg sm:text-3xl landscape:text-sm font-black text-white truncate leading-tight">{area?.name || "Luminara Wilds"}</div>
+                <div className="text-[9px] sm:text-[11px] landscape:text-[8px] uppercase tracking-[0.24em] text-cyan-100/90 font-black">Current Area</div>
+                <div className="text-2xl sm:text-4xl landscape:text-lg font-black text-white truncate leading-tight drop-shadow-[0_2px_12px_rgba(34,211,238,.45)]">{area?.name || "Luminara Wilds"}</div>
               </div>
-              <Badge className="bg-slate-900/85 text-cyan-100 border border-cyan-300/25 px-2 py-1 text-[10px] landscape:text-[8px] shrink-0"><TimeIcon className="w-3 h-3 mr-1"/>{timeString(clock)}</Badge>
+              <Badge className="bg-slate-900/90 text-cyan-100 border border-cyan-300/25 px-2 py-1 text-[10px] sm:text-xs landscape:text-[9px] shrink-0"><TimeIcon className="w-3 h-3 mr-1"/>{timeString(clock)}</Badge>
             </div>
-            <div className="text-[9px] sm:text-xs landscape:text-[7px] text-cyan-100/90 font-bold truncate">Tap board to move • Swipe the paw • Hold a tile to inspect</div>
+            <div className="mt-1 text-[10px] sm:text-sm landscape:text-[8px] text-cyan-100/90 font-bold truncate">Tap board to move • Swipe the paw • Hold a tile to inspect • {boardScaleMode}</div>
           </div>
-          <Badge className="hidden sm:inline-flex bg-fuchsia-300/15 text-fuchsia-100 border border-fuchsia-200/25 px-2 py-1 text-[9px] landscape:text-[7px] font-black">{boardScaleMode}</Badge>
         </div>
       </div>
     </div>
@@ -4070,6 +4111,7 @@ function BattleScreen({ battle, playerMon, skills, playerUse, capture, selectedC
     initial={{opacity:0}}
     animate={{opacity:1}}
     exit={{opacity:0}}
+    transition={{duration:0.18}}
     className={`fixed inset-0 z-[999] bg-gradient-to-br ${battlefieldTone} text-white overflow-y-auto landscape:overflow-hidden flex flex-col landscape:grid landscape:grid-cols-[minmax(0,1.08fr)_minmax(320px,.92fr)] landscape:grid-rows-[1fr_auto] landscape:gap-1 p-1 sm:p-3 landscape:p-1`}
   >
     <BattleFx anim={anim}/>
@@ -4077,7 +4119,7 @@ function BattleScreen({ battle, playerMon, skills, playerUse, capture, selectedC
     <div className="relative w-full max-w-6xl mx-auto h-[39vh] min-h-[255px] sm:h-[58vh] sm:min-h-[430px] landscape:col-start-1 landscape:row-span-2 landscape:h-[calc(100dvh-0.5rem)] landscape:min-h-0 landscape:max-w-none landscape:mx-0 rounded-[1.25rem] overflow-hidden border border-white/10 shadow-2xl bg-gradient-to-b from-violet-900 via-fuchsia-950 to-slate-950 shrink-0" style={{ perspective: "950px", transformStyle: "preserve-3d" }}>
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_78%_28%,rgba(255,255,255,.28),transparent_18%),radial-gradient(ellipse_at_24%_74%,rgba(255,255,255,.2),transparent_22%),linear-gradient(180deg,rgba(56,189,248,.12),transparent_42%,rgba(15,23,42,.72))]" />
       <div className="absolute left-[-15%] right-[-15%] top-[40%] h-24 sm:h-40 bg-fuchsia-400/20 blur-3xl" />
-      <motion.div className="absolute inset-x-0 bottom-0 h-[32%] bg-gradient-to-t from-black/35 to-transparent pointer-events-none" animate={{ opacity:[0.35,0.6,0.35] }} transition={{ duration:3, repeat:Infinity }} />
+      <motion.div className="absolute inset-x-0 bottom-0 h-[32%] bg-gradient-to-t from-black/35 to-transparent pointer-events-none" animate={{ opacity:[0.38,0.5,0.38] }} transition={{ duration:5, repeat:Infinity, ease:"easeInOut" }} />
       <motion.div className="absolute left-[18%] top-[18%] w-24 h-24 rounded-full bg-white/10 blur-2xl pointer-events-none" animate={{ x:[-10,20,-10], y:[0,-8,0] }} transition={{ duration:5, repeat:Infinity }} />
 
 
@@ -4512,24 +4554,24 @@ function EvolutionPromptModal({ info, proceed, skip }) {
 function EvolutionOverlay({ scene }) {
   const { from, to, style, phase } = scene;
   const reveal = phase === "reveal" || phase === "complete";
-  const particles = useMemo(() => Array.from({ length: 22 }, (_, i) => {
-    const angle = (i / 22) * Math.PI * 2;
-    return { id: i, x: Math.cos(angle) * (90 + (i % 4) * 26), y: Math.sin(angle) * (90 + (i % 4) * 26), delay: (i % 7) * 0.07 };
+  const particles = useMemo(() => Array.from({ length: 18 }, (_, i) => {
+    const angle = (i / 18) * Math.PI * 2;
+    return { id: i, x: Math.cos(angle) * (88 + (i % 4) * 22), y: Math.sin(angle) * (88 + (i % 4) * 22), delay: (i % 6) * 0.10 };
   }), []);
   const particleGlyph = style.particles === "notes" ? "♪" : style.particles === "gears" ? "⚙" : style.particles === "snow" ? "❄" : style.particles === "sparks" ? "ϟ" : style.particles === "bubbles" ? "○" : style.particles === "claws" ? "⌁" : style.particles === "shadows" ? "●" : style.particles === "moons" ? "☾" : style.particles === "spores" ? "✺" : "✧";
-  return <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{duration:.22}} className="fixed inset-0 z-[70] flex items-center justify-center overflow-hidden bg-black/88 backdrop-blur-md p-4">
-    <motion.div className={`absolute inset-0 bg-gradient-to-br ${style.aura} opacity-25`} animate={{ opacity: [0.20, 0.34, 0.25] }} transition={{ duration: 2.4, repeat: Infinity, repeatType: "mirror" }}/>
-    {particles.map((p) => <motion.div key={p.id} className="absolute font-black text-white/75 drop-shadow-lg will-change-transform" style={{ left: "50%", top: "50%", color: p.id % 3 === 0 ? style.ring : undefined }} initial={{ x: 0, y: 0, scale: 0, opacity: 0 }} animate={{ x: p.x, y: p.y, scale: [0, 1, 0.82], opacity: [0, .9, .35] }} transition={{ duration: 2.6, delay: p.delay, repeat: Infinity, repeatType: "mirror", ease: "easeInOut" }}>{particleGlyph}</motion.div>)}
-    <motion.div layout className="relative w-full max-w-3xl rounded-[2rem] border border-white/20 bg-slate-950/86 shadow-2xl overflow-hidden p-5 sm:p-8 text-center">
-      <motion.div className="absolute inset-x-0 top-0 h-1 bg-white" animate={{ opacity: [0.35, 0.9, 0.35] }} transition={{ duration: 1.6, repeat: Infinity, repeatType: "mirror" }}/>
+  return <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{duration:.28}} className="fixed inset-0 z-[1700] flex items-center justify-center overflow-hidden bg-black/90 backdrop-blur-md p-4">
+    <motion.div className={`absolute inset-0 bg-gradient-to-br ${style.aura} opacity-25`} animate={{ opacity: [0.22, 0.32, 0.24] }} transition={{ duration: 3.4, repeat: Infinity, repeatType: "mirror", ease:"easeInOut" }}/>
+    {particles.map((p) => <motion.div key={p.id} className="absolute font-black text-white/70 drop-shadow-lg will-change-transform" style={{ left: "50%", top: "50%", color: p.id % 3 === 0 ? style.ring : undefined }} initial={{ x: 0, y: 0, scale: 0.5, opacity: 0 }} animate={{ x: p.x, y: p.y, scale: [0.7, 1.0, 0.78], opacity: [0.25, .72, .30] }} transition={{ duration: 3.2, delay: p.delay, repeat: Infinity, repeatType: "mirror", ease: "easeInOut" }}>{particleGlyph}</motion.div>)}
+    <motion.div className="relative w-full max-w-3xl rounded-[2rem] border border-white/20 bg-slate-950/88 shadow-2xl overflow-hidden p-5 sm:p-8 text-center">
+      <motion.div className="absolute inset-x-0 top-0 h-1 bg-white" animate={{ opacity: [0.45, 0.76, 0.45] }} transition={{ duration: 2.4, repeat: Infinity, repeatType: "mirror", ease:"easeInOut" }}/>
       <div className="text-xs sm:text-sm uppercase tracking-[0.35em] text-cyan-100/80 mb-2">Special Evolution</div>
-      <motion.h2 className="text-3xl sm:text-5xl font-black bg-gradient-to-r from-white via-cyan-100 to-fuchsia-200 text-transparent bg-clip-text" animate={{ scale: phase === "flash" ? 1.035 : 1 }} transition={{ duration:.5 }}>{style.title}</motion.h2>
+      <motion.h2 className="text-3xl sm:text-5xl font-black bg-gradient-to-r from-white via-cyan-100 to-fuchsia-200 text-transparent bg-clip-text" animate={{ scale: phase === "flash" ? 1.02 : 1 }} transition={{ duration:.65, ease:"easeInOut" }}>{style.title}</motion.h2>
       <p className="text-slate-200 mt-2 min-h-[28px]">{phase === "complete" ? `${style.toName} has awakened!` : style.call || `${style.fromName} ${style.verb}.`}</p>
       <div className="relative mt-6 flex items-center justify-center min-h-[260px]">
-        <motion.div className="absolute w-64 h-64 rounded-full border-4" style={{ borderColor: style.ring }} animate={{ rotate: 360, scale: [0.96, 1.08, 0.96], opacity: [0.45, .85, .45] }} transition={{ rotate:{duration:5.4, repeat: Infinity, ease: "linear"}, scale:{duration:2.2, repeat:Infinity, repeatType:"mirror"} }}/>
-        <motion.div className="absolute w-44 h-44 rounded-full blur-2xl" style={{ background: style.ring }} animate={{ scale: [0.9, 1.35, 1.0], opacity: [0.22, 0.48, 0.28] }} transition={{ duration: 2.1, repeat: Infinity, repeatType:"mirror" }}/>
-        <AnimatePresence mode="popLayout" initial={false}>
-          {!reveal ? <motion.div key="from" initial={{ opacity: 1, scale: 0.95 }} animate={{ opacity: phase === "flash" ? 0.72 : 1, scale: phase === "flash" ? 1.06 : 1, filter: phase === "flash" ? "brightness(1.8)" : "brightness(1)" }} exit={{ opacity: 0, scale: 0.58, filter: "brightness(3) blur(4px)" }} transition={{ duration: 0.75, ease: "easeInOut" }}><MonsterModel mon={from} size="medium"/></motion.div> : <motion.div key="to" initial={{ opacity: 0, scale: 0.62, filter: "brightness(2.6) blur(5px)" }} animate={{ opacity: 1, scale: [0.85, 1.08, 1], filter: "brightness(1) blur(0px)" }} transition={{ duration: 0.95, ease: "easeOut" }}><MonsterModel mon={to} size="large"/></motion.div>}
+        <motion.div className="absolute w-64 h-64 rounded-full border-4" style={{ borderColor: style.ring }} animate={{ rotate: 360, scale: [0.98, 1.06, 0.98], opacity: [0.52, .78, .52] }} transition={{ rotate:{duration:8.5, repeat: Infinity, ease: "linear"}, scale:{duration:3.0, repeat:Infinity, repeatType:"mirror", ease:"easeInOut"} }}/>
+        <motion.div className="absolute w-44 h-44 rounded-full blur-2xl" style={{ background: style.ring }} animate={{ scale: [0.95, 1.22, 1.0], opacity: [0.24, 0.42, 0.26] }} transition={{ duration: 2.8, repeat: Infinity, repeatType:"mirror", ease:"easeInOut" }}/>
+        <AnimatePresence mode="wait" initial={false}>
+          {!reveal ? <motion.div key="from" initial={{ opacity: 1, scale: 0.98 }} animate={{ opacity: phase === "flash" ? 0.82 : 1, scale: phase === "flash" ? 1.035 : 1, filter: phase === "flash" ? "brightness(1.45)" : "brightness(1)" }} exit={{ opacity: 0, scale: 0.70, filter: "brightness(2.2) blur(3px)" }} transition={{ duration: 0.9, ease: "easeInOut" }}><MonsterModel mon={from} size="medium"/></motion.div> : <motion.div key="to" initial={{ opacity: 0, scale: 0.74, filter: "brightness(2.0) blur(4px)" }} animate={{ opacity: 1, scale: [0.88, 1.04, 1], filter: "brightness(1) blur(0px)" }} transition={{ duration: 1.05, ease: "easeOut" }}><MonsterModel mon={to} size="large"/></motion.div>}
         </AnimatePresence>
       </div>
       <div className="flex justify-center items-center gap-3 text-lg sm:text-2xl font-black">
@@ -5558,7 +5600,7 @@ function AccountScreen({
           storage_snapshot: [],
           inventory_snapshot: {},
           dex_caught: 0,
-          save_version: 24,
+          save_version: 25,
           updated_at: new Date().toISOString()
         };
         await supabase.from("mythbound_profiles").upsert(payload, { onConflict: "id" });

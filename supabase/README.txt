@@ -1,1 +1,1 @@
-Run the v0.62 friends SQL if you have not already done so.
+Run the v0.62 friends/presence/invites SQL migration if you have not already done so.

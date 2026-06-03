@@ -1,8 +1,8 @@
 ﻿{
-    "version":  "0.69.0",
-    "versionCode":  69,
-    "notes":  "Fix evolution flicker, add post-battle evolution prompts, improve capture ball landing, fix landscape battle scrolling/options, center default move arrows below board, enhance XP/battle logic, and add new monsters/locations/story routes.",
-    "apkUrl":  "https://github.com/costaskk/Mythbound-Tamers/releases/download/v0.69.0/mythbound-tamers-v0.69.0.apk",
+    "version":  "0.70.0",
+    "versionCode":  70,
+    "notes":  "Improve main board HUD so Current Area spans the full line, smooth battle/evolution animations, keep post-battle evolutions using the same evolution sequence, improve single-stage monster scaling, add more monsters/evolutions, and polish beta-stage stability/visibility.",
+    "apkUrl":  "https://github.com/costaskk/Mythbound-Tamers/releases/download/v0.70.0/mythbound-tamers-v0.70.0.apk",
     "mandatory":  false,
     "publishedAt":  "2026-06-03",
     "autoStartNativeUpdate":  false,
