@@ -8,8 +8,8 @@ import {Sparkles, PawPrint, Flame, Droplets, Leaf, Zap, Heart, Map, Backpack, Ga
 
 const SAVE_KEY = "mythbound_tamers_save_v4";
 const OLD_SAVE_KEYS = ["mythbound_tamers_save_v6", "mythbound_tamers_save_v5", "mythbound_tamers_save_v4", "mythbound_tamers_save_v3", "mythbound_tamers_save_v2", "mythbound_tamers_save"];
-const APP_VERSION = "0.68.0";
-const APP_VERSION_CODE = 68;
+const APP_VERSION = "0.69.0";
+const APP_VERSION_CODE = 69;
 const UPDATE_MANIFEST_URL = import.meta.env.VITE_UPDATE_MANIFEST_URL || "https://costaskk.github.io/Mythbound-Tamers/update-manifest.json";
 const SHINY_RATE = 1 / 192;
 const VALID_SCREENS = new Set(["title","story","starter","world","party","pc","shop","dex","account","multiplayer","friends","objectives","help","atlas","update","battle","gameover"]);
@@ -309,6 +309,13 @@ const BESTIARY = {
   ashhopper: { name: "Ashhopper", type: "Flame", species: "Ash Hopper", cry: "ASH-HOP!", stage: 2, evo: { to: "blazejumper", method: "Reach Lv.28 near Caldera Crown" }, base: [78, 46, 25, 58], skills: ["Flare Burst", "Meteor Claw", "Sugar Rush"], capture: 0.07, body: "bug", colors: ["#f97316", "#fef08a", "#1c1917"], lore: "It launches itself through ash clouds like a living firework." },
   blazejumper: { name: "Blazejumper", type: "Flame", species: "Blaze Jumper", cry: "BLAZE-JUMP!", stage: 3, base: [114, 68, 38, 86], skills: ["Magma Crown", "Meteor Claw", "Flare Burst"], capture: 0.022, body: "bug", colors: ["#dc2626", "#fde047", "#020617"], lore: "A festival-fire champion that leaps so fast it draws flame rings in the air." },
 
+
+  dewdillo: { name: "Dewdillo", type: "Aqua", species: "Dew Armadillo", cry: "dew-roll!", stage: 1, evo: { to: "rainroll", method: "Reach Lv.16 at Tideglass Flats" }, base: [56, 22, 24, 18], skills: ["Bubble Bite", "Mudslide Roll", "Guard"], capture: 0.27, body: "boar", colors: ["#67e8f9", "#c4b5fd", "#064e3b"], lore: "It rolls through morning grass and gathers dew into armor plates." },
+  rainroll: { name: "Rainroll", type: "Aqua", species: "Rain Roller", cry: "RAIN-ROLL!", stage: 2, evo: { to: "monsoondillo", method: "Reach Lv.31 after clearing Tideglass Flats" }, base: [96, 42, 42, 28], skills: ["Tidal Crush", "Mudslide Roll", "Healing Rain"], capture: 0.07, body: "boar", colors: ["#0ea5e9", "#a7f3d0", "#082f49"], lore: "A storm-route guardian that rolls so fast it becomes a living waterwheel." },
+  monsoondillo: { name: "Monsoondillo", type: "Aqua", species: "Monsoon Bastion", cry: "MON-SOON-DILLO!", stage: 3, base: [140, 64, 62, 38], skills: ["Tidal Crush", "Mudslide Roll", "Prism Nova"], capture: 0.022, body: "boar", colors: ["#0369a1", "#99f6e4", "#020617"], lore: "When it curls up, villages say even the strongest rain cannot pass its shell." },
+  embergoat: { name: "Embergoat", type: "Flame", species: "Lantern Kid", cry: "mee-fwo!", stage: 1, evo: { to: "forgecapra", method: "Reach Lv.17 near Ash Field" }, base: [50, 27, 18, 25], skills: ["Cinder Paw", "Headbutt Spark", "Guard"], capture: 0.23, body: "deer", colors: ["#fb923c", "#fef3c7", "#451a03"], lore: "A stubborn little goat with ember horns that glows brighter when challenged." },
+  forgecapra: { name: "Forgecapra", type: "Flame", species: "Forge Ibex", cry: "FORGE-CAPRA!", stage: 2, evo: { to: "volcanor", method: "Reach Lv.33 after defeating Bridge Captain Brann" }, base: [92, 49, 34, 42], skills: ["Headbutt Spark", "Flare Burst", "Magma Crown"], capture: 0.065, body: "deer", colors: ["#ea580c", "#fde68a", "#1c1917"], lore: "It sharpens its horns on warm stone and protects mountain forges." },
+  volcanor: { name: "Volcanor", type: "Flame", species: "Volcano Ram", cry: "VOL-CA-NOR!", stage: 3, base: [134, 74, 50, 52], skills: ["Headbutt Spark", "Magma Crown", "Solar Crown"], capture: 0.018, body: "deer", colors: ["#b91c1c", "#facc15", "#020617"], lore: "A late-route ram whose hornbeats sound like distant eruptions." },
   frostcub: { name: "Frostcub", type: "Aqua", species: "Snow Cub", cry: "brr-aw!", stage: 1, evo: { to: "glaciermaw", method: "Reach Lv.12 at night" }, base: [46, 15, 12, 9], skills: ["Bubble Bite", "Guard", "Tidal Crush"], capture: 0.33, body: "bear", colors: ["#93c5fd", "#eff6ff", "#1e3a8a"], lore: "A playful cub that freezes puddles with each step. It appears near lakes after sunset." },
   glaciermaw: { name: "Glaciermaw", type: "Aqua", species: "Ice Bear", cry: "GLAWWR!", stage: 2, evo: { to: "polarune", method: "Reach Lv.22 in Frost Hollow" }, base: [88, 28, 24, 12], skills: ["Bubble Bite", "Tidal Crush", "Boulder Crash"], capture: 0.1, body: "bear", colors: ["#60a5fa", "#e0f2fe", "#0f172a"], lore: "Its claws are frozen relics from the first winter of Luminara." },
   cindermole: { name: "Cindermole", type: "Flame", species: "Coal Mole", cry: "murk-fwoom!", stage: 1, evo: { to: "magmole", method: "Use Sun Fossil" }, base: [52, 17, 16, 7], skills: ["Cinder Paw", "Guard", "Boulder Crash"], capture: 0.3, body: "mole", colors: ["#fb923c", "#111827", "#7f1d1d"], lore: "It digs warm tunnels beneath Ash Field and leaves glowing pawprints." },
@@ -796,7 +803,7 @@ const AREA_DATA = {
       "W....G...B..GG.W",
       "WWWWWWWWWWWWWWWW"
     ],
-    encounters: { G: ["emberlynx","aquapup","leafawn","voltoroo","cloudfinch","happi","gleamouse","glimkit","puddleimp","cindermite"], C: ["prismite","glimkit"], N: ["gleamouse","happi"] },
+    encounters: { G: ["emberlynx","aquapup","leafawn","voltoroo","cloudfinch","happi","gleamouse","glimkit","puddleimp","cindermite","dewdillo","embergoat"], C: ["prismite","glimkit"], N: ["gleamouse","happi"] },
     description: "A safe academy board where new tamers can level quickly, learn tile movement, and catch friendly early Mythlings.",
     sideQuest: "Win three wild battles here to earn a Training Charm and learn how XP scales."
   },
@@ -962,6 +969,63 @@ const AREA_DATA = {
     ],
     encounters: { "8": ["tidebug","shellsurge","coralisk","reefserpent","neonsquid"], L: ["aquapup","tidemast","frostcub","thalassor"] },
     description: "A reflective coast where Aqua and Metal-adjacent Mythlings gain stronger levels."
+  },
+
+  riverbellPass: {
+    id: "riverbellPass",
+    name: "Riverbell Pass",
+    chapter: 2,
+    subtitle: "Chapter 2 · Bells Across the Water",
+    theme: "River Chimes",
+    bg: "from-slate-950 via-blue-950 to-cyan-950",
+    levelMin: 12,
+    levelMax: 20,
+    start: { x: 2, y: 8 },
+    map: [
+      "WWWWWWWWWWWWWWWW",
+      "WLLLLL..T..GG..0W",
+      "W.LLL..LLLL..GG.W",
+      "W..L..CCCC..L..W",
+      "W..L..C..C..N..W",
+      "W..LLL..L..LL..W",
+      "W..L..CCCC..L..W",
+      "W..L....L...L..W",
+      "W..L..R..LL....W",
+      "W.0LLLLLL..L...W",
+      "W....L...B..LL.W",
+      "WWWWWWWWWWWWWWWW"
+    ],
+    encounters: { L: ["puddleimp","rainmischief","dewdillo","rainroll","bellimp","chimegeist"], G: ["leafawn","glimkit","happi"], C: ["prismite","crysteel"] },
+    description: "A mid-early river route designed as a fair training bridge before the harsher Prism and Titan paths.",
+    sideQuest: "Ring the three river bells and defeat the Bell Tamer to earn a Resonance Charm."
+  },
+  ashgoatTrail: {
+    id: "ashgoatTrail",
+    name: "Ashgoat Trail",
+    chapter: 3,
+    subtitle: "Chapter 3 · Horns in the Cinders",
+    theme: "Cinder Horns",
+    bg: "from-slate-950 via-orange-950 to-red-950",
+    levelMin: 17,
+    levelMax: 27,
+    start: { x: 2, y: 8 },
+    map: [
+      "WWWWWWWWWWWWWWWW",
+      "WYYYY..9..RR..0W",
+      "W.YYY..YYYY..RR.W",
+      "W..Y..CCCC..Y..W",
+      "W..Y..C..C..N..W",
+      "W..YYY..Y..YY..W",
+      "W..Y..CCCC..Y..W",
+      "W..Y....Y...Y..W",
+      "W..Y..R..YY....W",
+      "W.0YYYYYY..Y...W",
+      "W....Y...B..YY.W",
+      "WWWWWWWWWWWWWWWW"
+    ],
+    encounters: { Y: ["cindermite","ashhopper","embergoat","forgecapra","emberlynx","pyrolynx"], "9": ["cindermole","magmole","ferroach"], R: ["gearmite","steelfang"] },
+    description: "A safer ash-road branch before Caldera Crown. It teaches Flame and Stone matchups without throwing Lv.35 bosses at Lv.10 teams.",
+    sideQuest: "Help the Forge Herder calm Embergoat herds blocking the pass."
   },
   skyrailMeadow: {
     id: "skyrailMeadow",
@@ -1306,6 +1370,7 @@ const WORLD_ROUTE = [
   { id: "verdantCanopy", gate: "Verdant Gate / j", story: "Optional but recommended: complete the Seed Bell side quest and train Verdant lines." },
   { id: "luminousBazaar", gate: "Luminous Bazaar / $", story: "Side route: earn the Lucky Prism tag and discover Light Mythlings." },
   { id: "tideglassFlats", gate: "Tideglass Gate / t", story: "Gather coastal items and evolve Aqua lines." },
+  { id: "riverbellPass", gate: "Luminara / L", story: "Follow the river bells to train before Prism Ruins." },
   { id: "prismRuins", gate: "Prism Gate / p", story: "Recover the Prism Key from broken glass." },
   { id: "frostglassPeaks", gate: "Frost Gate / h", story: "Side route: recover the Aurora Lens and catch Ice Mythlings." },
   { id: "ironrailYard", gate: "Ironrail Gate / m", story: "Upgrade your team with Metal and Volt Mythlings." },
@@ -1314,6 +1379,7 @@ const WORLD_ROUTE = [
   { id: "orchidCourt", gate: "Orchid Gate / o", story: "Side route: earn Harmony Charm and learn about trade evolutions." },
   { id: "stormspireCliffs", gate: "Stormspire / !", story: "Side route: ring the storm bells and awaken Stormglass." },
   { id: "phoenixRoost", gate: "Phoenix Roost / @", story: "Side route: light sunrise braziers and unlock Phoenixar." },
+  { id: "ashgoatTrail", gate: "Ash Road / Y", story: "Train along Ashgoat Trail before challenging Caldera Crown." },
   { id: "calderaCrown", gate: "Caldera Gate / 9", story: "Reach the fiery road to Dragon Gate." },
   { id: "postgame", gate: "Legend seals 1-5", story: "After Dracinder, hunt the five legendary dungeons." }
 ];
@@ -1504,14 +1570,17 @@ function xpToNextLevel(level = 1, id = "emberlynx") {
   const lvl = Math.max(1, Number(level || 1));
   return Math.max(34, Math.floor((28 + lvl * 7 + Math.pow(lvl, 1.68) * 1.2) * evolvedFactor));
 }
-function battleXpReward(defeated, mode = "wild") {
+function battleXpReward(defeated, mode = "wild", winner = null) {
   const b = BESTIARY[defeated?.id] || {};
   const stage = Math.max(1, Number(b.stage || 1));
   const lvl = Math.max(1, Number(defeated?.level || 1));
-  const evolvedBonus = stage === 1 ? 0 : stage === 2 ? 38 : 86;
-  if (mode === "legend") return 470 + lvl * 20 + evolvedBonus;
-  if (mode === "trainer") return 295 + lvl * 22 + evolvedBonus;
-  return 155 + lvl * 19 + evolvedBonus;
+  const playerLvl = Math.max(1, Number(winner?.level || 1));
+  const underdogBonus = Math.max(0, Math.min(180, (lvl - playerLvl) * 24));
+  const evolvedBonus = stage === 1 ? 0 : stage === 2 ? 48 : 104;
+  const shinyBonus = defeated?.shiny ? 55 : 0;
+  if (mode === "legend") return 520 + lvl * 24 + evolvedBonus + underdogBonus + shinyBonus;
+  if (mode === "trainer") return 330 + lvl * 27 + evolvedBonus + underdogBonus + shinyBonus;
+  return 185 + lvl * 22 + evolvedBonus + underdogBonus + shinyBonus;
 }
 function makeMon(id, level = 1, wild = false) { const b = BESTIARY[id] || BESTIARY.emberlynx; const [bhp, batk, bdef, bspd] = b.base; const hp = Math.floor(bhp + level * 7); return ensureMovePP({ uid: `${id}_${uid()}`, id, nickname: "", name: b.name, type: b.type, gender: rollGender(id), shiny: rollShiny(wild), level, xp: 0, nextXp: xpToNextLevel(level, id), hp, maxHp: hp, atk: Math.floor(batk + level * 2.4), def: Math.floor(bdef + level * 1.8), spd: Math.floor(bspd + level * 1.5), status: null, wild }); }
 function displayName(m) { return m?.nickname || m?.name || BESTIARY[m?.id]?.name || "Mythling"; }
@@ -1548,7 +1617,7 @@ function migrateSave(input) {
   if (!party.length && storage.length) {
     party = storage.slice(0, 6);
     storage = storage.slice(6);
-  } const dex = ensureDexShape(data.dex || freshDex()); party.concat(storage).forEach((m) => { dex.seen[m.id] = true; dex.caught[m.id] = true; if (m.shiny) { dex.shinySeen[m.id] = true; dex.shinyCaught[m.id] = true; } }); const safeScreen = VALID_SCREENS.has(data.screen) ? data.screen : ((party.length || storage.length) ? "world" : "title"); return { version: 23, savedAt: Date.now(), screen: party.length ? (safeScreen === "battle" || safeScreen === "gameover" || safeScreen === "starter" ? "world" : safeScreen || "world") : "title", storyIndex: data.storyIndex || 0, player, party, storage, active: Math.min(data.active || 0, Math.max(0, party.length - 1)), seen: { ...freshSeen(), ...(data.seen || {}) }, dex, clock: data.clock || freshClock(), muted: Boolean(data.muted) }; }
+  } const dex = ensureDexShape(data.dex || freshDex()); party.concat(storage).forEach((m) => { dex.seen[m.id] = true; dex.caught[m.id] = true; if (m.shiny) { dex.shinySeen[m.id] = true; dex.shinyCaught[m.id] = true; } }); const safeScreen = VALID_SCREENS.has(data.screen) ? data.screen : ((party.length || storage.length) ? "world" : "title"); return { version: 24, savedAt: Date.now(), screen: party.length ? (safeScreen === "battle" || safeScreen === "gameover" || safeScreen === "starter" ? "world" : safeScreen || "world") : "title", storyIndex: data.storyIndex || 0, player, party, storage, active: Math.min(data.active || 0, Math.max(0, party.length - 1)), seen: { ...freshSeen(), ...(data.seen || {}) }, dex, clock: data.clock || freshClock(), muted: Boolean(data.muted) }; }
 function typeMult(a, d) {
   const chart = TYPE_MATCHUPS[a] || {};
   let mult = 1;
@@ -1655,7 +1724,7 @@ function estimateCaptureChance(enemy, player, itemName, clock, battleMode = "wil
   const earlyBonus = item === "Quick Prism" && enemy.hp === enemy.maxHp ? 1.35 : 1;
   const legendPenalty = BESTIARY[enemy.id]?.legendary ? 0.42 : 1;
   const max = BESTIARY[enemy.id]?.legendary ? 0.32 : 0.94;
-  return Math.max(0.01, Math.min(max, (BESTIARY[enemy.id].capture + hpFactor * 0.57 + (battleMode === "legend" ? -0.18 : 0)) * tileBonus * earlyBonus * legendPenalty));
+  return Math.max(0.01, Math.min(max, (BESTIARY[enemy.id].capture + hpFactor * 0.62 + (battleMode === "legend" ? -0.18 : 0)) * tileBonus * earlyBonus * legendPenalty));
 }
 function bestMoveSuggestion(mon, enemy) {
   if (!mon || !enemy) return null;
@@ -1918,6 +1987,7 @@ function MythboundTamersJRPGInner() {
   const [objectiveModal, setObjectiveModal] = useState(null);
   const [objectiveMapFocus, setObjectiveMapFocus] = useState(null);
   const [evolutionScene, setEvolutionScene] = useState(null);
+  const [pendingEvolution, setPendingEvolution] = useState(null);
   const [seen, setSeen] = useState(freshSeen());
   const [dex, setDex] = useState(freshDex());
   const [clock, setClock] = useState(freshClock());
@@ -2090,7 +2160,7 @@ function MythboundTamersJRPGInner() {
       inventory_snapshot: cleanSave.player || {},
       dex_caught: Object.keys(cleanSave.dex?.caught || {}).filter((k) => cleanSave.dex.caught[k]).length,
       save_data: cleanSave,
-      save_version: cleanSave.version || 23,
+      save_version: cleanSave.version || 24,
       last_save_at: syncedAt,
       updated_at: syncedAt
     };
@@ -2157,7 +2227,7 @@ function startBgm() {
     bgmTimerRef.current = null;
   }
 
-function playCry(id) { const isLegend = !!BESTIARY[id]?.legendary; const base = { emberlynx:520, pyrolynx:420, solarynx:360, aquapup:340, tidemast:260, leviamast:220, leafawn:620, florantler:540, gaianhart:470, voltoroo:760, stormaroo:920, thundaroo:980, gloomander:260, lunamander:310, eclipsander:230, ironboar:180, elderboar:145, cloudfinch:700, galegryph:500, pebbkit:210, granitus:120, shadebat:330, noctyra:240, prismite:850, dawnhare:790, nightmoth:250, dracinder:140, regaldrake:110, frostcub:410, glaciermaw:180, polarune:155, cindermole:250, magmole:160, calderox:120, spriggeist:760, starwhale:95, coralisk:420, reefserpent:160, sandillo:260, duneguard:130, mistowl:610, orchidimp:690, thistlefiend:300, aurorabbit:780, crysteel:620, prismhorn:260, toxifrog:360, venomire:210, spirikit:730, phantelope:510, neonsquid:680, ionwyrm:120, echopup:500, howlitzer:300, resonark:190, cuboulder:190, titanursa:105, worldursa:80, bellimp:640, chimegeist:360, ferroach:260, mantitan:180, mechamane:145, solguard:95, umbraclaw:70, thalassor:55, gaialith:65, chronova:880, auroracalf:720, aurorox:260, glacimarch:150, sirenfin:680, melodray:480, drillbug:230, cometitan:120, miragebud:760, dreamorchid:520, goldkit:760, aurumane:520, solarchon:330, stormkid:840, thunderchoir:460, glasswyrm:380, stormglass:165, incensemoth:560, censeraph:240, runeling:720, glyphsage:380, mossgolem:145, ruingrove:90, coinwyrm:620, treasuredrake:210, shelltide:300, reefguard:190, tsunamora:85, kitspark:760, vulpyr:520, kitsunova:900, abyssnake:130, leviacoil:70, glintcrab:640, prismclaw:360, ashchick:820, cinderwing:610, phoenixar:980, budbyte:720, florabyte:560, prismbloom:880, wolfrune:390, howlglyph:260, runewarden:180, snowkit:740, frostvulp:500, auroravulp:920, hornmite:250, drillhorn:160, railguard:95, miragecub:690, dreamlynx:450, mirageon:780, vaultick:680, lockroach:320, vaultitan:120, balletfin:760, swanlume:620, auroradiva:980, relicalf:260, reliceros:140, templehorn:70, pufflora:710, drowsibloom:520, somniflora:820, stardeer:760, cometstag:360, stellarch:160, inklot:230, eclipsquid:120, candypup:780, caramutt:540, ticktad:620, chronofrog:340, hourglassor:180, lanternimp:690, glowgremlin:500, mudmunch:210, bogjaw:115, happi: 760, jolli: 620, jubilume: 980, }[id] || 440; beep(base, isLegend ? 0.18 : 0.09, isLegend ? "square" : "sawtooth", isLegend ? 0.07 : 0.045); setTimeout(()=>beep(base*1.33, isLegend ? 0.16 : 0.08, "triangle", isLegend ? 0.065 : 0.04),90); if (isLegend) { setTimeout(()=>beep(base*0.66,0.22,"sawtooth",0.055),230); setTimeout(()=>beep(base*1.9,0.18,"sine",0.05),450); } }
+function playCry(id) { const isLegend = !!BESTIARY[id]?.legendary; const base = { emberlynx:520, pyrolynx:420, solarynx:360, aquapup:340, tidemast:260, leviamast:220, leafawn:620, florantler:540, gaianhart:470, voltoroo:760, stormaroo:920, thundaroo:980, gloomander:260, lunamander:310, eclipsander:230, ironboar:180, elderboar:145, cloudfinch:700, galegryph:500, pebbkit:210, granitus:120, shadebat:330, noctyra:240, prismite:850, dawnhare:790, nightmoth:250, dracinder:140, regaldrake:110, frostcub:410, glaciermaw:180, polarune:155, cindermole:250, magmole:160, calderox:120, spriggeist:760, starwhale:95, coralisk:420, reefserpent:160, sandillo:260, duneguard:130, mistowl:610, orchidimp:690, thistlefiend:300, aurorabbit:780, crysteel:620, prismhorn:260, toxifrog:360, venomire:210, spirikit:730, phantelope:510, neonsquid:680, ionwyrm:120, echopup:500, howlitzer:300, resonark:190, cuboulder:190, titanursa:105, worldursa:80, bellimp:640, chimegeist:360, ferroach:260, mantitan:180, mechamane:145, solguard:95, umbraclaw:70, thalassor:55, gaialith:65, chronova:880, auroracalf:720, aurorox:260, glacimarch:150, sirenfin:680, melodray:480, drillbug:230, cometitan:120, miragebud:760, dreamorchid:520, goldkit:760, aurumane:520, solarchon:330, stormkid:840, thunderchoir:460, glasswyrm:380, stormglass:165, incensemoth:560, censeraph:240, runeling:720, glyphsage:380, mossgolem:145, ruingrove:90, coinwyrm:620, treasuredrake:210, shelltide:300, reefguard:190, tsunamora:85, kitspark:760, vulpyr:520, dewdillo:330, rainroll:210, monsoondillo:95, embergoat:460, forgecapra:240, volcanor:115, kitsunova:900, abyssnake:130, leviacoil:70, glintcrab:640, prismclaw:360, ashchick:820, cinderwing:610, phoenixar:980, budbyte:720, florabyte:560, prismbloom:880, wolfrune:390, howlglyph:260, runewarden:180, snowkit:740, frostvulp:500, auroravulp:920, hornmite:250, drillhorn:160, railguard:95, miragecub:690, dreamlynx:450, mirageon:780, vaultick:680, lockroach:320, vaultitan:120, balletfin:760, swanlume:620, auroradiva:980, relicalf:260, reliceros:140, templehorn:70, pufflora:710, drowsibloom:520, somniflora:820, stardeer:760, cometstag:360, stellarch:160, inklot:230, eclipsquid:120, candypup:780, caramutt:540, ticktad:620, chronofrog:340, hourglassor:180, lanternimp:690, glowgremlin:500, mudmunch:210, bogjaw:115, happi: 760, jolli: 620, jubilume: 980, }[id] || 440; beep(base, isLegend ? 0.18 : 0.09, isLegend ? "square" : "sawtooth", isLegend ? 0.07 : 0.045); setTimeout(()=>beep(base*1.33, isLegend ? 0.16 : 0.08, "triangle", isLegend ? 0.065 : 0.04),90); if (isLegend) { setTimeout(()=>beep(base*0.66,0.22,"sawtooth",0.055),230); setTimeout(()=>beep(base*1.9,0.18,"sine",0.05),450); } }
   function playEvolutionSound(fromMon, toMon, style) {
     const fromType = BESTIARY[fromMon?.id]?.type || "Mystic";
     const toType = BESTIARY[toMon?.id]?.type || fromType;
@@ -2515,7 +2585,7 @@ function playCry(id) { const isLegend = !!BESTIARY[id]?.legendary; const base = 
     if (!b) return;
     sfx("success");
     stepTime(25);
-    const xp = battleXpReward(defeated, b.mode);
+    const xp = battleXpReward(defeated, b.mode, g.party[g.active]);
     let levelUps = [];
     let xpTrack = null;
     const beforeMon = g.party[g.active];
@@ -2547,6 +2617,12 @@ function playCry(id) { const isLegend = !!BESTIARY[id]?.legendary; const base = 
       xpTrack = { before, after: { level: nm.level, xp: nm.xp, nextXp: nm.nextXp }, mon: nm };
       return nm;
     });
+    const evolutionReady = (() => {
+      const idx = g.active;
+      const mon = newParty[idx];
+      const rule = canEvolve(mon, g.player, g.seen, g.clock);
+      return rule && BESTIARY[rule.to] ? { index: idx, fromName: displayName(mon), toName: BESTIARY[rule.to].name, method: rule.method, monId: mon.id, toId: rule.to } : null;
+    })();
     setParty(newParty);
 
     const reward = { xp, money: 0, items: [] };
@@ -2583,6 +2659,7 @@ function playCry(id) { const isLegend = !!BESTIARY[id]?.legendary; const base = 
       xp,
       xpTrack,
       levelUps,
+      evolutionReady,
       reward,
       mode: b.mode,
       postText: b.mode === "trainer" ? "The defeated tamer steps aside. A new route feels closer now." : b.mode === "legend" ? "The dungeon seal quiets, but its power still echoes." : "The wilds settle back into motion.",
@@ -2631,10 +2708,11 @@ function playCry(id) { const isLegend = !!BESTIARY[id]?.legendary; const base = 
     const legendPenalty = BESTIARY[b.enemy.id]?.legendary ? 0.42 : 1;
     const chance = Math.min(
       BESTIARY[b.enemy.id]?.legendary ? 0.32 : 0.94,
-      (BESTIARY[b.enemy.id].capture + hpFactor * 0.57 + (b.mode === "legend" ? -0.18 : 0)) * tileBonus * earlyBonus * legendPenalty
+      (BESTIARY[b.enemy.id].capture + hpFactor * 0.62 + (b.mode === "legend" ? -0.18 : 0)) * tileBonus * earlyBonus * legendPenalty
     );
 
     setTimeout(() => {
+      setBattleAnim((a) => ({ ...a, ball: false, fx: "capture", text: "Click!" }));
       if (Math.random() < chance) {
         const caught = {
           ...b.enemy,
@@ -2766,18 +2844,61 @@ function playCry(id) { const isLegend = !!BESTIARY[id]?.legendary; const base = 
       setTimeout(() => enemyTurn(b.enemy, false), 850);
     }
   }
-  function evolve(index) {
+  function evolutionPromptFor(index, partyList = gameRef.current.party || []) {
+    const mon = partyList[index];
+    const rule = canEvolve(mon, gameRef.current.player, gameRef.current.seen, gameRef.current.clock);
+    if (!mon || !rule || !BESTIARY[rule.to]) return null;
+    return {
+      index,
+      uid: mon.uid,
+      from: mon,
+      to: scaleMonToSpecies(mon, rule.to),
+      rule,
+      title: `${displayName(mon)} is ready to evolve!`,
+      body: `${displayName(mon)} can evolve into ${BESTIARY[rule.to].name}. Method: ${rule.method}.`
+    };
+  }
+  function findFirstEvolutionReady(partyList = gameRef.current.party || []) {
+    for (let i = 0; i < partyList.length; i++) {
+      const info = evolutionPromptFor(i, partyList);
+      if (info) return info;
+    }
+    return null;
+  }
+  function requestEvolution(index) {
+    const info = evolutionPromptFor(index);
+    if (!info) { setToast("Evolution requirements are not met yet."); return; }
+    setPendingEvolution(info);
+  }
+  function confirmPendingEvolution() {
+    const info = pendingEvolution;
+    setPendingEvolution(null);
+    if (info) evolve(info.index, info.rule);
+  }
+  function skipPendingEvolution() {
+    const info = pendingEvolution;
+    setPendingEvolution(null);
+    setToast(info?.from ? `${displayName(info.from)} stayed as it is for now.` : "Evolution skipped.");
+    setTimeout(() => saveGame(false), 80);
+  }
+  function startEvolutionFromBattle(index) {
+    setBattleResult(null);
+    const info = evolutionPromptFor(index);
+    if (info) setPendingEvolution(info);
+    else finishBattleResult();
+  }
+  function evolve(index, ruleOverride = null) {
     if (evolutionScene) return;
     const mon = gameRef.current.party[index];
-    const rule = canEvolve(mon, gameRef.current.player, gameRef.current.seen, gameRef.current.clock);
+    const rule = ruleOverride || canEvolve(mon, gameRef.current.player, gameRef.current.seen, gameRef.current.clock);
     if (!rule) { setToast("Evolution requirements are not met yet."); return; }
     const evolved = scaleMonToSpecies(mon, rule.to);
     const style = getEvolutionStyle(mon, evolved);
     setEvolutionScene({ from: mon, to: evolved, style, phase: "charge" });
     setToast(`${displayName(mon)} is evolving!`);
     playEvolutionSound(mon, evolved, style);
-    setTimeout(() => setEvolutionScene((scene) => scene ? { ...scene, phase: "flash" } : scene), 850);
-    setTimeout(() => setEvolutionScene((scene) => scene ? { ...scene, phase: "reveal" } : scene), 1600);
+    setTimeout(() => setEvolutionScene((scene) => scene ? { ...scene, phase: "flash" } : scene), 950);
+    setTimeout(() => setEvolutionScene((scene) => scene ? { ...scene, phase: "reveal" } : scene), 1750);
     setTimeout(() => {
       setParty((arr) => arr.map((m, i) => i === index ? evolved : m));
       markCaught(evolved);
@@ -2791,8 +2912,8 @@ function playCry(id) { const isLegend = !!BESTIARY[id]?.legendary; const base = 
       setToast(`${displayName(mon)} evolved into ${evolved.name}!`);
       setEvolutionScene((scene) => scene ? { ...scene, phase: "complete" } : scene);
       setTimeout(() => saveGame(false), 250);
-    }, 2200);
-    setTimeout(() => setEvolutionScene(null), 4100);
+    }, 2450);
+    setTimeout(() => setEvolutionScene(null), 5200);
   }
   function applyNickname() {
     const cleanName = nickname.trim().slice(0, 16);
@@ -2820,7 +2941,7 @@ function playCry(id) { const isLegend = !!BESTIARY[id]?.legendary; const base = 
     }
     setScreen(next);
   }
-  return <div className="h-[100dvh] max-h-[100dvh] bg-slate-950 text-white p-1 sm:p-3 landscape:p-0 overflow-hidden relative"><div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(34,211,238,.16),transparent_28%),radial-gradient(circle_at_80%_15%,rgba(217,70,239,.13),transparent_25%),radial-gradient(circle_at_55%_85%,rgba(132,204,22,.11),transparent_28%)]"/><div className="relative max-w-7xl mx-auto grid lg:grid-cols-[1fr_350px] gap-4"><Card className="rounded-2xl sm:rounded-3xl landscape:rounded-none overflow-hidden bg-slate-900/80 border-white/10 shadow-2xl shadow-cyan-500/10 h-[calc(100dvh-0.5rem)] sm:h-[calc(100dvh-1.5rem)] landscape:h-[100dvh]"><CardContent className="p-0 h-full overflow-hidden"><div className="h-full overflow-y-scroll overscroll-contain touch-pan-y pb-56 sm:pb-10" style={{ WebkitOverflowScrolling: "touch" }}><AnimatePresence mode="wait">{screen === "title" && <TitleScreen startStory={startStory} loadGame={loadGame} hasSave={hasSave}/>} {screen === "story" && <StoryScreen item={STORY[storyIndex]} nextStory={nextStory} index={storyIndex} total={STORY.length}/>} {screen === "starter" && <StarterScreen chooseStarter={chooseStarter}/>} {screen === "world" && party.length > 0 && <WorldScreen map={currentAreaMap(player)} area={currentAreaData(player)} player={player} move={move} party={party} storage={storage} seen={seen} dex={dex} setScreen={setScreen} saveGame={saveGame} clock={clock} viewport={viewport} onObjectiveClick={setObjectiveModal} setObjectiveMapFocus={setObjectiveMapFocus} objectiveMapFocus={objectiveMapFocus} clearObjectiveFocus={() => setObjectiveMapFocus(null)}/>} {screen === "party" && <PartyScreen party={party} active={active} setActive={setActive} setScreen={setScreen} player={player} seen={seen} evolve={evolve} clock={clock} useStatusItem={useStatusItem}/>} {screen === "pc" && <PCStorageScreen party={party} storage={storage} setScreen={setScreen} swapWithStorage={swapWithStorage} withdrawFromStorage={withdrawFromStorage}/>} {screen === "shop" && <ShopScreen player={player} setScreen={setScreen} buyStock={buyStock}/>} {screen === "dex" && <DexScreen dex={dex} setScreen={setScreen}/>} {screen === "account" && <AccountScreen setScreen={setScreen} authUser={authUser} accountProfile={accountProfile} accountStatus={accountStatus} setAccountStatus={setAccountStatus} findValidSave={findValidSave} hydrateSaveData={hydrateSaveData} uploadSaveDataToCloud={uploadSaveDataToCloud} loadAccountProfile={loadAccountProfile} cloudSyncStatus={cloudSyncStatus} lastCloudSyncAt={lastCloudSyncAt}/>} {screen === "multiplayer" && <MultiplayerScreen party={party} setParty={setParty} dex={dex} player={player} setScreen={setScreen} authUser={authUser} accountProfile={accountProfile} saveGame={saveGame}/>} {screen === "friends" && <FriendsScreen party={party} dex={dex} player={player} setScreen={setScreen} authUser={authUser} accountProfile={accountProfile}/>} {screen === "objectives" && <ObjectivesScreen setScreen={setScreen} player={player} seen={seen} dex={dex} party={party} storage={storage} clock={clock} onObjectiveClick={setObjectiveModal}/>} {screen === "help" && <HelpScreen setScreen={setScreen}/>} {screen === "update" && <UpdateCenterScreen setScreen={setScreen} availableUpdate={availableUpdate} status={updateStatus} checkUpdates={() => checkAppUpdate({ silent: false })} downloadUpdate={() => downloadAvailableUpdate(availableUpdate)} />} {screen === "atlas" && <AtlasScreen player={player} seen={seen} dex={dex} party={party} setScreen={setScreen}/>} {screen === "battle" && battle && current && <BattleScreen battle={battle} playerMon={current} skills={skills(current)} playerUse={playerUse} capture={capture} selectedCaptureItem={selectedCaptureItem} setSelectedCaptureItem={setSelectedCaptureItem} usePotion={usePotion} useStatusCure={useStatusCureInBattle} usePPItem={usePPItemInBattle} run={run} player={player} party={party} active={active} setActive={setActive} anim={battleAnim} dex={dex} clock={clock} onBattleResultContinue={finishBattleResult}/>} {screen === "gameover" && <GameOver reset={reset}/>} {screen === "world" && party.length === 0 && <StartRequiredScreen setScreen={setScreen} loadGame={loadGame} hasSave={hasSave}/>} {!VALID_SCREENS.has(screen) && <RecoveryScreen reset={reset} setScreen={setScreen} party={party}/>} {screen === "battle" && (!battle || !current) && <RecoveryScreen reset={reset} setScreen={setScreen} party={party} message="Battle data was missing, so the app can safely return to the map."/>}</AnimatePresence></div></CardContent></Card><div className="hidden lg:block"><SidePanel player={player} party={party} active={active} setScreen={requestScreen} reset={reset} saveGame={saveGame} loadGame={loadGame} clearSave={clearSave} hasSave={hasSave} muted={muted} setMuted={setMuted} stats={stats} clock={clock} authUser={authUser} accountProfile={accountProfile} cloudSyncStatus={cloudSyncStatus} lastCloudSyncAt={lastCloudSyncAt} storage={storage} seen={seen} dex={dex} onObjectiveClick={setObjectiveModal}/></div></div><MobileNav setScreen={requestScreen} saveGame={saveGame} muted={muted} setMuted={setMuted} authUser={authUser}/><AnimatePresence>{cinematic && <CinematicOverlay cinematic={cinematic}/>}</AnimatePresence><AnimatePresence>{evolutionScene && <EvolutionOverlay scene={evolutionScene}/>}</AnimatePresence><AnimatePresence>{toast && <motion.div initial={{ y: 30, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 30, opacity: 0 }} className="fixed bottom-5 left-1/2 -translate-x-1/2 px-5 py-3 rounded-2xl bg-slate-900 border border-cyan-300/30 shadow-xl text-cyan-100 font-bold z-50">{toast}</motion.div>}</AnimatePresence><AnimatePresence>{npc && <NpcModal npc={npc} close={() => { if (npc.reward) npc.reward(); setNpc(null); saveGame(false); }}/>}</AnimatePresence><AnimatePresence>{pendingAreaGate && <AreaGateModal gate={pendingAreaGate} enter={confirmAreaGate} stay={cancelAreaGate}/>}</AnimatePresence><AnimatePresence>{objectiveModal && <ObjectiveDetailModal info={objectiveModal} close={() => setObjectiveModal(null)} showOnMap={(target) => { if (!target) return; setObjectiveMapFocus(target); setObjectiveModal(null); setScreen("world"); setToast(`Map target highlighted: ${target.label || "Objective"}`); }}/>}</AnimatePresence><AnimatePresence>{battleResult && <BattleResultModal result={battleResult} onContinue={finishBattleResult} />}</AnimatePresence><AnimatePresence>{updateModalVisible && availableUpdate && <UpdateAvailableModal manifest={availableUpdate} status={updateStatus} nativeReady={nativeUpdaterReady} download={() => downloadAvailableUpdate(availableUpdate)} later={() => setUpdateModalVisible(false)} checkAgain={() => checkAppUpdate({ silent: false })}/>}</AnimatePresence><AnimatePresence>{renameMon && <RenameModal nickname={nickname} setNickname={setNickname} notice={renameNotice} applyNickname={applyNickname} skip={() => { setRenameMon(null); setNickname(""); setRenameNotice(""); setTimeout(() => saveGame(false), 50); }}/>}</AnimatePresence></div>;
+  return <div className="h-[100dvh] max-h-[100dvh] bg-slate-950 text-white p-1 sm:p-3 landscape:p-0 overflow-hidden relative"><div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(34,211,238,.16),transparent_28%),radial-gradient(circle_at_80%_15%,rgba(217,70,239,.13),transparent_25%),radial-gradient(circle_at_55%_85%,rgba(132,204,22,.11),transparent_28%)]"/><div className="relative max-w-7xl mx-auto grid lg:grid-cols-[1fr_350px] gap-4"><Card className="rounded-2xl sm:rounded-3xl landscape:rounded-none overflow-hidden bg-slate-900/80 border-white/10 shadow-2xl shadow-cyan-500/10 h-[calc(100dvh-0.5rem)] sm:h-[calc(100dvh-1.5rem)] landscape:h-[100dvh]"><CardContent className="p-0 h-full overflow-hidden"><div className="h-full overflow-y-scroll overscroll-contain touch-pan-y pb-56 sm:pb-10" style={{ WebkitOverflowScrolling: "touch" }}><AnimatePresence mode="wait">{screen === "title" && <TitleScreen startStory={startStory} loadGame={loadGame} hasSave={hasSave}/>} {screen === "story" && <StoryScreen item={STORY[storyIndex]} nextStory={nextStory} index={storyIndex} total={STORY.length}/>} {screen === "starter" && <StarterScreen chooseStarter={chooseStarter}/>} {screen === "world" && party.length > 0 && <WorldScreen map={currentAreaMap(player)} area={currentAreaData(player)} player={player} move={move} party={party} storage={storage} seen={seen} dex={dex} setScreen={setScreen} saveGame={saveGame} clock={clock} viewport={viewport} onObjectiveClick={setObjectiveModal} setObjectiveMapFocus={setObjectiveMapFocus} objectiveMapFocus={objectiveMapFocus} clearObjectiveFocus={() => setObjectiveMapFocus(null)}/>} {screen === "party" && <PartyScreen party={party} active={active} setActive={setActive} setScreen={setScreen} player={player} seen={seen} evolve={evolve} clock={clock} useStatusItem={useStatusItem}/>} {screen === "pc" && <PCStorageScreen party={party} storage={storage} setScreen={setScreen} swapWithStorage={swapWithStorage} withdrawFromStorage={withdrawFromStorage}/>} {screen === "shop" && <ShopScreen player={player} setScreen={setScreen} buyStock={buyStock}/>} {screen === "dex" && <DexScreen dex={dex} setScreen={setScreen}/>} {screen === "account" && <AccountScreen setScreen={setScreen} authUser={authUser} accountProfile={accountProfile} accountStatus={accountStatus} setAccountStatus={setAccountStatus} findValidSave={findValidSave} hydrateSaveData={hydrateSaveData} uploadSaveDataToCloud={uploadSaveDataToCloud} loadAccountProfile={loadAccountProfile} cloudSyncStatus={cloudSyncStatus} lastCloudSyncAt={lastCloudSyncAt}/>} {screen === "multiplayer" && <MultiplayerScreen party={party} setParty={setParty} dex={dex} player={player} setScreen={setScreen} authUser={authUser} accountProfile={accountProfile} saveGame={saveGame}/>} {screen === "friends" && <FriendsScreen party={party} dex={dex} player={player} setScreen={setScreen} authUser={authUser} accountProfile={accountProfile}/>} {screen === "objectives" && <ObjectivesScreen setScreen={setScreen} player={player} seen={seen} dex={dex} party={party} storage={storage} clock={clock} onObjectiveClick={setObjectiveModal}/>} {screen === "help" && <HelpScreen setScreen={setScreen}/>} {screen === "update" && <UpdateCenterScreen setScreen={setScreen} availableUpdate={availableUpdate} status={updateStatus} checkUpdates={() => checkAppUpdate({ silent: false })} downloadUpdate={() => downloadAvailableUpdate(availableUpdate)} />} {screen === "atlas" && <AtlasScreen player={player} seen={seen} dex={dex} party={party} setScreen={setScreen}/>} {screen === "battle" && battle && current && <BattleScreen battle={battle} playerMon={current} skills={skills(current)} playerUse={playerUse} capture={capture} selectedCaptureItem={selectedCaptureItem} setSelectedCaptureItem={setSelectedCaptureItem} usePotion={usePotion} useStatusCure={useStatusCureInBattle} usePPItem={usePPItemInBattle} run={run} player={player} party={party} active={active} setActive={setActive} anim={battleAnim} dex={dex} clock={clock} onBattleResultContinue={finishBattleResult}/>} {screen === "gameover" && <GameOver reset={reset}/>} {screen === "world" && party.length === 0 && <StartRequiredScreen setScreen={setScreen} loadGame={loadGame} hasSave={hasSave}/>} {!VALID_SCREENS.has(screen) && <RecoveryScreen reset={reset} setScreen={setScreen} party={party}/>} {screen === "battle" && (!battle || !current) && <RecoveryScreen reset={reset} setScreen={setScreen} party={party} message="Battle data was missing, so the app can safely return to the map."/>}</AnimatePresence></div></CardContent></Card><div className="hidden lg:block"><SidePanel player={player} party={party} active={active} setScreen={requestScreen} reset={reset} saveGame={saveGame} loadGame={loadGame} clearSave={clearSave} hasSave={hasSave} muted={muted} setMuted={setMuted} stats={stats} clock={clock} authUser={authUser} accountProfile={accountProfile} cloudSyncStatus={cloudSyncStatus} lastCloudSyncAt={lastCloudSyncAt} storage={storage} seen={seen} dex={dex} onObjectiveClick={setObjectiveModal}/></div></div><MobileNav setScreen={requestScreen} saveGame={saveGame} muted={muted} setMuted={setMuted} authUser={authUser}/><AnimatePresence>{cinematic && <CinematicOverlay cinematic={cinematic}/>}</AnimatePresence><AnimatePresence>{evolutionScene && <EvolutionOverlay scene={evolutionScene}/>}</AnimatePresence><AnimatePresence>{pendingEvolution && <EvolutionPromptModal info={pendingEvolution} proceed={() => confirmPendingEvolution()} skip={() => skipPendingEvolution()} />}</AnimatePresence><AnimatePresence>{toast && <motion.div initial={{ y: 30, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 30, opacity: 0 }} className="fixed bottom-5 left-1/2 -translate-x-1/2 px-5 py-3 rounded-2xl bg-slate-900 border border-cyan-300/30 shadow-xl text-cyan-100 font-bold z-50">{toast}</motion.div>}</AnimatePresence><AnimatePresence>{npc && <NpcModal npc={npc} close={() => { if (npc.reward) npc.reward(); setNpc(null); saveGame(false); }}/>}</AnimatePresence><AnimatePresence>{pendingAreaGate && <AreaGateModal gate={pendingAreaGate} enter={confirmAreaGate} stay={cancelAreaGate}/>}</AnimatePresence><AnimatePresence>{objectiveModal && <ObjectiveDetailModal info={objectiveModal} close={() => setObjectiveModal(null)} showOnMap={(target) => { if (!target) return; setObjectiveMapFocus(target); setObjectiveModal(null); setScreen("world"); setToast(`Map target highlighted: ${target.label || "Objective"}`); }}/>}</AnimatePresence><AnimatePresence>{battleResult && <BattleResultModal result={battleResult} onContinue={finishBattleResult} onEvolve={(index)=>startEvolutionFromBattle(index)} />}</AnimatePresence><AnimatePresence>{updateModalVisible && availableUpdate && <UpdateAvailableModal manifest={availableUpdate} status={updateStatus} nativeReady={nativeUpdaterReady} download={() => downloadAvailableUpdate(availableUpdate)} later={() => setUpdateModalVisible(false)} checkAgain={() => checkAppUpdate({ silent: false })}/>}</AnimatePresence><AnimatePresence>{renameMon && <RenameModal nickname={nickname} setNickname={setNickname} notice={renameNotice} applyNickname={applyNickname} skip={() => { setRenameMon(null); setNickname(""); setRenameNotice(""); setTimeout(() => saveGame(false), 50); }}/>}</AnimatePresence></div>;
 }
 
 
@@ -3692,7 +3813,7 @@ function MobileMovePad({ move }) {
         return { x: Math.max(8, Math.min(w - 146, saved.x)), y: Math.max(68, Math.min(h - 170, saved.y)) };
       }
     } catch {}
-    return { x: Math.max(10, w - 152), y: Math.max(92, h - 282) };
+    return { x: Math.max(8, Math.round((w - 140) / 2)), y: Math.max(88, h - 190) };
   };
   const [pos, setPos] = useState(readPadPos);
   const dragRef = useRef(null);
@@ -3726,7 +3847,7 @@ function MobileMovePad({ move }) {
     try { localStorage.setItem("mythbound_dpad_hidden", next ? "1" : "0"); } catch {}
   };
   if (hidden) {
-    return <button onClick={toggleHidden} className="lg:hidden fixed right-3 bottom-[calc(env(safe-area-inset-bottom)+92px)] z-50 rounded-full bg-cyan-300 text-slate-950 font-black px-4 py-3 shadow-2xl shadow-cyan-300/30 border-2 border-white/50">Move</button>;
+    return <button onClick={toggleHidden} className="lg:hidden fixed right-3 bottom-[calc(env(safe-area-inset-bottom)+110px)] z-50 rounded-full bg-cyan-300 text-slate-950 font-black px-4 py-3 shadow-2xl shadow-cyan-300/30 border-2 border-white/50">Move</button>;
   }
   const buttonClass = "rounded-xl w-10 h-10 text-xl font-black bg-slate-900/95 border border-cyan-200/30 shadow-lg shadow-cyan-500/10 active:scale-95 flex items-center justify-center";
   return <div className="lg:hidden fixed z-50 rounded-2xl bg-slate-950/72 border border-white/10 backdrop-blur-xl p-1.5 shadow-2xl select-none touch-none" style={{ left: pos.x, top: pos.y }}>
@@ -3949,7 +4070,7 @@ function BattleScreen({ battle, playerMon, skills, playerUse, capture, selectedC
     initial={{opacity:0}}
     animate={{opacity:1}}
     exit={{opacity:0}}
-    className={`fixed inset-0 z-[999] bg-gradient-to-br ${battlefieldTone} text-white overflow-hidden flex flex-col landscape:grid landscape:grid-cols-[minmax(0,1.08fr)_minmax(320px,.92fr)] landscape:grid-rows-[1fr_auto] landscape:gap-1 p-1 sm:p-3 landscape:p-1`}
+    className={`fixed inset-0 z-[999] bg-gradient-to-br ${battlefieldTone} text-white overflow-y-auto landscape:overflow-hidden flex flex-col landscape:grid landscape:grid-cols-[minmax(0,1.08fr)_minmax(320px,.92fr)] landscape:grid-rows-[1fr_auto] landscape:gap-1 p-1 sm:p-3 landscape:p-1`}
   >
     <BattleFx anim={anim}/>
 
@@ -3979,7 +4100,7 @@ function BattleScreen({ battle, playerMon, skills, playerUse, capture, selectedC
         <MonsterModel mon={playerMon} flipped faint={playerMon.hp<=0} anim={anim.player || "idle"} size="medium" />
       </div>
 
-      {anim?.ball && <BallThrow anim={anim}/>}
+      {anim?.ball && <BallThrow target="enemy" anim={anim}/>}
 
       {BESTIARY[enemy.id]?.legendary && <motion.div
         initial={{opacity:0, scale:.7}}
@@ -3989,15 +4110,15 @@ function BattleScreen({ battle, playerMon, skills, playerUse, capture, selectedC
       />}
     </div>
 
-    <div className="w-full max-w-6xl mx-auto mt-1 landscape:mt-0 landscape:col-start-2 landscape:row-start-1 landscape:max-w-none landscape:mx-0 landscape:h-[calc(100dvh-4rem)] rounded-2xl bg-slate-950/96 border-2 border-slate-700 shadow-2xl overflow-hidden flex-1 min-h-0">
+    <div className="w-full max-w-6xl mx-auto mt-1 landscape:mt-0 landscape:col-start-2 landscape:row-start-1 landscape:max-w-none landscape:mx-0 landscape:h-[calc(100dvh-3.1rem)] rounded-2xl bg-slate-950/96 border-2 border-slate-700 shadow-2xl overflow-y-auto flex-1 min-h-0">
       <div className="grid grid-cols-1 md:grid-cols-[0.55fr_1.45fr] landscape:grid-cols-1 landscape:grid-rows-[auto_minmax(0,1fr)] gap-1 p-1 h-full">
-        <div className="rounded-xl bg-white text-slate-800 border-2 border-slate-400 shadow-inner p-1.5 flex items-center justify-between gap-2 min-h-[40px] md:min-h-full landscape:min-h-[56px] landscape:max-h-[92px] landscape:overflow-y-auto">
+        <div className="rounded-xl bg-white text-slate-800 border-2 border-slate-400 shadow-inner p-1.5 flex items-center justify-between gap-2 min-h-[40px] md:min-h-full landscape:min-h-[42px] landscape:max-h-[72px] landscape:overflow-y-auto">
           <div className="font-black text-xs sm:text-base landscape:text-sm leading-snug flex-1">{battle.message}</div>
           
         </div>
 
         <div className="rounded-xl bg-white text-slate-800 border-2 border-slate-400 p-1 overflow-y-auto min-h-0">
-          {battle.turn === "player" ? <div className="grid grid-cols-2 landscape:grid-cols-2 gap-0.5 sm:gap-1 landscape:gap-1">
+          {battle.turn === "player" ? <div className="grid grid-cols-2 landscape:grid-cols-2 gap-0.5 sm:gap-1 landscape:gap-0.5 pb-2">
             {suggestedMove ? <div className="col-span-2 rounded-md bg-cyan-100 border border-cyan-300 text-slate-900 px-1 py-0.5 text-[9px] font-black leading-tight">Suggested move: {suggestedMove} · {moveSummary(suggestedMove, playerMon, enemy.type, dex, enemy)}</div> : <div className="col-span-2 rounded-md bg-slate-100 border border-slate-300 text-slate-700 px-1 py-0.5 text-[9px] font-bold leading-tight">Effectiveness hidden: encounter or catch this Mythling to unlock type advantage hints in the Dex.</div>}
             {skills.map((s)=>{
               const sk=SKILLS[s];
@@ -4017,7 +4138,7 @@ function BattleScreen({ battle, playerMon, skills, playerUse, capture, selectedC
                 </span>
               </Button>
             })}
-            <div className="col-span-2 grid grid-cols-6 gap-0.5 pt-0.5 border-t border-slate-200">
+            <div className="col-span-2 grid grid-cols-6 gap-0.5 pt-0.5 border-t border-slate-200 landscape:pb-3">
               <div className="col-span-6"><select value={selectedCaptureItem} onChange={(e)=>setSelectedCaptureItem(e.target.value)} disabled={captureBlocked} className="w-full rounded-md border border-slate-300 bg-slate-100 px-1 py-0.5 text-[10px] font-bold">
                 {Object.keys(CAPTURE_ITEMS).map((name)=><option key={name} value={name}>{name} x{captureCount(player,name)}</option>)}
               </select><div className="text-[9px] text-slate-600 mt-0.5 font-bold">Est. catch: {battle.mode === "wild" || battle.mode === "legend" ? `${selectedChance}%` : "N/A"}</div></div>
@@ -4043,24 +4164,25 @@ function BattleScreen({ battle, playerMon, skills, playerUse, capture, selectedC
     </div>
   </motion.div>;
 }
-function BallThrow({ target = "enemy" }) {
-  const endX = target === "enemy" ? 155 : -120;
-  const endY = target === "enemy" ? -112 : 70;
+function BallThrow({ target = "enemy", anim }) {
+  const endX = target === "enemy" ? 150 : -120;
+  const endY = target === "enemy" ? -92 : 70;
   return <motion.div
-    initial={{ x: -185, y: 118, scale: 0.34, opacity: 0, rotate: 0 }}
+    initial={{ x: -190, y: 118, scale: 0.32, opacity: 0, rotate: 0 }}
     animate={{
-      x: [-185, -65, 45, endX, endX + 4, endX],
-      y: [118, 12, -95, endY, endY - 8, endY],
-      scale: [0.34, 0.58, 0.74, 0.64, 0.72, 0.64],
-      opacity: [0, 1, 1, 1, 1, 0.98],
-      rotate: [0, 240, 520, 720, 760, 780]
+      x: [-190, -78, 34, endX, endX, endX, endX],
+      y: [118, 20, -82, endY, endY + 10, endY - 2, endY],
+      scale: [0.32, 0.54, 0.74, 0.68, 0.72, 0.62, 0.54],
+      opacity: [0, 1, 1, 1, 1, 1, 0],
+      rotate: [0, 220, 520, 760, 792, 760, 760]
     }}
-    exit={{ opacity: 0, scale: 0.2 }}
-    transition={{ duration: 0.88, ease: "easeInOut" }}
+    exit={{ opacity: 0, scale: 0.18 }}
+    transition={{ duration: 1.45, times:[0,.25,.48,.64,.74,.86,1], ease: "easeInOut" }}
     className="absolute z-30 left-1/2 top-1/2 w-10 h-10 rounded-full bg-gradient-to-br from-rose-400 via-white to-cyan-300 border-[3px] border-slate-900 shadow-2xl shadow-cyan-300/60"
   >
     <span className="absolute left-0 right-0 top-1/2 h-[3px] bg-slate-900/70"/>
     <span className="absolute left-1/2 top-1/2 w-3 h-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white border-2 border-slate-900"/>
+    <motion.span className="absolute inset-[-18px] rounded-full border-2 border-cyan-100/50" animate={{ scale:[0.6,1.35], opacity:[0.8,0] }} transition={{ duration:.75, delay:.66 }}/>
   </motion.div>;
 }
 
@@ -4119,7 +4241,7 @@ function BattleSlot({ title, mon, flipped, enemy, anim, caught }) {
     <div className="flex-1 w-full flex items-center justify-center"><MonsterModel mon={mon} flipped={flipped} faint={mon.hp<=0} anim={anim||"idle"}/></div>
   </div>;
 }
-function BattleResultModal({ result, onContinue }) {
+function BattleResultModal({ result, onContinue, onEvolve }) {
   const track = result?.xpTrack;
   const beforePct = track ? Math.round((track.before.xp / Math.max(1, track.before.nextXp)) * 100) : 0;
   const afterPct = track ? Math.round((track.after.xp / Math.max(1, track.after.nextXp)) * 100) : 0;
@@ -4147,6 +4269,14 @@ function BattleResultModal({ result, onContinue }) {
         <InfoBox label="Coins earned" value={result.reward?.money || 0}/>
         <InfoBox label="Items" value={rewardItemText(result.reward?.items || [])}/>
       </div>
+      {result.evolutionReady && <div className="rounded-2xl bg-fuchsia-300/12 border border-fuchsia-200/30 p-4 mb-4 text-fuchsia-50">
+        <div className="font-black text-lg">Evolution ready!</div>
+        <div className="text-sm text-fuchsia-100/90">{result.evolutionReady.fromName} is about to evolve into {result.evolutionReady.toName}. Method: {result.evolutionReady.method}</div>
+        <div className="grid grid-cols-2 gap-2 mt-3">
+          <Button onClick={()=>onEvolve?.(result.evolutionReady.index)} className="rounded-xl bg-fuchsia-300 hover:bg-fuchsia-200 text-slate-950 font-black">Proceed</Button>
+          <Button onClick={onContinue} variant="secondary" className="rounded-xl font-black">Not now</Button>
+        </div>
+      </div>}
       {result.postText && <div className="rounded-2xl bg-cyan-300/10 border border-cyan-200/20 p-3 mb-4 text-cyan-50 font-bold">{result.postText}</div>}<Button onClick={onContinue} className="w-full rounded-2xl py-5 bg-cyan-300 hover:bg-cyan-200 text-slate-950 font-black">Continue Adventure</Button>
     </motion.div>
   </motion.div>;
@@ -4354,35 +4484,59 @@ function NpcModal({ npc, close }) {
     </motion.div>
   </motion.div>;
 }
+
+function EvolutionPromptModal({ info, proceed, skip }) {
+  const from = info?.from;
+  const to = info?.to;
+  const style = getEvolutionStyle(from || {}, to || {});
+  return <motion.div initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} className="fixed inset-0 z-[1750] bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+    <motion.div initial={{ y: 24, scale: 0.96 }} animate={{ y: 0, scale: 1 }} exit={{ y: 24, scale: 0.96 }} className="w-full max-w-xl rounded-[2rem] bg-slate-950 border border-fuchsia-200/30 shadow-2xl shadow-fuchsia-300/20 p-5">
+      <div className={`rounded-3xl bg-gradient-to-br ${style.aura} p-[2px] mb-4`}>
+        <div className="rounded-3xl bg-slate-950/92 p-4 flex items-center justify-center gap-4">
+          {from && <MonsterModel mon={from} size="small" />}
+          <div className="text-3xl font-black text-cyan-100">→</div>
+          {to && <MonsterModel mon={to} size="small" />}
+        </div>
+      </div>
+      <div className="text-xs uppercase tracking-[0.32em] text-fuchsia-100 font-black">Evolution available</div>
+      <h2 className="text-3xl sm:text-4xl font-black text-white mt-1">{info?.title || "A Mythling is ready to evolve!"}</h2>
+      <p className="mt-2 text-slate-200">{info?.body || "Proceed with the evolution now?"}</p>
+      <div className="grid grid-cols-2 gap-3 mt-5">
+        <Button onClick={proceed} className="rounded-2xl bg-fuchsia-300 hover:bg-fuchsia-200 text-slate-950 font-black py-5">Proceed</Button>
+        <Button onClick={skip} variant="secondary" className="rounded-2xl py-5 font-black">Not now</Button>
+      </div>
+    </motion.div>
+  </motion.div>;
+}
+
 function EvolutionOverlay({ scene }) {
   const { from, to, style, phase } = scene;
   const reveal = phase === "reveal" || phase === "complete";
-  const particles = Array.from({ length: 28 }, (_, i) => i);
-  const particleGlyph = style.particles === "notes" ? "♪" : style.particles === "gears" ? "⚙" : style.particles === "snow" ? "❄" : style.particles === "sparks" ? "ϟ" : style.particles === "bubbles" ? "○" : style.particles === "petals" || style.particles === "leaves" ? "✦" : style.particles === "claws" ? "⌁" : style.particles === "shadows" ? "●" : style.particles === "moons" ? "☾" : style.particles === "spores" ? "✺" : "✧";
-  return <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[70] flex items-center justify-center overflow-hidden bg-black/85 backdrop-blur-md p-4">
-    <motion.div className={`absolute inset-0 bg-gradient-to-br ${style.aura} opacity-25`} animate={{ opacity: [0.12, 0.38, 0.2], scale: [1, 1.08, 1] }} transition={{ duration: 1.2, repeat: Infinity }}/>
-    {particles.map((i) => {
-      const angle = (i / particles.length) * Math.PI * 2;
-      const radius = 110 + (i % 5) * 28;
-      return <motion.div key={i} className="absolute font-black text-white/80 drop-shadow-lg" style={{ left: "50%", top: "50%", color: i % 3 === 0 ? style.ring : undefined }} initial={{ x: 0, y: 0, scale: 0, opacity: 0 }} animate={{ x: Math.cos(angle) * radius, y: Math.sin(angle) * radius, scale: [0, 1.15, 0.75], opacity: [0, 1, 0] }} transition={{ duration: 1.8, delay: (i % 8) * 0.08, repeat: Infinity, repeatDelay: 0.55 }}>{particleGlyph}</motion.div>;
-    })}
-    <div className="relative w-full max-w-3xl rounded-[2rem] border border-white/20 bg-slate-950/80 shadow-2xl overflow-hidden p-5 sm:p-8 text-center">
-      <motion.div className="absolute inset-x-0 top-0 h-1 bg-white" animate={{ opacity: [0.2, 1, 0.2] }} transition={{ duration: 0.8, repeat: Infinity }}/>
+  const particles = useMemo(() => Array.from({ length: 22 }, (_, i) => {
+    const angle = (i / 22) * Math.PI * 2;
+    return { id: i, x: Math.cos(angle) * (90 + (i % 4) * 26), y: Math.sin(angle) * (90 + (i % 4) * 26), delay: (i % 7) * 0.07 };
+  }), []);
+  const particleGlyph = style.particles === "notes" ? "♪" : style.particles === "gears" ? "⚙" : style.particles === "snow" ? "❄" : style.particles === "sparks" ? "ϟ" : style.particles === "bubbles" ? "○" : style.particles === "claws" ? "⌁" : style.particles === "shadows" ? "●" : style.particles === "moons" ? "☾" : style.particles === "spores" ? "✺" : "✧";
+  return <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{duration:.22}} className="fixed inset-0 z-[70] flex items-center justify-center overflow-hidden bg-black/88 backdrop-blur-md p-4">
+    <motion.div className={`absolute inset-0 bg-gradient-to-br ${style.aura} opacity-25`} animate={{ opacity: [0.20, 0.34, 0.25] }} transition={{ duration: 2.4, repeat: Infinity, repeatType: "mirror" }}/>
+    {particles.map((p) => <motion.div key={p.id} className="absolute font-black text-white/75 drop-shadow-lg will-change-transform" style={{ left: "50%", top: "50%", color: p.id % 3 === 0 ? style.ring : undefined }} initial={{ x: 0, y: 0, scale: 0, opacity: 0 }} animate={{ x: p.x, y: p.y, scale: [0, 1, 0.82], opacity: [0, .9, .35] }} transition={{ duration: 2.6, delay: p.delay, repeat: Infinity, repeatType: "mirror", ease: "easeInOut" }}>{particleGlyph}</motion.div>)}
+    <motion.div layout className="relative w-full max-w-3xl rounded-[2rem] border border-white/20 bg-slate-950/86 shadow-2xl overflow-hidden p-5 sm:p-8 text-center">
+      <motion.div className="absolute inset-x-0 top-0 h-1 bg-white" animate={{ opacity: [0.35, 0.9, 0.35] }} transition={{ duration: 1.6, repeat: Infinity, repeatType: "mirror" }}/>
       <div className="text-xs sm:text-sm uppercase tracking-[0.35em] text-cyan-100/80 mb-2">Special Evolution</div>
-      <motion.h2 className="text-3xl sm:text-5xl font-black bg-gradient-to-r from-white via-cyan-100 to-fuchsia-200 text-transparent bg-clip-text" animate={{ letterSpacing: phase === "flash" ? "0.08em" : "0.02em", scale: phase === "flash" ? 1.04 : 1 }}>{style.title}</motion.h2>
+      <motion.h2 className="text-3xl sm:text-5xl font-black bg-gradient-to-r from-white via-cyan-100 to-fuchsia-200 text-transparent bg-clip-text" animate={{ scale: phase === "flash" ? 1.035 : 1 }} transition={{ duration:.5 }}>{style.title}</motion.h2>
       <p className="text-slate-200 mt-2 min-h-[28px]">{phase === "complete" ? `${style.toName} has awakened!` : style.call || `${style.fromName} ${style.verb}.`}</p>
       <div className="relative mt-6 flex items-center justify-center min-h-[260px]">
-        <motion.div className="absolute w-64 h-64 rounded-full border-4" style={{ borderColor: style.ring }} animate={{ rotate: 360, scale: [0.9, 1.18, 0.9], opacity: [0.35, 1, 0.35] }} transition={{ duration: 1.6, repeat: Infinity, ease: "linear" }}/>
-        <motion.div className="absolute w-40 h-40 rounded-full blur-2xl" style={{ background: style.ring }} animate={{ scale: [0.8, 1.6, 0.9], opacity: [0.15, 0.55, 0.2] }} transition={{ duration: 1.1, repeat: Infinity }}/>
-        <AnimatePresence mode="wait">
-          {!reveal ? <motion.div key="from" initial={{ opacity: 0, scale: 0.6, rotate: -8 }} animate={{ opacity: [1, 0.75, 1], scale: [0.9, 1.08, 0.82], rotate: [0, 8, -8, 0], filter: ["brightness(1)", "brightness(2.2)", "brightness(1.3)"] }} exit={{ opacity: 0, scale: 0.2, rotate: 35 }} transition={{ duration: 0.75, repeat: 2 }}><MonsterModel mon={from} size="medium"/></motion.div> : <motion.div key="to" initial={{ opacity: 0, scale: 0.15, rotate: 60, filter: "brightness(4) blur(8px)" }} animate={{ opacity: 1, scale: [0.5, 1.22, 1], rotate: [35, -8, 0], filter: "brightness(1) blur(0px)" }} transition={{ duration: 0.8, ease: "easeOut" }}><MonsterModel mon={to} size="large"/></motion.div>}
+        <motion.div className="absolute w-64 h-64 rounded-full border-4" style={{ borderColor: style.ring }} animate={{ rotate: 360, scale: [0.96, 1.08, 0.96], opacity: [0.45, .85, .45] }} transition={{ rotate:{duration:5.4, repeat: Infinity, ease: "linear"}, scale:{duration:2.2, repeat:Infinity, repeatType:"mirror"} }}/>
+        <motion.div className="absolute w-44 h-44 rounded-full blur-2xl" style={{ background: style.ring }} animate={{ scale: [0.9, 1.35, 1.0], opacity: [0.22, 0.48, 0.28] }} transition={{ duration: 2.1, repeat: Infinity, repeatType:"mirror" }}/>
+        <AnimatePresence mode="popLayout" initial={false}>
+          {!reveal ? <motion.div key="from" initial={{ opacity: 1, scale: 0.95 }} animate={{ opacity: phase === "flash" ? 0.72 : 1, scale: phase === "flash" ? 1.06 : 1, filter: phase === "flash" ? "brightness(1.8)" : "brightness(1)" }} exit={{ opacity: 0, scale: 0.58, filter: "brightness(3) blur(4px)" }} transition={{ duration: 0.75, ease: "easeInOut" }}><MonsterModel mon={from} size="medium"/></motion.div> : <motion.div key="to" initial={{ opacity: 0, scale: 0.62, filter: "brightness(2.6) blur(5px)" }} animate={{ opacity: 1, scale: [0.85, 1.08, 1], filter: "brightness(1) blur(0px)" }} transition={{ duration: 0.95, ease: "easeOut" }}><MonsterModel mon={to} size="large"/></motion.div>}
         </AnimatePresence>
       </div>
       <div className="flex justify-center items-center gap-3 text-lg sm:text-2xl font-black">
         <span className="text-slate-300">{style.fromName}</span><span className="text-cyan-200">→</span><span className="text-white">{style.toName}</span>
       </div>
       <div className="mt-3"><TypeBadge type={style.toType}/></div>
-    </div>
+    </motion.div>
   </motion.div>;
 }
 
@@ -5404,7 +5558,7 @@ function AccountScreen({
           storage_snapshot: [],
           inventory_snapshot: {},
           dex_caught: 0,
-          save_version: 23,
+          save_version: 24,
           updated_at: new Date().toISOString()
         };
         await supabase.from("mythbound_profiles").upsert(payload, { onConflict: "id" });
