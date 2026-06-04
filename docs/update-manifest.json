@@ -1,8 +1,8 @@
 ﻿{
-    "version":  "0.72.0",
-    "versionCode":  72,
-    "notes":  "Add Android/device real-time clock sync, daily login streak rewards and milestone exclusives, achievements/titles, daily and weekly missions, time-limited event calendar, raid battle reward/catch flow, and live-ops save migration.",
-    "apkUrl":  "https://github.com/costaskk/Mythbound-Tamers/releases/download/v0.72.0/mythbound-tamers-v0.72.0.apk",
+    "version":  "0.73.0",
+    "versionCode":  73,
+    "notes":  "Improve board full-screen fitting with less dead space, reserve space for directional controls, reduce bottom border waste, fix scrolling/overflow pain points, categorize ready/active/claimed missions, improve login and reward-claim UI, add story mission levels, events, monsters, and live-ops polish.",
+    "apkUrl":  "https://github.com/costaskk/Mythbound-Tamers/releases/download/v0.73.0/mythbound-tamers-v0.73.0.apk",
     "mandatory":  false,
     "publishedAt":  "2026-06-04",
     "autoStartNativeUpdate":  false,

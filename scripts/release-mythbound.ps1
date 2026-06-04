@@ -4,7 +4,7 @@ param(
   [string]$Notes = "Mythbound Tamers update.",
   [string]$RepoOwner = "costaskk",
   [string]$RepoName = "Mythbound-Tamers",
-  [string]$ApkSource = "android\app\build\outputs\apk\release\app-release.apk"
+  [string]$ApkSource = "android\app\release\app-release.apk"
 )
 $ErrorActionPreference = "Stop"
 Write-Host "== Mythbound Tamers release helper ==" -ForegroundColor Cyan

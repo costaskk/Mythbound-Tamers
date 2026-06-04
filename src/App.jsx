@@ -8,8 +8,8 @@ import {Sparkles, PawPrint, Flame, Droplets, Leaf, Zap, Heart, Map, Backpack, Ga
 
 const SAVE_KEY = "mythbound_tamers_save_v4";
 const OLD_SAVE_KEYS = ["mythbound_tamers_save_v6", "mythbound_tamers_save_v5", "mythbound_tamers_save_v4", "mythbound_tamers_save_v3", "mythbound_tamers_save_v2", "mythbound_tamers_save"];
-const APP_VERSION = "0.72.0";
-const APP_VERSION_CODE = 72;
+const APP_VERSION = "0.73.0";
+const APP_VERSION_CODE = 73;
 const UPDATE_MANIFEST_URL = import.meta.env.VITE_UPDATE_MANIFEST_URL || "https://costaskk.github.io/Mythbound-Tamers/update-manifest.json";
 const SHINY_RATE = 1 / 192;
 const VALID_SCREENS = new Set(["title","story","starter","world","party","pc","shop","dex","account","multiplayer","friends","objectives","help","atlas","update","battle","achievements","events","gameover"]);
@@ -338,6 +338,14 @@ const BESTIARY = {
   centuril: { name: "Centuril", type: "Mystic", species: "Hundred-Day Sentinel", cry: "CEN-TU-RIL!", stage: 1, base: [94, 48, 48, 58], skills: ["Rune Bite", "Prism Nova", "Guard"], capture: 0.01, body: "sprite", colors: ["#c4b5fd", "#fef9c3", "#312e81"], lore: "A commemorative sentinel awarded to patient tamers who return for a hundred dawns." },
   anniversol: { name: "Anniversol", type: "Light", species: "Yearbound Star", cry: "AN-NI-VER-SOL!", stage: 1, base: [118, 62, 62, 72], skills: ["Solar Crown", "Prism Nova", "Radiant Lance"], capture: 0.005, body: "slime", colors: ["#fde047", "#f0abfc", "#020617"], lore: "A rare yearly collection Mythling. Its light is decorative, not dominant, but it is beloved by collectors." },
   raidram: { name: "Raidram", type: "Stone", species: "Raid Ram", cry: "RAID-RAM!", stage: 1, base: [150, 72, 88, 38], skills: ["Boulder Crash", "Headbutt Spark", "Guard"], capture: 0.018, body: "deer", colors: ["#78716c", "#f59e0b", "#111827"], lore: "A powerful raid Mythling designed for co-op events. Even when uncaught, it drops excellent training rewards." },
+
+  lanternnewt: { name: "Lanternnewt", type: "Aqua", species: "Lantern Newt", cry: "newt-lum!", stage: 1, evo: { to: "glowmander", method: "Reach Lv.19 during Evening near water" }, base: [50, 24, 18, 34], skills: ["Bubble Bite", "Light Fang", "Guard"], capture: 0.25, body: "lizard", colors: ["#67e8f9", "#fde68a", "#0f172a"], lore: "A tiny amphibian whose tail lamp glows brighter after sunset." },
+  glowmander: { name: "Glowmander", type: "Aqua", species: "Glow Salamander", cry: "GLOW-MAN!", stage: 2, evo: { to: "lumisaur", method: "Reach Lv.36 during a time-limited Tide event" }, base: [90, 48, 36, 58], skills: ["Tidal Crush", "Radiant Lance", "Healing Rain"], capture: 0.055, body: "lizard", colors: ["#22d3ee", "#fef3c7", "#083344"], lore: "It swims through moonlit rivers and projects glowing maps onto the water." },
+  lumisaur: { name: "Lumisaur", type: "Aqua", species: "Luminous Saur", cry: "LU-MI-SAUR!", stage: 3, base: [132, 72, 58, 82], skills: ["Tidal Crush", "Radiant Lance", "Prism Nova"], capture: 0.015, body: "lizard", colors: ["#0891b2", "#fef08a", "#020617"], lore: "A festival-grade collector evolution that lights up event beaches without being overpowered." },
+  thornimp: { name: "Thornimp", type: "Verdant", species: "Thorn Imp", cry: "thik-thik!", stage: 1, evo: { to: "brambletrick", method: "Reach Lv.21 after completing 3 side missions" }, base: [46, 31, 17, 39], skills: ["Vine Kick", "Rune Bite", "Guard"], capture: 0.22, body: "goblin", colors: ["#22c55e", "#f0abfc", "#052e16"], lore: "A mischievous hedge imp that steals quest notices and hides them in bushes." },
+  brambletrick: { name: "Brambletrick", type: "Verdant", species: "Bramble Trickster", cry: "BRAM-BLE-TRICK!", stage: 2, base: [96, 66, 40, 78], skills: ["Worldroot Ram", "Rune Bite", "Prism Nova"], capture: 0.038, body: "goblin", colors: ["#15803d", "#f9a8d4", "#022c22"], lore: "A rare side-quest reward line that fights by tying opponents into living knots." },
+  glasshare: { name: "Glasshare", type: "Ice", species: "Glass Hare", cry: "tink-hop!", stage: 1, evo: { to: "mirrabbid", method: "Reach Lv.20 in Prism or Frost areas" }, base: [42, 28, 20, 54], skills: ["Ice Nibble", "Quick Zap", "Guard"], capture: 0.23, body: "rabbit", colors: ["#dbeafe", "#f0abfc", "#1e1b4b"], lore: "A quick glass-eared hare that reflects moonlight into tiny rainbows." },
+  mirrabbid: { name: "Mirrabbid", type: "Ice", species: "Mirror Rabbit", cry: "MIR-RAB!", stage: 2, base: [86, 58, 42, 92], skills: ["Aurora Veil", "Quick Zap", "Prism Nova"], capture: 0.045, body: "rabbit", colors: ["#93c5fd", "#f5d0fe", "#020617"], lore: "It jumps between reflections and appears in limited winter routes." },
   frostcub: { name: "Frostcub", type: "Aqua", species: "Snow Cub", cry: "brr-aw!", stage: 1, evo: { to: "glaciermaw", method: "Reach Lv.12 at night" }, base: [46, 15, 12, 9], skills: ["Bubble Bite", "Guard", "Tidal Crush"], capture: 0.33, body: "bear", colors: ["#93c5fd", "#eff6ff", "#1e3a8a"], lore: "A playful cub that freezes puddles with each step. It appears near lakes after sunset." },
   glaciermaw: { name: "Glaciermaw", type: "Aqua", species: "Ice Bear", cry: "GLAWWR!", stage: 2, evo: { to: "polarune", method: "Reach Lv.22 in Frost Hollow" }, base: [88, 28, 24, 12], skills: ["Bubble Bite", "Tidal Crush", "Boulder Crash"], capture: 0.1, body: "bear", colors: ["#60a5fa", "#e0f2fe", "#0f172a"], lore: "Its claws are frozen relics from the first winter of Luminara." },
   cindermole: { name: "Cindermole", type: "Flame", species: "Coal Mole", cry: "murk-fwoom!", stage: 1, evo: { to: "magmole", method: "Use Sun Fossil" }, base: [52, 17, 16, 7], skills: ["Cinder Paw", "Guard", "Boulder Crash"], capture: 0.3, body: "mole", colors: ["#fb923c", "#111827", "#7f1d1d"], lore: "It digs warm tunnels beneath Ash Field and leaves glowing pawprints." },
@@ -825,7 +833,7 @@ const AREA_DATA = {
       "W....G...B..GG.W",
       "WWWWWWWWWWWWWWWW"
     ],
-    encounters: { G: ["emberlynx","aquapup","leafawn","voltoroo","cloudfinch","happi","gleamouse","glimkit","puddleimp","cindermite","dewdillo","embergoat","pebblit","runepup","mossprout","sparkit"], C: ["prismite","glimkit","runepup","mossprout","sparkit"], N: ["gleamouse","happi"] },
+    encounters: { G: ["emberlynx","aquapup","leafawn","voltoroo","cloudfinch","happi","gleamouse","glimkit","puddleimp","cindermite","dewdillo","embergoat","pebblit","runepup","mossprout","sparkit","thornimp","glasshare"], C: ["prismite","glimkit","runepup","mossprout","sparkit","thornimp","glasshare"], N: ["gleamouse","happi"] },
     description: "A safe academy board where new tamers can level quickly, learn tile movement, and catch friendly early Mythlings.",
     sideQuest: "Win three wild battles here to earn a Training Charm and learn how XP scales."
   },
@@ -853,7 +861,7 @@ const AREA_DATA = {
       "W....J...B..JJ.W",
       "WWWWWWWWWWWWWWWW"
     ],
-    encounters: { J: ["leafawn","florantler","spriggeist","orchidimp","happi","jolli","glimkit","luminail","gleamouse","glowrat","runepup","mossprout","sparkit"], O: ["bellimp","chimegeist","aurorabbit","mistowl"], G: ["bramblepup","seedpuff","puddleimp"] },
+    encounters: { J: ["leafawn","florantler","spriggeist","orchidimp","happi","jolli","glimkit","luminail","gleamouse","glowrat","runepup","mossprout","sparkit","thornimp","glasshare"], O: ["bellimp","chimegeist","aurorabbit","mistowl"], G: ["bramblepup","seedpuff","puddleimp"] },
     description: "A glowing forest route that bridges early Luminara and the Prism roads with fair levels and many evolution-friendly encounters.",
     sideQuest: "Find the three glowcaps hidden near crystal springs to unlock a bonus shop discount."
   },
@@ -1599,7 +1607,18 @@ const EVENT_CALENDAR = [
   { id:"new_year_prism", name:"New Year Prism Festival", start:"2026-01-01", end:"2026-01-07", area:"Prism Festival Grounds", type:"Festival", monster:"calendove", reward:"Calendar Crest" },
   { id:"summer_tide", name:"Summer Tide Raid Week", start:"2026-06-01", end:"2026-06-14", area:"Tideglass Raid Shore", type:"Raid", monster:"monsoondillo", reward:"Tide Raid Candy" },
   { id:"halloween_moon", name:"Moonveil Masquerade", start:"2026-10-24", end:"2026-11-02", area:"Moonveil Court", type:"Tournament", monster:"glyphound", reward:"Masquerade Ribbon" },
-  { id:"winter_aurora", name:"Winter Aurora Hunt", start:"2026-12-20", end:"2027-01-05", area:"Aurora Vale", type:"Special Area", monster:"auroravale", reward:"Aurora Ticket" }
+  { id:"winter_aurora", name:"Winter Aurora Hunt", start:"2026-12-20", end:"2027-01-05", area:"Aurora Vale", type:"Special Area", monster:"auroravale", reward:"Aurora Ticket" },
+  { id:"spring_bramble", name:"Spring Bramble Trials", start:"2026-03-15", end:"2026-03-31", area:"Bramble Trick Court", type:"Quest Chain", monster:"thornimp", reward:"Bramble Token" },
+  { id:"mirror_frost", name:"Mirror Frost Sprint", start:"2026-08-10", end:"2026-08-17", area:"Glasshare Ridge", type:"Tournament", monster:"glasshare", reward:"Mirror Ribbon" },
+  { id:"lantern_tide", name:"Lantern Tide Night", start:"2026-09-01", end:"2026-09-10", area:"Lanternnewt Shore", type:"Special Area", monster:"lanternnewt", reward:"Lantern Lure" }
+];
+const STORY_MISSION_LEVELS = [
+  { id:"story_training", chapter:1, level:"1-A", title:"First Steps", area:"Novice Trial Grounds", goal:"Catch 3 Mythlings and win 3 wild battles.", reward:"Training Charm", minLevel:3 },
+  { id:"story_glowcap", chapter:2, level:"2-A", title:"Lantern Mushrooms", area:"Glowcap Grove", goal:"Find the glowing route gate and register 12 Dex entries.", reward:"Glowcap Badge", minLevel:7 },
+  { id:"story_riverbell", chapter:2, level:"2-B", title:"Riverbell Pass", area:"Riverbell Pass", goal:"Ring three river bells and defeat the Bell Tamer.", reward:"Resonance Charm", minLevel:12 },
+  { id:"story_bridge", chapter:3, level:"3-A", title:"Bridge Captain Brann", area:"Titan Pass", goal:"Clear the bridge trial before Caldera routes open.", reward:"Bridge Crest", minLevel:18 },
+  { id:"story_ashgoat", chapter:4, level:"4-A", title:"Ashgoat Trail", area:"Ashgoat Trail", goal:"Calm the ember herds before Dragon Gate.", reward:"Forge Horn", minLevel:20 },
+  { id:"story_dragon", chapter:6, level:"6-A", title:"Challenge Dracinder", area:"Caldera Crown", goal:"Challenge the Dragon Gate when your team is ready.", reward:"Dragon Sigil", minLevel:24 }
 ];
 function eventActive(ev, today = dayKey()) { return today >= ev.start && today <= ev.end; }
 function currentEvents() { const today = dayKey(); const active = EVENT_CALENDAR.filter(e=>eventActive(e,today)); return active.length ? active : EVENT_CALENDAR.slice(0,2).map(e=>({ ...e, preview:true })); }
@@ -1756,7 +1775,7 @@ function migrateSave(input) {
   if (!party.length && storage.length) {
     party = storage.slice(0, 6);
     storage = storage.slice(6);
-  } const dex = ensureDexShape(data.dex || freshDex()); party.concat(storage).forEach((m) => { dex.seen[m.id] = true; dex.caught[m.id] = true; if (m.shiny) { dex.shinySeen[m.id] = true; dex.shinyCaught[m.id] = true; } }); const safeScreen = VALID_SCREENS.has(data.screen) ? data.screen : ((party.length || storage.length) ? "world" : "title"); return { version: 27, savedAt: Date.now(), screen: party.length ? (safeScreen === "battle" || safeScreen === "gameover" || safeScreen === "starter" ? "world" : safeScreen || "world") : "title", storyIndex: data.storyIndex || 0, player, party, storage, active: Math.min(data.active || 0, Math.max(0, party.length - 1)), seen: { ...freshSeen(), ...(data.seen || {}) }, dex, clock: syncClockWithDevice(data.clock || freshClock()), muted: Boolean(data.muted) }; }
+  } const dex = ensureDexShape(data.dex || freshDex()); party.concat(storage).forEach((m) => { dex.seen[m.id] = true; dex.caught[m.id] = true; if (m.shiny) { dex.shinySeen[m.id] = true; dex.shinyCaught[m.id] = true; } }); const safeScreen = VALID_SCREENS.has(data.screen) ? data.screen : ((party.length || storage.length) ? "world" : "title"); return { version: 28, savedAt: Date.now(), screen: party.length ? (safeScreen === "battle" || safeScreen === "gameover" || safeScreen === "starter" ? "world" : safeScreen || "world") : "title", storyIndex: data.storyIndex || 0, player, party, storage, active: Math.min(data.active || 0, Math.max(0, party.length - 1)), seen: { ...freshSeen(), ...(data.seen || {}) }, dex, clock: syncClockWithDevice(data.clock || freshClock()), muted: Boolean(data.muted) }; }
 function typeMult(a, d) {
   const chart = TYPE_MATCHUPS[a] || {};
   let mult = 1;
@@ -2349,7 +2368,7 @@ function MythboundTamersJRPGInner() {
   }
   function buildSaveData(g = gameRef.current) {
     const safeScreen = ["battle", "gameover", "starter"].includes(g.screen) ? "world" : g.screen;
-    return { version: 27, savedAt: Date.now(), screen: safeScreen, storyIndex: g.storyIndex, player: g.player, party: g.party, storage: g.storage || [], active: g.active, seen: g.seen, dex: g.dex, clock: g.clock, muted: g.muted };
+    return { version: 28, savedAt: Date.now(), screen: safeScreen, storyIndex: g.storyIndex, player: g.player, party: g.party, storage: g.storage || [], active: g.active, seen: g.seen, dex: g.dex, clock: g.clock, muted: g.muted };
   }
   function hydrateSaveData(data, sourceLabel = "save") {
     const migrated = migrateSave(data || {});
@@ -2360,7 +2379,7 @@ function MythboundTamersJRPGInner() {
     if (!supabase) throw new Error("Supabase env variables are missing.");
     if (!authUser) throw new Error("Sign in first.");
     const migrated = migrateSave(saveData || {});
-    const cleanSave = JSON.parse(JSON.stringify({ ...migrated, version: 27, savedAt: Date.now() }));
+    const cleanSave = JSON.parse(JSON.stringify({ ...migrated, version: 28, savedAt: Date.now() }));
     const display = accountProfile?.display_name || authUser.user_metadata?.display_name || authUser.email?.split("@")[0] || `Tamer-${authUser.id.slice(0, 6)}`;
     const syncedAt = new Date().toISOString();
 
@@ -2376,7 +2395,7 @@ function MythboundTamersJRPGInner() {
       inventory_snapshot: cleanSave.player || {},
       dex_caught: Object.keys(cleanSave.dex?.caught || {}).filter((k) => cleanSave.dex.caught[k]).length,
       save_data: cleanSave,
-      save_version: cleanSave.version || 27,
+      save_version: cleanSave.version || 28,
       last_save_at: syncedAt,
       updated_at: syncedAt
     };
@@ -2443,7 +2462,7 @@ function startBgm() {
     bgmTimerRef.current = null;
   }
 
-function playCry(id) { const isLegend = !!BESTIARY[id]?.legendary; const base = { emberlynx:520, pyrolynx:420, solarynx:360, aquapup:340, tidemast:260, leviamast:220, leafawn:620, florantler:540, gaianhart:470, voltoroo:760, stormaroo:920, thundaroo:980, gloomander:260, lunamander:310, eclipsander:230, ironboar:180, elderboar:145, cloudfinch:700, galegryph:500, pebbkit:210, granitus:120, shadebat:330, noctyra:240, prismite:850, dawnhare:790, nightmoth:250, dracinder:140, regaldrake:110, frostcub:410, glaciermaw:180, polarune:155, cindermole:250, magmole:160, calderox:120, spriggeist:760, starwhale:95, coralisk:420, reefserpent:160, sandillo:260, duneguard:130, mistowl:610, orchidimp:690, thistlefiend:300, aurorabbit:780, crysteel:620, prismhorn:260, toxifrog:360, venomire:210, spirikit:730, phantelope:510, neonsquid:680, ionwyrm:120, echopup:500, howlitzer:300, resonark:190, cuboulder:190, titanursa:105, worldursa:80, bellimp:640, chimegeist:360, ferroach:260, mantitan:180, mechamane:145, solguard:95, umbraclaw:70, thalassor:55, gaialith:65, chronova:880, auroracalf:720, aurorox:260, glacimarch:150, sirenfin:680, melodray:480, drillbug:230, cometitan:120, miragebud:760, dreamorchid:520, goldkit:760, aurumane:520, solarchon:330, stormkid:840, thunderchoir:460, glasswyrm:380, stormglass:165, incensemoth:560, censeraph:240, runeling:720, glyphsage:380, mossgolem:145, ruingrove:90, coinwyrm:620, treasuredrake:210, shelltide:300, reefguard:190, tsunamora:85, kitspark:760, vulpyr:520, mossprout:410, mossguard:250, eldermoss:120, sparkit:760, voltrix:480, thunderlynx:210, pebblit:240, craggle:150, mountoracle:70, snowlit:620, frostelle:430, auroravale:260, runepup:650, glyphound:390, codexwolf:170, dewdillo:330, rainroll:210, monsoondillo:95, embergoat:460, forgecapra:240, volcanor:115, kitsunova:900, abyssnake:130, leviacoil:70, glintcrab:640, prismclaw:360, ashchick:820, cinderwing:610, phoenixar:980, budbyte:720, florabyte:560, prismbloom:880, wolfrune:390, howlglyph:260, runewarden:180, snowkit:740, frostvulp:500, auroravulp:920, hornmite:250, drillhorn:160, railguard:95, miragecub:690, dreamlynx:450, mirageon:780, vaultick:680, lockroach:320, vaultitan:120, balletfin:760, swanlume:620, auroradiva:980, relicalf:260, reliceros:140, templehorn:70, pufflora:710, drowsibloom:520, somniflora:820, stardeer:760, cometstag:360, stellarch:160, inklot:230, eclipsquid:120, candypup:780, caramutt:540, ticktad:620, chronofrog:340, hourglassor:180, lanternimp:690, glowgremlin:500, mudmunch:210, bogjaw:115, happi: 760, jolli: 620, jubilume: 980, }[id] || 440; beep(base, isLegend ? 0.18 : 0.09, isLegend ? "square" : "sawtooth", isLegend ? 0.07 : 0.045); setTimeout(()=>beep(base*1.33, isLegend ? 0.16 : 0.08, "triangle", isLegend ? 0.065 : 0.04),90); if (isLegend) { setTimeout(()=>beep(base*0.66,0.22,"sawtooth",0.055),230); setTimeout(()=>beep(base*1.9,0.18,"sine",0.05),450); } }
+function playCry(id) { const isLegend = !!BESTIARY[id]?.legendary; const base = { emberlynx:520, pyrolynx:420, solarynx:360, aquapup:340, tidemast:260, leviamast:220, leafawn:620, florantler:540, gaianhart:470, voltoroo:760, stormaroo:920, thundaroo:980, gloomander:260, lunamander:310, eclipsander:230, ironboar:180, elderboar:145, cloudfinch:700, galegryph:500, pebbkit:210, granitus:120, shadebat:330, noctyra:240, prismite:850, dawnhare:790, nightmoth:250, dracinder:140, regaldrake:110, frostcub:410, glaciermaw:180, polarune:155, cindermole:250, magmole:160, calderox:120, spriggeist:760, starwhale:95, coralisk:420, reefserpent:160, sandillo:260, duneguard:130, mistowl:610, orchidimp:690, thistlefiend:300, aurorabbit:780, crysteel:620, prismhorn:260, toxifrog:360, venomire:210, spirikit:730, phantelope:510, neonsquid:680, ionwyrm:120, echopup:500, howlitzer:300, resonark:190, cuboulder:190, titanursa:105, worldursa:80, bellimp:640, chimegeist:360, ferroach:260, mantitan:180, mechamane:145, solguard:95, umbraclaw:70, thalassor:55, gaialith:65, chronova:880, auroracalf:720, aurorox:260, glacimarch:150, sirenfin:680, melodray:480, drillbug:230, cometitan:120, miragebud:760, dreamorchid:520, goldkit:760, aurumane:520, solarchon:330, stormkid:840, thunderchoir:460, glasswyrm:380, stormglass:165, incensemoth:560, censeraph:240, runeling:720, glyphsage:380, mossgolem:145, ruingrove:90, coinwyrm:620, treasuredrake:210, shelltide:300, reefguard:190, tsunamora:85, kitspark:760, vulpyr:520, lanternnewt:520, glowmander:300, lumisaur:160, thornimp:510, brambletrick:240, glasshare:610, mirrabbid:330, mossprout:410, mossguard:250, eldermoss:120, sparkit:760, voltrix:480, thunderlynx:210, pebblit:240, craggle:150, mountoracle:70, snowlit:620, frostelle:430, auroravale:260, runepup:650, glyphound:390, codexwolf:170, dewdillo:330, rainroll:210, monsoondillo:95, embergoat:460, forgecapra:240, volcanor:115, kitsunova:900, abyssnake:130, leviacoil:70, glintcrab:640, prismclaw:360, ashchick:820, cinderwing:610, phoenixar:980, budbyte:720, florabyte:560, prismbloom:880, wolfrune:390, howlglyph:260, runewarden:180, snowkit:740, frostvulp:500, auroravulp:920, hornmite:250, drillhorn:160, railguard:95, miragecub:690, dreamlynx:450, mirageon:780, vaultick:680, lockroach:320, vaultitan:120, balletfin:760, swanlume:620, auroradiva:980, relicalf:260, reliceros:140, templehorn:70, pufflora:710, drowsibloom:520, somniflora:820, stardeer:760, cometstag:360, stellarch:160, inklot:230, eclipsquid:120, candypup:780, caramutt:540, ticktad:620, chronofrog:340, hourglassor:180, lanternimp:690, glowgremlin:500, mudmunch:210, bogjaw:115, happi: 760, jolli: 620, jubilume: 980, }[id] || 440; beep(base, isLegend ? 0.18 : 0.09, isLegend ? "square" : "sawtooth", isLegend ? 0.07 : 0.045); setTimeout(()=>beep(base*1.33, isLegend ? 0.16 : 0.08, "triangle", isLegend ? 0.065 : 0.04),90); if (isLegend) { setTimeout(()=>beep(base*0.66,0.22,"sawtooth",0.055),230); setTimeout(()=>beep(base*1.9,0.18,"sine",0.05),450); } }
   function playEvolutionSound(fromMon, toMon, style) {
     const fromType = BESTIARY[fromMon?.id]?.type || "Mystic";
     const toType = BESTIARY[toMon?.id]?.type || fromType;
@@ -2603,7 +2622,7 @@ function playCry(id) { const isLegend = !!BESTIARY[id]?.legendary; const base = 
     const starter = makeMon(id, 5);
     const nextPlayer = { ...player, quest: "Reach Elder Nima in Grovepath village." };
     const nextDex = { ...dex, seen: { ...(dex.seen || {}), [starter.id]: true }, caught: { ...(dex.caught || {}), [starter.id]: true } };
-    const starterSave = { version: 27, savedAt: Date.now(), screen: "world", storyIndex, player: nextPlayer, party: [starter], storage, active: 0, seen, dex: nextDex, clock, muted };
+    const starterSave = { version: 28, savedAt: Date.now(), screen: "world", storyIndex, player: nextPlayer, party: [starter], storage, active: 0, seen, dex: nextDex, clock, muted };
     playCry(id);
     setParty([starter]);
     setActive(0);
@@ -3813,32 +3832,31 @@ function WorldScreen({ map, area, player, move, party, storage, seen, dex, setSc
   const mapRows = map.length;
   const mapCols = Math.max(...map.map((row) => row.length));
   const isLandscapeView = viewport.w > viewport.h;
-  const boardGap = isLandscapeView ? 3 : 4;
+  const boardGap = isLandscapeView ? 2 : 3;
 
-  // Square-tile fit:
-  // 100% zoom now uses the largest SQUARE tile that fits the whole active board inside
-  // the available phone screen. This avoids stretched tiles and prevents clipped board edges.
-  const headerAllowance = isLandscapeView ? Math.max(76, Math.min(104, viewport.h * 0.10)) : Math.max(142, Math.min(188, viewport.h * 0.058));
-  const bottomMenuAllowance = isLandscapeView ? Math.max(54, Math.min(76, viewport.h * 0.058)) : Math.max(94, Math.min(122, viewport.h * 0.038));
-  const sidePadding = isLandscapeView ? 10 : 12;
-  const boardFitWidth = Math.max(280, Math.min(viewport.w - sidePadding, isLandscapeView ? viewport.w - 10 : Math.min(900, viewport.w - 12)));
-  const boardFitHeight = Math.max(260, viewport.h - headerAllowance - bottomMenuAllowance);
+  // v0.73 full-screen board fit:
+  // Use rectangular cells when needed so the map consumes the available screen instead of leaving dead space.
+  // Reserve a slim lane for the directional pad in landscape and a short strip below the board in portrait.
+  const hudAllowance = isLandscapeView ? Math.max(54, Math.min(82, viewport.h * 0.085)) : Math.max(116, Math.min(154, viewport.h * 0.048));
+  const autoObjectiveAllowance = autoObjectiveHidden ? 10 : (isLandscapeView ? 54 : 74);
+  const dpadLane = isLandscapeView ? 138 : 0;
+  const dpadBottom = isLandscapeView ? 12 : 132;
+  const edgePadding = isLandscapeView ? 6 : 8;
+  const boardFitWidth = Math.max(280, Math.min(viewport.w - dpadLane - edgePadding, isLandscapeView ? viewport.w - dpadLane - edgePadding : Math.min(940, viewport.w - edgePadding)));
+  const boardFitHeight = Math.max(280, viewport.h - hudAllowance - autoObjectiveAllowance - dpadBottom - 8);
 
-  const exactTileByWidth = (boardFitWidth - Math.max(0, mapCols - 1) * boardGap - 8) / Math.max(1, mapCols);
-  const exactTileByHeight = (boardFitHeight - Math.max(0, mapRows - 1) * boardGap - 8) / Math.max(1, mapRows);
-  const fitTile = Math.floor(Math.min(exactTileByWidth, exactTileByHeight));
+  const exactTileW = (boardFitWidth - Math.max(0, mapCols - 1) * boardGap - 4) / Math.max(1, mapCols);
+  const exactTileH = (boardFitHeight - Math.max(0, mapRows - 1) * boardGap - 4) / Math.max(1, mapRows);
+  const tileW = Math.max(22, Math.min(170, Math.floor(exactTileW * mapZoom)));
+  const tileH = Math.max(22, Math.min(170, Math.floor(exactTileH * mapZoom)));
+  const tileVisual = Math.min(tileW, tileH);
+  const mapPixelWidth = mapCols * tileW + Math.max(0, mapCols - 1) * boardGap;
+  const mapPixelHeight = mapRows * tileH + Math.max(0, mapRows - 1) * boardGap;
 
-  const tileSize = Math.max(24, Math.min(160, Math.floor(fitTile * mapZoom)));
-  const tileW = tileSize;
-  const tileH = tileSize;
-  const tileVisual = tileSize;
-  const mapPixelWidth = mapCols * tileSize + Math.max(0, mapCols - 1) * boardGap;
-  const mapPixelHeight = mapRows * tileSize + Math.max(0, mapRows - 1) * boardGap;
-
-  const boardViewportWidth = Math.max(280, Math.min(boardFitWidth, mapPixelWidth + 10));
-  const boardViewportHeight = Math.max(240, Math.min(boardFitHeight, mapPixelHeight + 10));
-  const boardScaleMode = `${Math.round(viewport.w)}×${Math.round(viewport.h)} · square-fit ${isLandscapeView ? "landscape" : "portrait"}`;
-  const clampZoom = (value) => Math.max(0.55, Math.min(1.85, value));
+  const boardViewportWidth = Math.max(280, Math.min(boardFitWidth, mapPixelWidth + 6));
+  const boardViewportHeight = Math.max(260, Math.min(boardFitHeight, mapPixelHeight + 6));
+  const boardScaleMode = `${Math.round(viewport.w)}×${Math.round(viewport.h)} · full-fit ${isLandscapeView ? "landscape" : "portrait"}`;
+  const clampZoom = (value) => Math.max(0.52, Math.min(1.85, value));
   const touchDistance = (touches) => {
     const [a, b] = touches;
     return Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY);
@@ -3909,7 +3927,7 @@ function WorldScreen({ map, area, player, move, party, storage, seen, dex, setSc
     else move(0, Math.sign(dy));
     if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate(20);
   };
-  return <motion.div key="world" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className={`min-h-[calc(100dvh-92px)] landscape:min-h-[100dvh] p-1 sm:p-2 landscape:p-1 bg-gradient-to-br ${area?.bg || "from-slate-950 via-emerald-950 to-slate-950"}`}>
+  return <motion.div key="world" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className={`min-h-[100dvh] p-0.5 sm:p-1 landscape:p-0.5 bg-gradient-to-br ${area?.bg || "from-slate-950 via-emerald-950 to-slate-950"}`}>
     <div className="sticky top-1 z-30 relative mb-1 rounded-[1.35rem] sm:rounded-[1.8rem] overflow-hidden border border-cyan-200/35 bg-slate-950/92 shadow-2xl shadow-cyan-500/25">
       <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_8%_16%,rgba(103,232,249,.38),transparent_28%),radial-gradient(circle_at_84%_18%,rgba(217,70,239,.24),transparent_34%),linear-gradient(90deg,rgba(2,6,23,.99),rgba(8,47,73,.82),rgba(30,27,75,.88))]" />
       <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-gradient-to-b from-cyan-200 via-fuchsia-300 to-lime-200"/>
@@ -3958,7 +3976,7 @@ function WorldScreen({ map, area, player, move, party, storage, seen, dex, setSc
     </div>}
 
     {autoObjectiveHidden ? <div className="mb-1 flex justify-end"><Button onClick={() => { setAutoObjectiveHidden(false); try { localStorage.setItem("mythbound_auto_objective_hidden", "0"); } catch {} }} variant="secondary" className="rounded-xl px-3 py-1.5 text-xs font-black border-cyan-200/20 bg-slate-900/70">Show next objective</Button></div> : <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} className="mb-1 rounded-2xl border border-cyan-200/30 bg-slate-950/80 backdrop-blur-xl shadow-xl shadow-cyan-500/10 overflow-hidden">
-      <div className="p-2 sm:p-3 flex items-center justify-between gap-2">
+      <div className="p-1.5 sm:p-2 flex items-center justify-between gap-2">
         <div className="min-w-0 flex items-center gap-2">
           <div className={`w-10 h-10 rounded-2xl bg-gradient-to-br ${autoObjective.color || "from-cyan-200 to-fuchsia-300"} text-slate-950 flex items-center justify-center font-black text-xl shrink-0`}>{autoObjective.icon || "✦"}</div>
           <div className="min-w-0">
@@ -3977,7 +3995,7 @@ function WorldScreen({ map, area, player, move, party, storage, seen, dex, setSc
 
     <div className="relative">
       <div
-        className={`${mapZoom > 1.01 ? "overflow-auto" : "overflow-hidden"} rounded-[1.35rem] sm:rounded-[2rem] bg-[radial-gradient(circle_at_30%_20%,rgba(34,211,238,.10),transparent_32%),linear-gradient(135deg,rgba(2,6,23,.55),rgba(15,23,42,.35))] border border-cyan-200/15 shadow-2xl p-1 sm:p-1.5 overscroll-contain mx-auto`}
+        className={`${mapZoom > 1.01 ? "overflow-auto" : "overflow-hidden"} rounded-[1.1rem] sm:rounded-[1.65rem] bg-[radial-gradient(circle_at_30%_20%,rgba(34,211,238,.10),transparent_32%),linear-gradient(135deg,rgba(2,6,23,.55),rgba(15,23,42,.35))] border border-cyan-200/15 shadow-2xl p-0.5 sm:p-1 overscroll-contain mx-auto`}
         style={{ touchAction: "pan-x pan-y", height: boardViewportHeight, maxHeight: boardViewportHeight, width: boardViewportWidth, maxWidth: "100%" }}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
@@ -4016,7 +4034,7 @@ function WorldScreen({ map, area, player, move, party, storage, seen, dex, setSc
                 onClick={()=>tapTile(t, x, y)}
                 key={`${x}-${y}`}
                 className={`relative rounded-xl border flex items-center justify-center font-black shrink-0 overflow-hidden transition shadow-lg ${tileGlow(t)} ${tileClass(t)} ${isAreaGate ? "ring-1 ring-cyan-200 shadow-md shadow-cyan-300/20" : ""} ${isObjectiveTile ? "ring-4 ring-yellow-200 shadow-2xl shadow-yellow-300/50 z-20" : ""} ${isSelected ? "ring-2 ring-white ring-offset-2 ring-offset-slate-950 z-10" : ""}`}
-                style={{ width: tileW, height: tileH, borderRadius: Math.max(10, Math.min(22, Math.round(tileVisual * 0.24))), fontSize: Math.max(9, Math.min(19, Math.round(tileVisual * 0.35))) }}
+                style={{ width: tileW, height: tileH, borderRadius: Math.max(7, Math.min(18, Math.round(tileVisual * 0.22))), fontSize: Math.max(9, Math.min(19, Math.round(tileVisual * 0.35))) }}
                 aria-label={`${TILE_NAMES[t] || "Unknown tile"} at ${x + 1}, ${y + 1}`}
               >
                 <span className={`absolute inset-0 bg-gradient-to-br ${tileOverlay(t)} pointer-events-none`}/><span className="relative z-10 opacity-95 pointer-events-none leading-none drop-shadow-[0_2px_4px_rgba(0,0,0,.65)]">{label(t)}</span>{isAreaGate && <><span className="absolute right-1 top-1 px-1 py-[1px] rounded-full bg-cyan-100 text-[7px] leading-none text-slate-950 border border-slate-950 shadow-sm z-20">GO</span><motion.span animate={{ opacity:[0.18,0.65,0.18], scale:[0.85,1.22,0.85] }} transition={{ duration:1.5, repeat:Infinity }} className="absolute inset-[5px] rounded-lg border border-cyan-100/50 pointer-events-none z-10"/></>}
@@ -4035,7 +4053,7 @@ function WorldScreen({ map, area, player, move, party, storage, seen, dex, setSc
         </div>
       </div>
 
-      <Card className="hidden rounded-3xl bg-white/5 border-white/10">
+      <Card className="hidden rounded-3xl bg-white/5 border-white/10 pointer-events-none">
         <CardContent className="p-4">
           {selected ? <div>
             <div className="flex items-center justify-between gap-2 mb-2"><h3 className="text-2xl font-black">{selected.name}</h3><Badge className="bg-cyan-300 text-slate-950">{selected.kind}</Badge></div>
@@ -4975,66 +4993,146 @@ function friendshipStatusLabel(row, me) {
 
 function DailyLoginModal({ info, claim }) {
   const milestone = info?.milestone;
-  return <motion.div initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} className="fixed inset-0 z-[1800] bg-black/82 backdrop-blur-md flex items-center justify-center p-4">
+  return <motion.div initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} className="fixed inset-0 z-[1800] bg-black/82 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
     <motion.div initial={{scale:.94,y:24}} animate={{scale:1,y:0}} exit={{scale:.94,y:24}} className="w-full max-w-xl rounded-[2rem] bg-slate-950 border border-cyan-200/30 shadow-2xl shadow-cyan-300/20 overflow-hidden">
-      <div className="p-5 bg-gradient-to-br from-cyan-300 via-fuchsia-200 to-yellow-200 text-slate-950">
+      <div className="relative p-5 bg-gradient-to-br from-cyan-300 via-fuchsia-200 to-yellow-200 text-slate-950">
+        <div className="absolute right-4 top-4 text-5xl opacity-25">🎁</div>
         <div className="text-xs uppercase tracking-[0.28em] font-black">Daily Login Bonus</div>
         <h2 className="text-4xl font-black">Day {info?.streak || 1} streak</h2>
-        <p className="font-bold">Synced from your Android/device clock.</p>
+        <p className="font-bold">Synced from your Android/device clock. Come back tomorrow to continue the streak.</p>
       </div>
       <div className="p-5 space-y-3">
-        <div className="rounded-2xl bg-white/5 border border-white/10 p-4 text-slate-100">
-          <b>Today:</b> {info?.baseReward?.item} x{info?.baseReward?.qty || 1} · {info?.baseReward?.money || 0} coins
+        <div className="grid sm:grid-cols-2 gap-3">
+          <div className="rounded-2xl bg-cyan-300/10 border border-cyan-200/30 p-4 text-cyan-50">
+            <div className="text-xs uppercase tracking-wider text-cyan-100 font-black">Today reward</div>
+            <div className="text-2xl font-black">{info?.baseReward?.item} x{info?.baseReward?.qty || 1}</div>
+            <div className="text-sm text-cyan-100/85">{info?.baseReward?.money || 0} coins</div>
+          </div>
+          <div className="rounded-2xl bg-white/5 border border-white/10 p-4 text-slate-100">
+            <div className="text-xs uppercase tracking-wider text-slate-300 font-black">Next milestone</div>
+            <div className="text-xl font-black">{nextLoginMilestone(info?.streak || 1)} days</div>
+            <div className="text-sm text-slate-300">Unique collection reward, title, item, or monster.</div>
+          </div>
         </div>
-        {milestone && <div className="rounded-2xl bg-yellow-200/12 border border-yellow-200/30 p-4 text-yellow-50">
-          <div className="font-black text-xl">Milestone reward!</div>
-          <div>{milestone.title}</div>
+        {milestone && <div className="rounded-2xl bg-yellow-200/12 border border-yellow-200/30 p-4 text-yellow-50 shadow-lg shadow-yellow-300/10">
+          <div className="font-black text-xl">Milestone reward unlocked!</div>
+          <div className="text-lg">{milestone.title}</div>
           {milestone.monster && <div>Exclusive collection Mythling: <b>{BESTIARY[milestone.monster]?.name || milestone.monster}</b></div>}
           {milestone.item && <div>{milestone.item} x{milestone.qty || 1}</div>}
         </div>}
-        <Button onClick={claim} className="w-full rounded-2xl bg-cyan-300 text-slate-950 font-black py-6">Claim Login Reward</Button>
+        <Button onClick={claim} className="w-full rounded-2xl bg-cyan-300 hover:bg-cyan-200 text-slate-950 font-black py-6 shadow-xl shadow-cyan-300/20">Claim rewards</Button>
       </div>
     </motion.div>
   </motion.div>;
 }
-function MissionCard({ mission, kind, player, claimMission }) {
+function nextLoginMilestone(streak) {
+  const keys = Object.keys(LOGIN_MILESTONE_REWARDS).map(Number).sort((a,b)=>a-b);
+  return keys.find(k => k > streak) || keys[keys.length - 1];
+}
+
+function MissionCard({ mission, kind, player, claimMission, compact = false }) {
   const live = normalizeLiveOps(player?.liveOps);
   const bucket = kind === "weekly" ? live.weekly : live.daily;
   const progress = missionProgress(player, mission);
   const done = progress >= mission.target;
   const claimed = !!bucket.claimed?.[mission.id];
-  return <div className={`rounded-2xl border p-3 ${claimed?"bg-lime-300/10 border-lime-200/30":done?"bg-cyan-300/10 border-cyan-200/30":"bg-white/5 border-white/10"}`}>
-    <div className="flex justify-between gap-2"><div><div className="font-black text-white">{mission.label}</div><div className="text-xs text-slate-300">{progress}/{mission.target}</div></div><Badge className={done?"bg-cyan-300 text-slate-950":"bg-slate-800 text-slate-200"}>{kind}</Badge></div>
-    <div className="h-2 mt-2 rounded-full bg-black/30 overflow-hidden"><div className="h-full bg-gradient-to-r from-cyan-300 to-fuchsia-300" style={{width:`${Math.min(100, progress/mission.target*100)}%`}}/></div>
+  const pct = Math.min(100, Math.round((progress / Math.max(1, mission.target)) * 100));
+  return <div className={`rounded-2xl border p-3 ${claimed?"bg-slate-800/65 border-slate-600/60 opacity-75":done?"bg-cyan-300/12 border-cyan-200/35 shadow-lg shadow-cyan-300/10":"bg-white/5 border-white/10"}`}>
+    <div className="flex justify-between gap-2">
+      <div className="min-w-0">
+        <div className={`font-black text-white truncate ${compact ? "text-sm" : "text-base"}`}>{mission.label}</div>
+        <div className="text-xs text-slate-300">{progress}/{mission.target} · {pct}%</div>
+      </div>
+      <Badge className={claimed?"bg-slate-700 text-slate-200":done?"bg-cyan-300 text-slate-950":"bg-slate-800 text-slate-200"}>{claimed ? "Claimed" : done ? "Ready" : kind}</Badge>
+    </div>
+    <div className="h-2 mt-2 rounded-full bg-black/30 overflow-hidden border border-white/10"><motion.div initial={{width:0}} animate={{width:`${pct}%`}} className={`h-full ${claimed?"bg-slate-500":"bg-gradient-to-r from-cyan-300 to-fuchsia-300"}`}/></div>
     <div className="mt-2 text-xs text-slate-300">Reward: {mission.reward.item} x{mission.reward.qty || 1} {mission.reward.money ? `· ${mission.reward.money} coins` : ""}</div>
-    <Button disabled={!done || claimed} onClick={()=>claimMission(mission, kind)} className="mt-2 w-full rounded-xl bg-cyan-300 text-slate-950 font-black disabled:opacity-40">{claimed ? "Claimed" : done ? "Claim" : "In progress"}</Button>
+    <Button disabled={!done || claimed} onClick={()=>claimMission(mission, kind)} className="mt-2 w-full rounded-xl bg-cyan-300 text-slate-950 font-black disabled:opacity-40">{claimed ? "Already claimed" : done ? "Claim reward" : "Keep going"}</Button>
   </div>;
 }
-function AchievementsScreen({ player, dex, party, storage, setScreen, claimAchievement }) {
-  const live = normalizeLiveOps(player?.liveOps);
-  const list = achievementList(player, dex, party, storage);
-  return <motion.div key="achievements" initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} className="min-h-full p-4 sm:p-6 bg-gradient-to-br from-slate-950 via-indigo-950 to-fuchsia-950">
-    <div className="flex justify-between gap-3 items-start mb-5"><div><div className="text-xs uppercase tracking-[0.32em] text-cyan-100 font-black">Tamer Awards</div><h2 className="text-4xl sm:text-5xl font-black text-white">Achievements & Titles</h2><p className="text-slate-300">Streaks, collection goals, trophies, and permanent titles.</p></div><Button onClick={()=>setScreen("world")} className="rounded-2xl bg-cyan-300 text-slate-950 font-black">Back</Button></div>
-    <div className="grid lg:grid-cols-[320px_1fr] gap-4">
-      <Card className="rounded-3xl bg-white/5 border-white/10"><CardContent className="p-5"><h3 className="text-2xl font-black">Profile</h3><div className="mt-3 space-y-2 text-slate-200"><div>Login streak: <b>{live.loginStreak || 0}</b></div><div>Best streak: <b>{live.bestLoginStreak || 0}</b></div><div>Active title: <b>{live.activeTitle || "None"}</b></div><div>Titles owned: <b>{live.titles.length}</b></div></div></CardContent></Card>
-      <div className="grid md:grid-cols-2 gap-3">{list.map(a=><div key={a.id} className={`rounded-3xl border p-4 ${live.achievements[a.id]?"bg-lime-300/10 border-lime-200/30":a.done?"bg-cyan-300/10 border-cyan-200/30":"bg-slate-900/70 border-white/10"}`}><div className="flex justify-between gap-2"><h3 className="text-xl font-black text-white">{a.title}</h3><Badge className={a.done?"bg-cyan-300 text-slate-950":"bg-slate-800 text-slate-200"}>{live.achievements[a.id]?"Claimed":a.done?"Ready":"Locked"}</Badge></div><p className="text-sm text-slate-300 mt-1">{a.desc}</p><div className="text-xs text-fuchsia-100 mt-2">Reward: {a.reward.title || ""} {a.reward.item || ""} {a.reward.qty ? "x"+a.reward.qty : ""}</div><Button disabled={!a.done || live.achievements[a.id]} onClick={()=>claimAchievement(a)} className="mt-3 w-full rounded-xl bg-cyan-300 text-slate-950 font-black disabled:opacity-40">{live.achievements[a.id]?"Claimed":a.done?"Claim reward":"Not complete"}</Button></div>)}</div>
+function MissionGroup({ title, missions, kind, player, claimMission, empty }) {
+  return <section className="rounded-3xl bg-white/5 border border-white/10 p-4">
+    <div className="flex items-center justify-between mb-3">
+      <h3 className="text-xl sm:text-2xl font-black text-white">{title}</h3>
+      <Badge className="bg-slate-800 text-slate-200">{missions.length}</Badge>
     </div>
-  </motion.div>;
+    {missions.length ? <div className="grid md:grid-cols-2 gap-3">{missions.map(m => <MissionCard key={m.id} mission={m} kind={kind} player={player} claimMission={claimMission} compact={title.includes("Claimed")}/>)}</div> : <p className="text-slate-400 text-sm">{empty}</p>}
+  </section>;
+}
+function splitMissions(pool, kind, player) {
+  const live = normalizeLiveOps(player?.liveOps);
+  const bucket = kind === "weekly" ? live.weekly : live.daily;
+  const ready = [], active = [], claimed = [];
+  pool.forEach(m => {
+    const progress = missionProgress(player, m);
+    const isClaimed = !!bucket.claimed?.[m.id];
+    if (isClaimed) claimed.push(m);
+    else if (progress >= m.target) ready.push(m);
+    else active.push(m);
+  });
+  return { ready, active, claimed };
 }
 function EventsScreen({ player, party, setScreen, claimMission, joinRaidEvent, attackRaid, claimRaidRewards }) {
   const live = normalizeLiveOps(player?.liveOps);
   const raid = live.raid;
   const evs = currentEvents();
-  return <motion.div key="events" initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} className="min-h-full p-4 sm:p-6 bg-gradient-to-br from-slate-950 via-cyan-950 to-purple-950">
-    <div className="flex justify-between gap-3 items-start mb-5"><div><div className="text-xs uppercase tracking-[0.32em] text-cyan-100 font-black">Live Ops</div><h2 className="text-4xl sm:text-5xl font-black text-white">Missions, Events & Raids</h2><p className="text-slate-300">Daily/weekly goals and calendar-limited activities synced to your device date.</p></div><Button onClick={()=>setScreen("world")} className="rounded-2xl bg-cyan-300 text-slate-950 font-black">Back</Button></div>
-    <div className="grid xl:grid-cols-[1fr_1fr] gap-4">
-      <Card className="rounded-3xl bg-white/5 border-white/10"><CardContent className="p-5"><h3 className="text-2xl font-black mb-3">Daily missions</h3><div className="grid md:grid-cols-2 gap-3">{DAILY_MISSION_POOL.map(m=><MissionCard key={m.id} mission={m} kind="daily" player={player} claimMission={claimMission}/>)}</div></CardContent></Card>
-      <Card className="rounded-3xl bg-white/5 border-white/10"><CardContent className="p-5"><h3 className="text-2xl font-black mb-3">Weekly missions</h3><div className="grid md:grid-cols-2 gap-3">{WEEKLY_MISSION_POOL.map(m=><MissionCard key={m.id} mission={m} kind="weekly" player={player} claimMission={claimMission}/>)}</div></CardContent></Card>
-      <Card className="rounded-3xl bg-white/5 border-white/10"><CardContent className="p-5"><h3 className="text-2xl font-black mb-3">Time-limited events</h3><div className="space-y-3">{evs.map(e=><div key={e.id} className={`rounded-2xl border p-4 ${e.preview?"bg-slate-900/70 border-white/10":"bg-fuchsia-300/10 border-fuchsia-200/30"}`}><div className="flex justify-between gap-2"><div><div className="font-black text-white">{e.name}</div><div className="text-sm text-slate-300">{e.area} · {e.type}</div></div><Badge className={e.preview?"bg-slate-800 text-slate-200":"bg-fuchsia-200 text-slate-950"}>{e.preview?"Upcoming":"Active"}</Badge></div><div className="text-xs text-slate-300 mt-2">{e.start} → {e.end} · Featured: {BESTIARY[e.monster]?.name || e.monster} · Reward: {e.reward}</div></div>)}</div></CardContent></Card>
-      <Card className="rounded-3xl bg-white/5 border-white/10"><CardContent className="p-5"><h3 className="text-2xl font-black mb-3">Co-op Raid Battle</h3>{raid ? <div><div className="rounded-2xl bg-black/25 border border-white/10 p-4"><div className="font-black text-white">{raid.name}</div><div className="text-slate-300">Boss: {raid.boss?.name} Lv.{raid.boss?.level} · Allies: {raid.allies || 1}</div><div className="h-3 mt-3 rounded-full bg-black/40 overflow-hidden"><div className="h-full bg-gradient-to-r from-rose-400 to-yellow-200" style={{width:`${Math.max(0, Math.round((raid.boss.hp/raid.boss.maxHp)*100))}%`}}/></div><div className="text-xs text-slate-300 mt-1">HP {raid.boss.hp}/{raid.boss.maxHp} · Your damage {raid.damage || 0}</div></div><div className="grid grid-cols-2 gap-2 mt-3"><Button onClick={attackRaid} disabled={raid.resolved} className="rounded-xl bg-rose-300 text-slate-950 font-black disabled:opacity-40">Attack raid</Button><Button onClick={claimRaidRewards} disabled={!raid.resolved} className="rounded-xl bg-cyan-300 text-slate-950 font-black disabled:opacity-40">Claim rewards / catch</Button></div></div> : <div><p className="text-slate-300 mb-3">Create or join the featured raid. Full Cloudflare/Supabase co-op tables are included in the update zip; this screen already supports the reward/catch flow and can be connected to live rooms.</p><Button onClick={()=>joinRaidEvent()} className="w-full rounded-2xl bg-cyan-300 text-slate-950 font-black py-5">Join active raid</Button></div>}</CardContent></Card>
+  const daily = splitMissions(DAILY_MISSION_POOL, "daily", player);
+  const weekly = splitMissions(WEEKLY_MISSION_POOL, "weekly", player);
+  const activeEvents = evs.filter(e=>!e.preview);
+  const upcomingEvents = evs.filter(e=>e.preview);
+  return <motion.div key="events" initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} className="min-h-full p-3 sm:p-5 bg-gradient-to-br from-slate-950 via-cyan-950 to-purple-950 overflow-y-auto">
+    <div className="flex justify-between gap-3 items-start mb-4 sticky top-0 z-20 rounded-3xl bg-slate-950/88 border border-cyan-200/15 backdrop-blur-xl p-3">
+      <div><div className="text-xs uppercase tracking-[0.32em] text-cyan-100 font-black">Live Ops</div><h2 className="text-3xl sm:text-5xl font-black text-white">Missions, Events & Raids</h2><p className="text-slate-300 text-sm sm:text-base">Daily/weekly goals, story levels, calendar events and raids.</p></div>
+      <Button onClick={()=>setScreen("world")} className="rounded-2xl bg-cyan-300 text-slate-950 font-black">Back</Button>
+    </div>
+
+    <div className="grid xl:grid-cols-[1.08fr_.92fr] gap-4">
+      <div className="space-y-4">
+        <section className="rounded-3xl bg-cyan-300/10 border border-cyan-200/25 p-4">
+          <div className="flex items-center justify-between mb-3"><h3 className="text-2xl font-black text-white">Ready to claim</h3><Badge className="bg-cyan-300 text-slate-950">{daily.ready.length + weekly.ready.length}</Badge></div>
+          {(daily.ready.length || weekly.ready.length) ? <div className="grid md:grid-cols-2 gap-3">{daily.ready.map(m=><MissionCard key={m.id} mission={m} kind="daily" player={player} claimMission={claimMission}/>)}{weekly.ready.map(m=><MissionCard key={m.id} mission={m} kind="weekly" player={player} claimMission={claimMission}/>)}</div> : <p className="text-cyan-100/80">No completed missions yet. Active missions are below.</p>}
+        </section>
+        <MissionGroup title="Daily missions" missions={daily.active} kind="daily" player={player} claimMission={claimMission} empty="All daily missions are claimed or ready."/>
+        <MissionGroup title="Weekly missions" missions={weekly.active} kind="weekly" player={player} claimMission={claimMission} empty="All weekly missions are claimed or ready."/>
+        <MissionGroup title="Claimed today / this week" missions={[...daily.claimed, ...weekly.claimed]} kind="daily" player={player} claimMission={claimMission} empty="Claimed missions will appear here after you collect rewards."/>
+      </div>
+
+      <div className="space-y-4">
+        <Card className="rounded-3xl bg-white/5 border-white/10"><CardContent className="p-4">
+          <h3 className="text-2xl font-black mb-3">Story missions & levels</h3>
+          <div className="space-y-2 max-h-[420px] overflow-y-auto pr-1">{STORY_MISSION_LEVELS.map((s, idx)=><div key={s.id} className="rounded-2xl bg-slate-900/75 border border-white/10 p-3">
+            <div className="flex justify-between gap-2"><div><div className="text-[10px] uppercase tracking-wider text-cyan-200 font-black">Chapter {s.chapter} · Level {s.level}</div><div className="font-black text-white">{s.title}</div></div><Badge className="bg-fuchsia-200 text-slate-950">Lv.{s.minLevel}+</Badge></div>
+            <div className="text-sm text-slate-300 mt-1">{s.area}: {s.goal}</div>
+            <div className="text-xs text-lime-100 mt-1">Reward: {s.reward}</div>
+          </div>)}</div>
+        </CardContent></Card>
+
+        <Card className="rounded-3xl bg-white/5 border-white/10"><CardContent className="p-4">
+          <h3 className="text-2xl font-black mb-3">Time-limited events</h3>
+          <div className="space-y-3">
+            {activeEvents.map(e=><EventCard key={e.id} e={e}/>)}
+            {upcomingEvents.length ? <div className="pt-2"><div className="text-xs uppercase tracking-wider text-slate-400 mb-2">Upcoming / preview</div>{upcomingEvents.map(e=><EventCard key={e.id} e={e}/>)}</div> : null}
+          </div>
+        </CardContent></Card>
+
+        <Card className="rounded-3xl bg-white/5 border-white/10"><CardContent className="p-4">
+          <h3 className="text-2xl font-black mb-3">Co-op Raid Battle</h3>
+          {raid ? <div>
+            <div className="rounded-2xl bg-black/25 border border-white/10 p-4"><div className="font-black text-white">{raid.name}</div><div className="text-slate-300">Boss: {raid.boss?.name} Lv.{raid.boss?.level} · Allies: {raid.allies || 1}</div><div className="h-3 mt-3 rounded-full bg-black/40 overflow-hidden"><div className="h-full bg-gradient-to-r from-rose-400 to-yellow-200" style={{width:`${Math.max(0, Math.round((raid.boss.hp/raid.boss.maxHp)*100))}%`}}/></div><div className="text-xs text-slate-300 mt-1">HP {raid.boss.hp}/{raid.boss.maxHp} · Your damage {raid.damage || 0}</div></div>
+            <div className="grid grid-cols-2 gap-2 mt-3"><Button onClick={attackRaid} disabled={raid.resolved} className="rounded-xl bg-rose-300 text-slate-950 font-black disabled:opacity-40">Attack raid</Button><Button onClick={claimRaidRewards} disabled={!raid.resolved} className="rounded-xl bg-cyan-300 text-slate-950 font-black disabled:opacity-40">Claim rewards / catch</Button></div>
+          </div> : <div><p className="text-slate-300 mb-3">Join the featured raid. Defeat the boss with allies, then claim rare candies, boost items, coins and a catch attempt.</p><Button onClick={()=>joinRaidEvent()} className="w-full rounded-2xl bg-cyan-300 text-slate-950 font-black py-5">Join active raid</Button></div>}
+        </CardContent></Card>
+      </div>
     </div>
   </motion.div>;
 }
+function EventCard({ e }) {
+  return <div className={`rounded-2xl border p-4 ${e.preview?"bg-slate-900/70 border-white/10":"bg-fuchsia-300/10 border-fuchsia-200/30 shadow-lg shadow-fuchsia-300/10"}`}>
+    <div className="flex justify-between gap-2"><div><div className="font-black text-white">{e.name}</div><div className="text-sm text-slate-300">{e.area} · {e.type}</div></div><Badge className={e.preview?"bg-slate-800 text-slate-200":"bg-fuchsia-200 text-slate-950"}>{e.preview?"Upcoming":"Active"}</Badge></div>
+    <div className="text-xs text-slate-300 mt-2">{e.start} → {e.end} · Featured: {BESTIARY[e.monster]?.name || e.monster} · Reward: {e.reward}</div>
+  </div>;
+}
+
 function FriendsScreen({ party, dex, player, setScreen, authUser, accountProfile }) {
   const [statusMode, setStatusMode] = useState("online");
   const [discoverable, setDiscoverable] = useState(true);
@@ -5988,7 +6086,7 @@ function AccountScreen({
           storage_snapshot: [],
           inventory_snapshot: {},
           dex_caught: 0,
-          save_version: 27,
+          save_version: 28,
           updated_at: new Date().toISOString()
         };
         await supabase.from("mythbound_profiles").upsert(payload, { onConflict: "id" });
@@ -6071,7 +6169,7 @@ function AccountScreen({
         throw new Error("Cloud row exists, but it does not contain party/storage save data. Upload a local save from the old device to repair it.");
       }
       hydrateSaveData(migrated, recovered._recoveredFromProfileSnapshot ? "recovered cloud snapshot" : "cloud save");
-      await uploadSaveDataToCloud({ ...migrated, version: 27, savedAt: Date.now() }, false);
+      await uploadSaveDataToCloud({ ...migrated, version: 28, savedAt: Date.now() }, false);
       setAccountStatus(`Cloud save loaded and upgraded for this version. ${cloudSaveSummary(profile)}`);
     } catch (e) {
       setAccountStatus(`Load cloud save error: ${e.message}`);
