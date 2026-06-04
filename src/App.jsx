@@ -8,11 +8,11 @@ import {Sparkles, PawPrint, Flame, Droplets, Leaf, Zap, Heart, Map, Backpack, Ga
 
 const SAVE_KEY = "mythbound_tamers_save_v4";
 const OLD_SAVE_KEYS = ["mythbound_tamers_save_v6", "mythbound_tamers_save_v5", "mythbound_tamers_save_v4", "mythbound_tamers_save_v3", "mythbound_tamers_save_v2", "mythbound_tamers_save"];
-const APP_VERSION = "0.71.0";
-const APP_VERSION_CODE = 71;
+const APP_VERSION = "0.72.0";
+const APP_VERSION_CODE = 72;
 const UPDATE_MANIFEST_URL = import.meta.env.VITE_UPDATE_MANIFEST_URL || "https://costaskk.github.io/Mythbound-Tamers/update-manifest.json";
 const SHINY_RATE = 1 / 192;
-const VALID_SCREENS = new Set(["title","story","starter","world","party","pc","shop","dex","account","multiplayer","friends","objectives","help","atlas","update","battle","gameover"]);
+const VALID_SCREENS = new Set(["title","story","starter","world","party","pc","shop","dex","account","multiplayer","friends","objectives","help","atlas","update","battle","achievements","events","gameover"]);
 
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || import.meta.env.VITE_SUPABASE_ANON_PUBLIC_KEY;
@@ -333,6 +333,11 @@ const BESTIARY = {
   sparkit: { name: "Sparkit", type: "Volt", species: "Pocket Spark", cry: "zi-ki!", stage: 1, evo: { to: "voltrix", method: "Reach Lv.17 after using 8 Volt moves" }, base: [44, 26, 14, 36], skills: ["Static Jolt", "Quick Zap", "Guard"], capture: 0.25, body: "cat", colors: ["#fde047", "#a7f3d0", "#0f172a"], lore: "A kitten-sized spark that naps inside old lantern batteries." },
   voltrix: { name: "Voltrix", type: "Volt", species: "Arc Fox", cry: "VOL-TRIX!", stage: 2, evo: { to: "thunderlynx", method: "Reach Lv.34 during storm routes" }, base: [82, 50, 28, 68], skills: ["Static Jolt", "Thunder Crown", "Prism Nova"], capture: 0.06, body: "cat", colors: ["#facc15", "#67e8f9", "#020617"], lore: "It runs ahead of storms and leaves zig-zag pawprints of light." },
   thunderlynx: { name: "Thunderlynx", type: "Volt", species: "Thunder Lynx", cry: "THUN-DER-LYNX!", stage: 3, base: [124, 76, 46, 96], skills: ["Thunder Crown", "Prism Nova", "Quick Zap"], capture: 0.016, body: "cat", colors: ["#eab308", "#22d3ee", "#111827"], lore: "A dazzling late-route hunter that can vanish inside a thunderclap." },
+
+  calendove: { name: "Calendove", type: "Light", species: "Calendar Dove", cry: "day-day!", stage: 1, base: [72, 34, 34, 44], skills: ["Light Fang", "Cheer Burst", "Guard"], capture: 0.01, body: "bird", colors: ["#fef3c7", "#67e8f9", "#7c2d12"], lore: "A gentle collector reward Mythling that appears only for long login streak celebrations." },
+  centuril: { name: "Centuril", type: "Mystic", species: "Hundred-Day Sentinel", cry: "CEN-TU-RIL!", stage: 1, base: [94, 48, 48, 58], skills: ["Rune Bite", "Prism Nova", "Guard"], capture: 0.01, body: "sprite", colors: ["#c4b5fd", "#fef9c3", "#312e81"], lore: "A commemorative sentinel awarded to patient tamers who return for a hundred dawns." },
+  anniversol: { name: "Anniversol", type: "Light", species: "Yearbound Star", cry: "AN-NI-VER-SOL!", stage: 1, base: [118, 62, 62, 72], skills: ["Solar Crown", "Prism Nova", "Radiant Lance"], capture: 0.005, body: "slime", colors: ["#fde047", "#f0abfc", "#020617"], lore: "A rare yearly collection Mythling. Its light is decorative, not dominant, but it is beloved by collectors." },
+  raidram: { name: "Raidram", type: "Stone", species: "Raid Ram", cry: "RAID-RAM!", stage: 1, base: [150, 72, 88, 38], skills: ["Boulder Crash", "Headbutt Spark", "Guard"], capture: 0.018, body: "deer", colors: ["#78716c", "#f59e0b", "#111827"], lore: "A powerful raid Mythling designed for co-op events. Even when uncaught, it drops excellent training rewards." },
   frostcub: { name: "Frostcub", type: "Aqua", species: "Snow Cub", cry: "brr-aw!", stage: 1, evo: { to: "glaciermaw", method: "Reach Lv.12 at night" }, base: [46, 15, 12, 9], skills: ["Bubble Bite", "Guard", "Tidal Crush"], capture: 0.33, body: "bear", colors: ["#93c5fd", "#eff6ff", "#1e3a8a"], lore: "A playful cub that freezes puddles with each step. It appears near lakes after sunset." },
   glaciermaw: { name: "Glaciermaw", type: "Aqua", species: "Ice Bear", cry: "GLAWWR!", stage: 2, evo: { to: "polarune", method: "Reach Lv.22 in Frost Hollow" }, base: [88, 28, 24, 12], skills: ["Bubble Bite", "Tidal Crush", "Boulder Crash"], capture: 0.1, body: "bear", colors: ["#60a5fa", "#e0f2fe", "#0f172a"], lore: "Its claws are frozen relics from the first winter of Luminara." },
   cindermole: { name: "Cindermole", type: "Flame", species: "Coal Mole", cry: "murk-fwoom!", stage: 1, evo: { to: "magmole", method: "Use Sun Fossil" }, base: [52, 17, 16, 7], skills: ["Cinder Paw", "Guard", "Boulder Crash"], capture: 0.3, body: "mole", colors: ["#fb923c", "#111827", "#7f1d1d"], lore: "It digs warm tunnels beneath Ash Field and leaves glowing pawprints." },
@@ -1541,16 +1546,101 @@ const LEGENDARY_DUNGEONS = {
   "5": { id: "chronova", title: "Timeglass Labyrinth", condition: "Post-game encounter after catching 25 Mythlings.", check: (g) => !!g.seen?.dragon && dexStats(g.dex).caught >= 25, fail: "The time lock rejects you. Catch 25 Mythlings before challenging Chronova.", level: 52, reward: "chronova", intro: "The world freezes between seconds. Chronova unfolds from a prism clock." },
 };
 
-const freshPlayer = () => ({ area: "luminara", x: 3, y: 5, money: 1200, balls: 8, potions: 4, captureItems: { ...DEFAULT_CAPTURE_ITEMS }, items: { "Tide Pearl": 1, "Moon Shard": 0, "Sun Fossil": 0, "Potion": 4, "Super Potion": 0, "Revive Herb": 0, "Power Herb": 0, "Guard Herb": 0, "Antidote": 1, "Burn Salve": 1, "Ice Melt": 0, "Awakening": 1, "Paralyze Heal": 1, "Clarity Herb": 1, "Full Heal": 0 }, keys: [], quest: "Choose your first mythling.", steps: 0, trainerWins: 0, badges: 0, chapter: 1 });
+const freshPlayer = () => ({ area: "luminara", x: 3, y: 5, money: 1200, balls: 8, potions: 4, captureItems: { ...DEFAULT_CAPTURE_ITEMS }, items: { "Tide Pearl": 1, "Moon Shard": 0, "Sun Fossil": 0, "Potion": 4, "Super Potion": 0, "Revive Herb": 0, "Power Herb": 0, "Guard Herb": 0, "Antidote": 1, "Burn Salve": 1, "Ice Melt": 0, "Awakening": 1, "Paralyze Heal": 1, "Clarity Herb": 1, "Full Heal": 0 }, keys: [], quest: "Choose your first mythling.", steps: 0, trainerWins: 0, badges: 0, chapter: 1, liveOps: freshLiveOps() });
 const freshSeen = () => ({ elder: false, elderReward: false, rival: false, keeper: false, bridgeCaptain: false, shrine: false, dragon: false, chest: false });
 const freshDex = () => ({ seen: {}, caught: {}, shinySeen: {}, shinyCaught: {} });
-const freshClock = () => ({ day: 1, minute: 8 * 60 });
-function timeName(clock) { const h = Math.floor(clock.minute / 60); if (h >= 6 && h < 11) return "Morning"; if (h >= 11 && h < 18) return "Day"; if (h >= 18 && h < 22) return "Evening"; return "Night"; }
+function deviceClockNow() {
+  const d = new Date();
+  return {
+    day: 1,
+    minute: d.getHours() * 60 + d.getMinutes(),
+    realDate: d.toISOString().slice(0, 10),
+    realTime: d.toTimeString().slice(0, 5),
+    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || "Device",
+    syncedAt: d.getTime()
+  };
+}
+const freshClock = () => deviceClockNow();
+function syncClockWithDevice(old = {}) {
+  const now = deviceClockNow();
+  const install = old.installDate || now.realDate;
+  const days = Math.max(1, Math.floor((new Date(now.realDate + "T00:00:00").getTime() - new Date(install + "T00:00:00").getTime()) / 86400000) + 1);
+  return { ...old, ...now, installDate: install, day: days };
+}
+function timeName(clock) { const h = Math.floor((clock?.minute || 0) / 60); if (h >= 6 && h < 11) return "Morning"; if (h >= 11 && h < 18) return "Day"; if (h >= 18 && h < 22) return "Evening"; return "Night"; }
 function timeIcon(clock) {
   const n = timeName(clock);
   return n === "Morning" ? Sun : n === "Night" ? Moon : CloudSun;
 }
-function timeString(clock) { const h = Math.floor(clock.minute / 60); const m = clock.minute % 60; return `Day ${clock.day} · ${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")} · ${timeName(clock)}`; }
+function timeString(clock) { const c = syncClockWithDevice(clock || {}); const h = Math.floor(c.minute / 60); const m = c.minute % 60; return `Day ${c.day} · ${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")} · ${timeName(c)} · ${c.timezone || "Device"}`; }
+const dayKey = (offset = 0) => { const d = new Date(); d.setDate(d.getDate() + offset); return d.toISOString().slice(0,10); };
+const weekKey = () => { const d = new Date(); const onejan = new Date(d.getFullYear(),0,1); const week = Math.ceil((((d - onejan) / 86400000) + onejan.getDay() + 1) / 7); return `${d.getFullYear()}-W${String(week).padStart(2,"0")}`; };
+const LOGIN_MILESTONE_REWARDS = {
+  7: { title: "Lantern Week Tamer", item: "Lucky Candy", qty: 3 },
+  14: { title: "Two-Week Streak", item: "Training Charm", qty: 1 },
+  30: { title: "Thirty Dawn Collector", monster: "calendove", item: "Calendar Crest", qty: 1 },
+  50: { title: "Fifty-Day Archivist", item: "Chrono Ribbon", qty: 1 },
+  100: { title: "Hundred-Sun Tamer", monster: "centuril", item: "Hundred-Sun Medal", qty: 1 },
+  200: { title: "Prism Veteran", item: "Veteran Prism", qty: 1 },
+  365: { title: "Yearbound Legend", monster: "anniversol", item: "Yearbound Crown", qty: 1 }
+};
+const DAILY_MISSION_POOL = [
+  { id:"daily_wins", label:"Win 3 wild battles", target:3, field:"wildWinsToday", reward:{ money:180, item:"Rare Candy", qty:1 } },
+  { id:"daily_catch", label:"Catch 1 Mythling", target:1, field:"caughtToday", reward:{ money:120, item:"Prism Capsule", qty:3 } },
+  { id:"daily_steps", label:"Walk 40 board steps", target:40, field:"stepsToday", reward:{ money:90, item:"Potion", qty:2 } },
+  { id:"daily_dex", label:"Register 1 new Dex entry", target:1, field:"dexToday", reward:{ money:160, item:"Boost Mint", qty:1 } }
+];
+const WEEKLY_MISSION_POOL = [
+  { id:"weekly_wins", label:"Win 20 battles", target:20, field:"winsWeek", reward:{ money:800, item:"Rare Candy", qty:3 } },
+  { id:"weekly_catch", label:"Catch 8 Mythlings", target:8, field:"caughtWeek", reward:{ money:600, item:"Shiny Lure", qty:1 } },
+  { id:"weekly_train", label:"Gain 10 total levels", target:10, field:"levelsWeek", reward:{ money:700, item:"Training Charm", qty:1 } }
+];
+const EVENT_CALENDAR = [
+  { id:"new_year_prism", name:"New Year Prism Festival", start:"2026-01-01", end:"2026-01-07", area:"Prism Festival Grounds", type:"Festival", monster:"calendove", reward:"Calendar Crest" },
+  { id:"summer_tide", name:"Summer Tide Raid Week", start:"2026-06-01", end:"2026-06-14", area:"Tideglass Raid Shore", type:"Raid", monster:"monsoondillo", reward:"Tide Raid Candy" },
+  { id:"halloween_moon", name:"Moonveil Masquerade", start:"2026-10-24", end:"2026-11-02", area:"Moonveil Court", type:"Tournament", monster:"glyphound", reward:"Masquerade Ribbon" },
+  { id:"winter_aurora", name:"Winter Aurora Hunt", start:"2026-12-20", end:"2027-01-05", area:"Aurora Vale", type:"Special Area", monster:"auroravale", reward:"Aurora Ticket" }
+];
+function eventActive(ev, today = dayKey()) { return today >= ev.start && today <= ev.end; }
+function currentEvents() { const today = dayKey(); const active = EVENT_CALENDAR.filter(e=>eventActive(e,today)); return active.length ? active : EVENT_CALENDAR.slice(0,2).map(e=>({ ...e, preview:true })); }
+function freshLiveOps() {
+  const today = dayKey();
+  return {
+    installedDate: today, lastLoginDate: "", loginStreak: 0, bestLoginStreak: 0, claimedMilestones: {},
+    titles: [], activeTitle: "", daily: { date: today, claimed: {}, progress: {} },
+    weekly: { week: weekKey(), claimed: {}, progress: {} },
+    achievements: {}, eventTickets: {}, raid: null
+  };
+}
+function normalizeLiveOps(live = {}) {
+  const base = freshLiveOps();
+  const out = { ...base, ...(live || {}) };
+  out.claimedMilestones = { ...base.claimedMilestones, ...(out.claimedMilestones || {}) };
+  out.titles = Array.isArray(out.titles) ? out.titles : [];
+  out.daily = out.daily?.date === dayKey() ? { date: dayKey(), claimed: { ...(out.daily.claimed || {}) }, progress: { ...(out.daily.progress || {}) } } : { date: dayKey(), claimed: {}, progress: {} };
+  out.weekly = out.weekly?.week === weekKey() ? { week: weekKey(), claimed: { ...(out.weekly.claimed || {}) }, progress: { ...(out.weekly.progress || {}) } } : { week: weekKey(), claimed: {}, progress: {} };
+  out.achievements = { ...(out.achievements || {}) };
+  out.eventTickets = { ...(out.eventTickets || {}) };
+  return out;
+}
+function addItemToPlayer(player, item, qty=1) {
+  const p = { ...player, items:{ ...(player.items || {}) }, captureItems:{ ...(player.captureItems || {}) } };
+  if (DEFAULT_CAPTURE_ITEMS[item] !== undefined || item.includes("Capsule")) p.captureItems[item] = (p.captureItems[item] || 0) + qty;
+  else p.items[item] = (p.items[item] || 0) + qty;
+  p.balls = Object.values(p.captureItems || {}).reduce((a,b)=>a+Number(b||0),0);
+  return p;
+}
+function grantLiveReward(player, reward = {}) {
+  let p = { ...player };
+  if (reward.money) p.money = (p.money || 0) + reward.money;
+  if (reward.item) p = addItemToPlayer(p, reward.item, reward.qty || 1);
+  if (reward.title) {
+    p.liveOps = normalizeLiveOps(p.liveOps);
+    if (!p.liveOps.titles.includes(reward.title)) p.liveOps.titles.push(reward.title);
+    if (!p.liveOps.activeTitle) p.liveOps.activeTitle = reward.title;
+  }
+  return p;
+}
 function formatOnlineSyncStamp(value) {
   if (!value) return "Never";
   const d = new Date(value);
@@ -1659,14 +1749,14 @@ function normalizeMon(m) {
 function scaleMonToSpecies(old, newId) { const next = makeMon(newId, old.level, false); const ratio = old.hp / Math.max(1, old.maxHp); return ensureMovePP({ ...next, nickname: old.nickname || "", gender: old.gender || next.gender, shiny: Boolean(old.shiny), status: normalizeStatus(old.status), xp: old.xp, nextXp: xpToNextLevel(old.level, newId), hp: Math.max(1, Math.floor(next.maxHp * ratio)) }); }
 function migrateSave(input) {
   const data = input && typeof input === "object" ? input : {};
-  const player = { ...freshPlayer(), ...(data.player || data.tamer || {}) }; player.items = { ...freshPlayer().items, ...(player.items || {}) }; if (!AREA_DATA[player.area]) player.area = "luminara"; if (typeof player.chapter !== "number") player.chapter = currentAreaData(player).chapter || 1; player.captureItems = { ...DEFAULT_CAPTURE_ITEMS, ...(player.captureItems || {}) }; if (typeof player.balls === "number" && !data.player?.captureItems) player.captureItems["Prism Capsule"] = player.balls; player.balls = Object.values(player.captureItems || {}).reduce((a,b)=>a + Number(b || 0), 0); if (typeof player.money !== "number") player.money = 1200; let party = Array.isArray(data.party) ? data.party.map(normalizeMon).filter((m) => BESTIARY[m.id]).slice(0, 6) : [];
+  const player = { ...freshPlayer(), ...(data.player || data.tamer || {}) }; player.liveOps = normalizeLiveOps(player.liveOps); player.items = { ...freshPlayer().items, ...(player.items || {}) }; if (!AREA_DATA[player.area]) player.area = "luminara"; if (typeof player.chapter !== "number") player.chapter = currentAreaData(player).chapter || 1; player.captureItems = { ...DEFAULT_CAPTURE_ITEMS, ...(player.captureItems || {}) }; if (typeof player.balls === "number" && !data.player?.captureItems) player.captureItems["Prism Capsule"] = player.balls; player.balls = Object.values(player.captureItems || {}).reduce((a,b)=>a + Number(b || 0), 0); if (typeof player.money !== "number") player.money = 1200; let party = Array.isArray(data.party) ? data.party.map(normalizeMon).filter((m) => BESTIARY[m.id]).slice(0, 6) : [];
   let storage = Array.isArray(data.storage) ? data.storage.map(normalizeMon).filter((m) => BESTIARY[m.id]) : [];
   if (!storage.length && Array.isArray(data.pc)) storage = data.pc.map(normalizeMon).filter((m) => BESTIARY[m.id]);
   if (!storage.length && Array.isArray(data.box)) storage = data.box.map(normalizeMon).filter((m) => BESTIARY[m.id]);
   if (!party.length && storage.length) {
     party = storage.slice(0, 6);
     storage = storage.slice(6);
-  } const dex = ensureDexShape(data.dex || freshDex()); party.concat(storage).forEach((m) => { dex.seen[m.id] = true; dex.caught[m.id] = true; if (m.shiny) { dex.shinySeen[m.id] = true; dex.shinyCaught[m.id] = true; } }); const safeScreen = VALID_SCREENS.has(data.screen) ? data.screen : ((party.length || storage.length) ? "world" : "title"); return { version: 26, savedAt: Date.now(), screen: party.length ? (safeScreen === "battle" || safeScreen === "gameover" || safeScreen === "starter" ? "world" : safeScreen || "world") : "title", storyIndex: data.storyIndex || 0, player, party, storage, active: Math.min(data.active || 0, Math.max(0, party.length - 1)), seen: { ...freshSeen(), ...(data.seen || {}) }, dex, clock: data.clock || freshClock(), muted: Boolean(data.muted) }; }
+  } const dex = ensureDexShape(data.dex || freshDex()); party.concat(storage).forEach((m) => { dex.seen[m.id] = true; dex.caught[m.id] = true; if (m.shiny) { dex.shinySeen[m.id] = true; dex.shinyCaught[m.id] = true; } }); const safeScreen = VALID_SCREENS.has(data.screen) ? data.screen : ((party.length || storage.length) ? "world" : "title"); return { version: 27, savedAt: Date.now(), screen: party.length ? (safeScreen === "battle" || safeScreen === "gameover" || safeScreen === "starter" ? "world" : safeScreen || "world") : "title", storyIndex: data.storyIndex || 0, player, party, storage, active: Math.min(data.active || 0, Math.max(0, party.length - 1)), seen: { ...freshSeen(), ...(data.seen || {}) }, dex, clock: syncClockWithDevice(data.clock || freshClock()), muted: Boolean(data.muted) }; }
 function typeMult(a, d) {
   const chart = TYPE_MATCHUPS[a] || {};
   let mult = 1;
@@ -2021,6 +2111,71 @@ function MonsterModel({ mon, size = "large", flipped = false, faint = false, ani
   </motion.div>;
 }
 
+
+function missionProgress(player, mission) {
+  const live = normalizeLiveOps(player?.liveOps);
+  const source = mission.id.startsWith("weekly") ? live.weekly.progress : live.daily.progress;
+  return Math.max(0, Number(source?.[mission.field] || 0));
+}
+function bumpMissionProgressInPlayer(player, field, amount = 1) {
+  const p = { ...player, liveOps: normalizeLiveOps(player.liveOps) };
+  p.liveOps.daily.progress[field] = (p.liveOps.daily.progress[field] || 0) + amount;
+  p.liveOps.weekly.progress[field] = (p.liveOps.weekly.progress[field] || 0) + amount;
+  return p;
+}
+function processDailyLoginForPlayer(player, setModal) {
+  const today = dayKey();
+  const yesterday = dayKey(-1);
+  const p = { ...player, liveOps: normalizeLiveOps(player.liveOps) };
+  if (p.liveOps.lastLoginDate === today) return p;
+  const streak = p.liveOps.lastLoginDate === yesterday ? (p.liveOps.loginStreak || 0) + 1 : 1;
+  p.liveOps.lastLoginDate = today;
+  p.liveOps.loginStreak = streak;
+  p.liveOps.bestLoginStreak = Math.max(p.liveOps.bestLoginStreak || 0, streak);
+  p.liveOps.daily = { date: today, claimed: {}, progress: {} };
+  if (p.liveOps.weekly.week !== weekKey()) p.liveOps.weekly = { week: weekKey(), claimed: {}, progress: {} };
+  const baseReward = streak >= 7 ? { item:"Rare Candy", qty:2, money:250 } : { item:"Prism Capsule", qty:2, money:80 + streak * 20 };
+  const milestone = LOGIN_MILESTONE_REWARDS[streak] && !p.liveOps.claimedMilestones[streak] ? LOGIN_MILESTONE_REWARDS[streak] : null;
+  p.liveOps.pendingLoginReward = { streak, date: today, baseReward, milestone };
+  if (setModal) setTimeout(()=>setModal({ streak, date: today, baseReward, milestone }), 250);
+  return p;
+}
+function claimLoginRewardForPlayer(player) {
+  const p = { ...player, liveOps: normalizeLiveOps(player.liveOps) };
+  const pending = p.liveOps.pendingLoginReward;
+  if (!pending) return p;
+  let next = grantLiveReward(p, pending.baseReward);
+  next.liveOps = normalizeLiveOps(next.liveOps);
+  if (pending.milestone) {
+    next = grantLiveReward(next, pending.milestone);
+    next.liveOps.claimedMilestones[pending.streak] = true;
+  }
+  delete next.liveOps.pendingLoginReward;
+  return next;
+}
+function claimMissionForPlayer(player, mission, kind) {
+  const p = { ...player, liveOps: normalizeLiveOps(player.liveOps) };
+  const bucket = kind === "weekly" ? p.liveOps.weekly : p.liveOps.daily;
+  if (bucket.claimed[mission.id]) return { player:p, ok:false, message:"Already claimed." };
+  if (missionProgress(p, mission) < mission.target) return { player:p, ok:false, message:"Mission not complete yet." };
+  let next = grantLiveReward(p, mission.reward);
+  next.liveOps = normalizeLiveOps(next.liveOps);
+  const nextBucket = kind === "weekly" ? next.liveOps.weekly : next.liveOps.daily;
+  nextBucket.claimed[mission.id] = true;
+  return { player:next, ok:true, message:`Claimed: ${mission.reward.item || ""} ${mission.reward.qty ? "x"+mission.reward.qty : ""}` };
+}
+function achievementList(player, dex, party, storage) {
+  const stats = dexStats(ensureDexShape(dex));
+  const live = normalizeLiveOps(player?.liveOps);
+  return [
+    { id:"first_catch", title:"First Bond", desc:"Catch your first Mythling.", done:stats.caught>=1, reward:{ item:"Prism Capsule", qty:5 } },
+    { id:"ten_seen", title:"Curious Tamer", desc:"See 10 Mythlings.", done:stats.seen>=10, reward:{ item:"Boost Mint", qty:1 } },
+    { id:"twenty_caught", title:"Field Collector", desc:"Catch 20 Mythlings.", done:stats.caught>=20, reward:{ item:"Rare Candy", qty:2 } },
+    { id:"first_shiny", title:"Spark of Fate", desc:"Catch any shiny Mythling.", done:stats.shinyCaught>=1, reward:{ item:"Shiny Lure", qty:1 } },
+    { id:"streak_7", title:"Seven-Day Tamer", desc:"Log in 7 days in a row.", done:(live.bestLoginStreak||0)>=7, reward:{ title:"Seven-Day Tamer", item:"Rare Candy", qty:1 } },
+    { id:"dragon_clear", title:"Dracinder Challenger", desc:"Challenge and clear the Dracinder chapter.", done: Number(player?.badges || 0) >= 3, reward:{ item:"Dragon Badge Polish", qty:1 } },
+  ];
+}
 function MythboundTamersJRPGInner() {
   const [screen, setScreen] = useState("title");
   const [storyIndex, setStoryIndex] = useState(0);
@@ -2037,6 +2192,7 @@ function MythboundTamersJRPGInner() {
   const [objectiveMapFocus, setObjectiveMapFocus] = useState(null);
   const [evolutionScene, setEvolutionScene] = useState(null);
   const [pendingEvolution, setPendingEvolution] = useState(null);
+  const [dailyLoginModal, setDailyLoginModal] = useState(null);
   const [seen, setSeen] = useState(freshSeen());
   const [dex, setDex] = useState(freshDex());
   const [clock, setClock] = useState(freshClock());
@@ -2086,10 +2242,21 @@ function MythboundTamersJRPGInner() {
       window.removeEventListener("orientationchange", updateViewport);
     };
   }, []);
+    useEffect(() => {
+    const sync = () => setClock((c) => syncClockWithDevice(c || freshClock()));
+    sync();
+    const timer = setInterval(sync, 30000);
+    document.addEventListener("visibilitychange", sync);
+    return () => { clearInterval(timer); document.removeEventListener("visibilitychange", sync); };
+  }, []);
+  useEffect(() => {
+    if (!party.length) return;
+    setPlayer((p) => processDailyLoginForPlayer(p, setDailyLoginModal));
+  }, [party.length]);
   
   useEffect(() => { if (!toast) return; const t = setTimeout(() => setToast(null), 2400); return () => clearTimeout(t); }, [toast]);
   useEffect(() => {
-    const musicScreens = ["title", "story", "world", "objectives", "atlas", "shop", "party", "dex", "pc"];
+    const musicScreens = ["title", "story", "world", "objectives", "events", "achievements", "atlas", "shop", "party", "dex", "pc"];
     if (!muted && musicScreens.includes(screen)) startBgm();
     else stopBgm();
     return () => {};
@@ -2182,7 +2349,7 @@ function MythboundTamersJRPGInner() {
   }
   function buildSaveData(g = gameRef.current) {
     const safeScreen = ["battle", "gameover", "starter"].includes(g.screen) ? "world" : g.screen;
-    return { version: 23, savedAt: Date.now(), screen: safeScreen, storyIndex: g.storyIndex, player: g.player, party: g.party, storage: g.storage || [], active: g.active, seen: g.seen, dex: g.dex, clock: g.clock, muted: g.muted };
+    return { version: 27, savedAt: Date.now(), screen: safeScreen, storyIndex: g.storyIndex, player: g.player, party: g.party, storage: g.storage || [], active: g.active, seen: g.seen, dex: g.dex, clock: g.clock, muted: g.muted };
   }
   function hydrateSaveData(data, sourceLabel = "save") {
     const migrated = migrateSave(data || {});
@@ -2193,7 +2360,7 @@ function MythboundTamersJRPGInner() {
     if (!supabase) throw new Error("Supabase env variables are missing.");
     if (!authUser) throw new Error("Sign in first.");
     const migrated = migrateSave(saveData || {});
-    const cleanSave = JSON.parse(JSON.stringify({ ...migrated, version: 23, savedAt: Date.now() }));
+    const cleanSave = JSON.parse(JSON.stringify({ ...migrated, version: 27, savedAt: Date.now() }));
     const display = accountProfile?.display_name || authUser.user_metadata?.display_name || authUser.email?.split("@")[0] || `Tamer-${authUser.id.slice(0, 6)}`;
     const syncedAt = new Date().toISOString();
 
@@ -2209,7 +2376,7 @@ function MythboundTamersJRPGInner() {
       inventory_snapshot: cleanSave.player || {},
       dex_caught: Object.keys(cleanSave.dex?.caught || {}).filter((k) => cleanSave.dex.caught[k]).length,
       save_data: cleanSave,
-      save_version: cleanSave.version || 26,
+      save_version: cleanSave.version || 27,
       last_save_at: syncedAt,
       updated_at: syncedAt
     };
@@ -2291,10 +2458,11 @@ function playCry(id) { const isLegend = !!BESTIARY[id]?.legendary; const base = 
     setTimeout(() => beep(base * 2.05, 0.22, "sine", 0.065), 1780);
     setTimeout(() => playCry(toMon.id), 2060);
   }
-  function markSeen(monOrId) {
+  function markSeen(monOrId) { const beforeSeen = !!ensureDexShape(gameRef.current.dex || freshDex()).seen[(typeof monOrId === "string" ? monOrId : monOrId?.id)];
     const id = typeof monOrId === "string" ? monOrId : monOrId?.id;
     if (!id) return;
     const isShiny = typeof monOrId === "object" && Boolean(monOrId?.shiny);
+    if (!beforeSeen) setPlayer((p)=>bumpMissionProgressInPlayer(p, "dexToday", 1));
     setDex((d) => {
       const safe = ensureDexShape(d);
       return {
@@ -2318,6 +2486,76 @@ function playCry(id) { const isLegend = !!BESTIARY[id]?.legendary; const base = 
         shinyCaught: isShiny ? { ...safe.shinyCaught, [id]: true } : safe.shinyCaught,
       };
     });
+    setPlayer((p) => bumpMissionProgressInPlayer(bumpMissionProgressInPlayer(p, "caughtToday", 1), "caughtWeek", 1));
+  }
+  function claimDailyLoginReward() {
+    setPlayer((p) => claimLoginRewardForPlayer(p));
+    setDailyLoginModal(null);
+    setToast("Daily login reward claimed!");
+    sfx("success");
+    setTimeout(()=>saveGame(false), 150);
+  }
+  function claimMission(mission, kind) {
+    const res = claimMissionForPlayer(gameRef.current.player, mission, kind);
+    setPlayer(res.player);
+    setToast(res.message);
+    if (res.ok) { sfx("success"); setTimeout(()=>saveGame(false), 150); }
+    else sfx("fail");
+  }
+  function claimAchievement(ach) {
+    const p = gameRef.current.player;
+    const live = normalizeLiveOps(p.liveOps);
+    if (!ach.done || live.achievements[ach.id]) { setToast(live.achievements[ach.id] ? "Achievement already claimed." : "Achievement not complete yet."); return; }
+    let next = grantLiveReward({ ...p, liveOps: live }, ach.reward);
+    next.liveOps.achievements[ach.id] = true;
+    setPlayer(next);
+    setToast(`Achievement claimed: ${ach.title}`);
+    sfx("success");
+    setTimeout(()=>saveGame(false), 150);
+  }
+  function joinRaidEvent(raidId = "daily_raid") {
+    const ev = currentEvents().find(e=>e.type==="Raid") || { id:"daily_raid", name:"Daily Training Raid", monster:"raidram" };
+    const boss = makeMon(ev.monster || "raidram", Math.max(24, Math.floor(averagePartyLevel(gameRef.current.party) + 12)), true);
+    boss.maxHp *= 8; boss.hp = boss.maxHp;
+    setPlayer((p)=>({ ...p, liveOps:{ ...normalizeLiveOps(p.liveOps), raid:{ id:raidId, eventId:ev.id, name:ev.name, boss, damage:0, allies:1, startedAt:Date.now(), resolved:false }}}));
+    setToast(`Joined raid: ${ev.name}.`);
+    sfx("success");
+  }
+  function attackRaid() {
+    const g = gameRef.current;
+    const live = normalizeLiveOps(g.player.liveOps);
+    const raid = live.raid;
+    if (!raid || raid.resolved) return;
+    const lead = g.party[g.active] || g.party[0];
+    const damage = Math.max(24, Math.floor((lead?.atk || 30) * (1.4 + Math.random() * 0.7) + (lead?.level || 5) * 6));
+    const boss = { ...raid.boss, hp: Math.max(0, raid.boss.hp - damage) };
+    const resolved = boss.hp <= 0;
+    setPlayer((p)=>({ ...p, liveOps:{ ...normalizeLiveOps(p.liveOps), raid:{ ...raid, boss, damage:(raid.damage||0)+damage, allies:Math.min(4,(raid.allies||1)+(Math.random()<0.25?1:0)), resolved }}}));
+    setToast(resolved ? "Raid boss defeated! Claim rewards and try to catch it." : `Raid hit for ${damage} damage.`);
+    sfx(resolved ? "success" : "hit");
+  }
+  function claimRaidRewards() {
+    const g = gameRef.current;
+    const live = normalizeLiveOps(g.player.liveOps);
+    const raid = live.raid;
+    if (!raid?.resolved) { setToast("Defeat the raid boss first."); return; }
+    let p = grantLiveReward(g.player, { money: 900, item:"Rare Candy", qty:3 });
+    p = grantLiveReward(p, { item:"Boost Mint", qty:2 });
+    p.liveOps = normalizeLiveOps(p.liveOps);
+    const catchChance = 0.18 + Math.min(0.22, (raid.damage || 0) / Math.max(1, raid.boss.maxHp) * 0.22);
+    let caught = false;
+    if (Math.random() < catchChance) {
+      const mon = normalizeMon({ ...raid.boss, hp: Math.max(1, Math.floor(raid.boss.maxHp * 0.45)), wild:false, uid:`${raid.boss.id}_${uid()}` });
+      if (gameRef.current.party.length < 6) setParty((arr)=>[...arr, mon]);
+      else setStorage((arr)=>[...arr, mon]);
+      markCaught(mon);
+      caught = true;
+    }
+    p.liveOps.raid = null;
+    setPlayer(p);
+    setToast(caught ? `Raid rewards claimed — caught ${raid.boss.name}!` : "Raid rewards claimed. The boss escaped the capture throw.");
+    sfx("success");
+    setTimeout(()=>saveGame(false), 150);
   }
   function saveGame(show = true) {
     const data = buildSaveData();
@@ -2365,7 +2603,7 @@ function playCry(id) { const isLegend = !!BESTIARY[id]?.legendary; const base = 
     const starter = makeMon(id, 5);
     const nextPlayer = { ...player, quest: "Reach Elder Nima in Grovepath village." };
     const nextDex = { ...dex, seen: { ...(dex.seen || {}), [starter.id]: true }, caught: { ...(dex.caught || {}), [starter.id]: true } };
-    const starterSave = { version: 10, savedAt: Date.now(), screen: "world", storyIndex, player: nextPlayer, party: [starter], storage, active: 0, seen, dex: nextDex, clock, muted };
+    const starterSave = { version: 27, savedAt: Date.now(), screen: "world", storyIndex, player: nextPlayer, party: [starter], storage, active: 0, seen, dex: nextDex, clock, muted };
     playCry(id);
     setParty([starter]);
     setActive(0);
@@ -2411,14 +2649,14 @@ function playCry(id) { const isLegend = !!BESTIARY[id]?.legendary; const base = 
     stepTime();
     if (AREA_EXITS[t] && (AREA_EXITS[t] !== (g.player.area || "luminara"))) {
       const target = AREA_DATA[AREA_EXITS[t]] || AREA_DATA.luminara;
-      setPlayer((p) => ({ ...p, x: nx, y: ny, steps: (p.steps || 0) + 1 }));
+      setPlayer((p) => bumpMissionProgressInPlayer({ ...p, x: nx, y: ny, steps: (p.steps || 0) + 1 }, "stepsToday", 1));
       const safety = areaGateSafety(target.id, g.party, g.seen, g.player);
       setPendingAreaGate({ areaId: target.id, tile: t, tileName: TILE_NAMES[t] || "Area Gate", fromArea: AREA_DATA[g.player.area || "luminara"]?.name || "Luminara", targetName: target.name, subtitle: target.subtitle, theme: target.theme, description: target.description, sideQuest: target.sideQuest, safety });
       sfx("success");
       return;
     }
     showCinematicForTile(t);
-    setPlayer((p) => ({ ...p, x: nx, y: ny, steps: (p.steps || 0) + 1 }));
+    setPlayer((p) => bumpMissionProgressInPlayer({ ...p, x: nx, y: ny, steps: (p.steps || 0) + 1 }, "stepsToday", 1));
     if (areaEncounterPool(t, g.player).length && Math.random() < Math.min(0.31, 0.17 + (areaChapter(g.player) * 0.025))) startWildBattle(t);
     if (t === "N") talkElder();
     if (t === "R") startRival();
@@ -2673,6 +2911,12 @@ function playCry(id) { const isLegend = !!BESTIARY[id]?.legendary; const base = 
       return rule && BESTIARY[rule.to] ? { index: idx, fromName: displayName(mon), toName: BESTIARY[rule.to].name, method: rule.method, monId: mon.id, toId: rule.to } : null;
     })();
     setParty(newParty);
+    const gainedLevels = levelUps.reduce((a,l)=>a + Math.max(0,(l.to||0)-(l.from||0)),0);
+    setPlayer((p)=>{
+      let np = bumpMissionProgressInPlayer(bumpMissionProgressInPlayer(p, "wildWinsToday", b.mode === "wild" ? 1 : 0), "winsWeek", 1);
+      if (gainedLevels) np = bumpMissionProgressInPlayer(np, "levelsWeek", gainedLevels);
+      return np;
+    });
 
     const reward = { xp, money: 0, items: [] };
     if (b.mode === "trainer") {
@@ -2981,7 +3225,7 @@ function playCry(id) { const isLegend = !!BESTIARY[id]?.legendary; const base = 
   function reset() { setScreen("title"); setStoryIndex(0); setPlayer(freshPlayer()); setParty([]); setStorage([]); setActive(0); setBattle(null); setNpc(null); setSeen(freshSeen()); setDex(freshDex()); setClock(freshClock()); setBattleAnim({ player: "idle", enemy: "idle", fx: null, text: null }); }
   const current = party[active]; const stats = dexStats(dex); const TimeIcon = timeIcon(clock);
   const hasStartedGame = party.length > 0 || storage.length > 0 || Object.keys(dex?.seen || {}).length > 0 || Object.keys(dex?.caught || {}).length > 0;
-  const gameScreens = new Set(["world", "party", "pc", "shop", "dex", "atlas", "multiplayer", "friends", "objectives"]);
+  const gameScreens = new Set(["world", "party", "pc", "shop", "dex", "atlas", "multiplayer", "friends", "objectives", "achievements", "events"]);
   function requestScreen(next) {
     if (gameScreens.has(next) && !hasStartedGame) {
       setToast("Start a New Journey or load a save before opening the map.");
@@ -2990,7 +3234,7 @@ function playCry(id) { const isLegend = !!BESTIARY[id]?.legendary; const base = 
     }
     setScreen(next);
   }
-  return <div className="h-[100dvh] max-h-[100dvh] bg-slate-950 text-white p-1 sm:p-3 landscape:p-0 overflow-hidden relative"><div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(34,211,238,.16),transparent_28%),radial-gradient(circle_at_80%_15%,rgba(217,70,239,.13),transparent_25%),radial-gradient(circle_at_55%_85%,rgba(132,204,22,.11),transparent_28%)]"/><div className="relative max-w-7xl mx-auto grid lg:grid-cols-[1fr_350px] gap-4"><Card className="rounded-2xl sm:rounded-3xl landscape:rounded-none overflow-hidden bg-slate-900/80 border-white/10 shadow-2xl shadow-cyan-500/10 h-[calc(100dvh-0.5rem)] sm:h-[calc(100dvh-1.5rem)] landscape:h-[100dvh]"><CardContent className="p-0 h-full overflow-hidden"><div className="h-full overflow-y-scroll overscroll-contain touch-pan-y pb-56 sm:pb-10" style={{ WebkitOverflowScrolling: "touch" }}><AnimatePresence mode="wait">{screen === "title" && <TitleScreen startStory={startStory} loadGame={loadGame} hasSave={hasSave}/>} {screen === "story" && <StoryScreen item={STORY[storyIndex]} nextStory={nextStory} index={storyIndex} total={STORY.length}/>} {screen === "starter" && <StarterScreen chooseStarter={chooseStarter}/>} {screen === "world" && party.length > 0 && <WorldScreen map={currentAreaMap(player)} area={currentAreaData(player)} player={player} move={move} party={party} storage={storage} seen={seen} dex={dex} setScreen={setScreen} saveGame={saveGame} clock={clock} viewport={viewport} onObjectiveClick={setObjectiveModal} setObjectiveMapFocus={setObjectiveMapFocus} objectiveMapFocus={objectiveMapFocus} clearObjectiveFocus={() => setObjectiveMapFocus(null)}/>} {screen === "party" && <PartyScreen party={party} active={active} setActive={setActive} setScreen={setScreen} player={player} seen={seen} evolve={evolve} clock={clock} useStatusItem={useStatusItem}/>} {screen === "pc" && <PCStorageScreen party={party} storage={storage} setScreen={setScreen} swapWithStorage={swapWithStorage} withdrawFromStorage={withdrawFromStorage}/>} {screen === "shop" && <ShopScreen player={player} setScreen={setScreen} buyStock={buyStock}/>} {screen === "dex" && <DexScreen dex={dex} setScreen={setScreen}/>} {screen === "account" && <AccountScreen setScreen={setScreen} authUser={authUser} accountProfile={accountProfile} accountStatus={accountStatus} setAccountStatus={setAccountStatus} findValidSave={findValidSave} hydrateSaveData={hydrateSaveData} uploadSaveDataToCloud={uploadSaveDataToCloud} loadAccountProfile={loadAccountProfile} cloudSyncStatus={cloudSyncStatus} lastCloudSyncAt={lastCloudSyncAt}/>} {screen === "multiplayer" && <MultiplayerScreen party={party} setParty={setParty} dex={dex} player={player} setScreen={setScreen} authUser={authUser} accountProfile={accountProfile} saveGame={saveGame}/>} {screen === "friends" && <FriendsScreen party={party} dex={dex} player={player} setScreen={setScreen} authUser={authUser} accountProfile={accountProfile}/>} {screen === "objectives" && <ObjectivesScreen setScreen={setScreen} player={player} seen={seen} dex={dex} party={party} storage={storage} clock={clock} onObjectiveClick={setObjectiveModal}/>} {screen === "help" && <HelpScreen setScreen={setScreen}/>} {screen === "update" && <UpdateCenterScreen setScreen={setScreen} availableUpdate={availableUpdate} status={updateStatus} checkUpdates={() => checkAppUpdate({ silent: false })} downloadUpdate={() => downloadAvailableUpdate(availableUpdate)} />} {screen === "atlas" && <AtlasScreen player={player} seen={seen} dex={dex} party={party} setScreen={setScreen}/>} {screen === "battle" && battle && current && <BattleScreen battle={battle} playerMon={current} skills={skills(current)} playerUse={playerUse} capture={capture} selectedCaptureItem={selectedCaptureItem} setSelectedCaptureItem={setSelectedCaptureItem} usePotion={usePotion} useStatusCure={useStatusCureInBattle} usePPItem={usePPItemInBattle} run={run} player={player} party={party} active={active} setActive={setActive} anim={battleAnim} dex={dex} clock={clock} onBattleResultContinue={finishBattleResult}/>} {screen === "gameover" && <GameOver reset={reset}/>} {screen === "world" && party.length === 0 && <StartRequiredScreen setScreen={setScreen} loadGame={loadGame} hasSave={hasSave}/>} {!VALID_SCREENS.has(screen) && <RecoveryScreen reset={reset} setScreen={setScreen} party={party}/>} {screen === "battle" && (!battle || !current) && <RecoveryScreen reset={reset} setScreen={setScreen} party={party} message="Battle data was missing, so the app can safely return to the map."/>}</AnimatePresence></div></CardContent></Card><div className="hidden lg:block"><SidePanel player={player} party={party} active={active} setScreen={requestScreen} reset={reset} saveGame={saveGame} loadGame={loadGame} clearSave={clearSave} hasSave={hasSave} muted={muted} setMuted={setMuted} stats={stats} clock={clock} authUser={authUser} accountProfile={accountProfile} cloudSyncStatus={cloudSyncStatus} lastCloudSyncAt={lastCloudSyncAt} storage={storage} seen={seen} dex={dex} onObjectiveClick={setObjectiveModal}/></div></div><MobileNav setScreen={requestScreen} saveGame={saveGame} muted={muted} setMuted={setMuted} authUser={authUser}/><AnimatePresence>{cinematic && <CinematicOverlay cinematic={cinematic}/>}</AnimatePresence><AnimatePresence>{evolutionScene && <EvolutionOverlay scene={evolutionScene}/>}</AnimatePresence><AnimatePresence>{pendingEvolution && <EvolutionPromptModal info={pendingEvolution} proceed={() => confirmPendingEvolution()} skip={() => skipPendingEvolution()} />}</AnimatePresence><AnimatePresence>{toast && <motion.div initial={{ y: 30, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 30, opacity: 0 }} className="fixed bottom-5 left-1/2 -translate-x-1/2 px-5 py-3 rounded-2xl bg-slate-900 border border-cyan-300/30 shadow-xl text-cyan-100 font-bold z-50">{toast}</motion.div>}</AnimatePresence><AnimatePresence>{npc && <NpcModal npc={npc} close={() => { if (npc.reward) npc.reward(); setNpc(null); saveGame(false); }}/>}</AnimatePresence><AnimatePresence>{pendingAreaGate && <AreaGateModal gate={pendingAreaGate} enter={confirmAreaGate} stay={cancelAreaGate}/>}</AnimatePresence><AnimatePresence>{objectiveModal && <ObjectiveDetailModal info={objectiveModal} close={() => setObjectiveModal(null)} showOnMap={(target) => { if (!target) return; setObjectiveMapFocus(target); setObjectiveModal(null); setScreen("world"); setToast(`Map target highlighted: ${target.label || "Objective"}`); }}/>}</AnimatePresence><AnimatePresence>{battleResult && <BattleResultModal result={battleResult} onContinue={finishBattleResult} onEvolve={(index)=>startEvolutionFromBattle(index)} />}</AnimatePresence><AnimatePresence>{updateModalVisible && availableUpdate && <UpdateAvailableModal manifest={availableUpdate} status={updateStatus} nativeReady={nativeUpdaterReady} download={() => downloadAvailableUpdate(availableUpdate)} later={() => setUpdateModalVisible(false)} checkAgain={() => checkAppUpdate({ silent: false })}/>}</AnimatePresence><AnimatePresence>{renameMon && <RenameModal nickname={nickname} setNickname={setNickname} notice={renameNotice} applyNickname={applyNickname} skip={() => { setRenameMon(null); setNickname(""); setRenameNotice(""); setTimeout(() => saveGame(false), 50); }}/>}</AnimatePresence></div>;
+  return <div className="h-[100dvh] max-h-[100dvh] bg-slate-950 text-white p-1 sm:p-3 landscape:p-0 overflow-hidden relative"><div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(34,211,238,.16),transparent_28%),radial-gradient(circle_at_80%_15%,rgba(217,70,239,.13),transparent_25%),radial-gradient(circle_at_55%_85%,rgba(132,204,22,.11),transparent_28%)]"/><div className="relative max-w-7xl mx-auto grid lg:grid-cols-[1fr_350px] gap-4"><Card className="rounded-2xl sm:rounded-3xl landscape:rounded-none overflow-hidden bg-slate-900/80 border-white/10 shadow-2xl shadow-cyan-500/10 h-[calc(100dvh-0.5rem)] sm:h-[calc(100dvh-1.5rem)] landscape:h-[100dvh]"><CardContent className="p-0 h-full overflow-hidden"><div className="h-full overflow-y-scroll overscroll-contain touch-pan-y pb-56 sm:pb-10" style={{ WebkitOverflowScrolling: "touch" }}><AnimatePresence mode="wait">{screen === "title" && <TitleScreen startStory={startStory} loadGame={loadGame} hasSave={hasSave}/>} {screen === "story" && <StoryScreen item={STORY[storyIndex]} nextStory={nextStory} index={storyIndex} total={STORY.length}/>} {screen === "starter" && <StarterScreen chooseStarter={chooseStarter}/>} {screen === "world" && party.length > 0 && <WorldScreen map={currentAreaMap(player)} area={currentAreaData(player)} player={player} move={move} party={party} storage={storage} seen={seen} dex={dex} setScreen={setScreen} saveGame={saveGame} clock={clock} viewport={viewport} onObjectiveClick={setObjectiveModal} setObjectiveMapFocus={setObjectiveMapFocus} objectiveMapFocus={objectiveMapFocus} clearObjectiveFocus={() => setObjectiveMapFocus(null)}/>} {screen === "party" && <PartyScreen party={party} active={active} setActive={setActive} setScreen={setScreen} player={player} seen={seen} evolve={evolve} clock={clock} useStatusItem={useStatusItem}/>} {screen === "pc" && <PCStorageScreen party={party} storage={storage} setScreen={setScreen} swapWithStorage={swapWithStorage} withdrawFromStorage={withdrawFromStorage}/>} {screen === "shop" && <ShopScreen player={player} setScreen={setScreen} buyStock={buyStock}/>} {screen === "dex" && <DexScreen dex={dex} setScreen={setScreen}/>} {screen === "account" && <AccountScreen setScreen={setScreen} authUser={authUser} accountProfile={accountProfile} accountStatus={accountStatus} setAccountStatus={setAccountStatus} findValidSave={findValidSave} hydrateSaveData={hydrateSaveData} uploadSaveDataToCloud={uploadSaveDataToCloud} loadAccountProfile={loadAccountProfile} cloudSyncStatus={cloudSyncStatus} lastCloudSyncAt={lastCloudSyncAt}/>} {screen === "multiplayer" && <MultiplayerScreen party={party} setParty={setParty} dex={dex} player={player} setScreen={setScreen} authUser={authUser} accountProfile={accountProfile} saveGame={saveGame}/>} {screen === "friends" && <FriendsScreen party={party} dex={dex} player={player} setScreen={setScreen} authUser={authUser} accountProfile={accountProfile}/>} {screen === "achievements" && <AchievementsScreen player={player} dex={dex} party={party} storage={storage} setScreen={setScreen} claimAchievement={claimAchievement}/>} {screen === "events" && <EventsScreen player={player} party={party} setScreen={setScreen} claimMission={claimMission} joinRaidEvent={joinRaidEvent} attackRaid={attackRaid} claimRaidRewards={claimRaidRewards}/>} {screen === "objectives" && <ObjectivesScreen setScreen={setScreen} player={player} seen={seen} dex={dex} party={party} storage={storage} clock={clock} onObjectiveClick={setObjectiveModal}/>} {screen === "help" && <HelpScreen setScreen={setScreen}/>} {screen === "update" && <UpdateCenterScreen setScreen={setScreen} availableUpdate={availableUpdate} status={updateStatus} checkUpdates={() => checkAppUpdate({ silent: false })} downloadUpdate={() => downloadAvailableUpdate(availableUpdate)} />} {screen === "atlas" && <AtlasScreen player={player} seen={seen} dex={dex} party={party} setScreen={setScreen}/>} {screen === "battle" && battle && current && <BattleScreen battle={battle} playerMon={current} skills={skills(current)} playerUse={playerUse} capture={capture} selectedCaptureItem={selectedCaptureItem} setSelectedCaptureItem={setSelectedCaptureItem} usePotion={usePotion} useStatusCure={useStatusCureInBattle} usePPItem={usePPItemInBattle} run={run} player={player} party={party} active={active} setActive={setActive} anim={battleAnim} dex={dex} clock={clock} onBattleResultContinue={finishBattleResult}/>} {screen === "gameover" && <GameOver reset={reset}/>} {screen === "world" && party.length === 0 && <StartRequiredScreen setScreen={setScreen} loadGame={loadGame} hasSave={hasSave}/>} {!VALID_SCREENS.has(screen) && <RecoveryScreen reset={reset} setScreen={setScreen} party={party}/>} {screen === "battle" && (!battle || !current) && <RecoveryScreen reset={reset} setScreen={setScreen} party={party} message="Battle data was missing, so the app can safely return to the map."/>}</AnimatePresence></div></CardContent></Card><div className="hidden lg:block"><SidePanel player={player} party={party} active={active} setScreen={requestScreen} reset={reset} saveGame={saveGame} loadGame={loadGame} clearSave={clearSave} hasSave={hasSave} muted={muted} setMuted={setMuted} stats={stats} clock={clock} authUser={authUser} accountProfile={accountProfile} cloudSyncStatus={cloudSyncStatus} lastCloudSyncAt={lastCloudSyncAt} storage={storage} seen={seen} dex={dex} onObjectiveClick={setObjectiveModal}/></div></div><MobileNav setScreen={requestScreen} saveGame={saveGame} muted={muted} setMuted={setMuted} authUser={authUser}/><AnimatePresence>{cinematic && <CinematicOverlay cinematic={cinematic}/>}</AnimatePresence><AnimatePresence>{evolutionScene && <EvolutionOverlay scene={evolutionScene}/>}</AnimatePresence><AnimatePresence>{pendingEvolution && <EvolutionPromptModal info={pendingEvolution} proceed={() => confirmPendingEvolution()} skip={() => skipPendingEvolution()} />}</AnimatePresence><AnimatePresence>{toast && <motion.div initial={{ y: 30, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 30, opacity: 0 }} className="fixed bottom-5 left-1/2 -translate-x-1/2 px-5 py-3 rounded-2xl bg-slate-900 border border-cyan-300/30 shadow-xl text-cyan-100 font-bold z-50">{toast}</motion.div>}</AnimatePresence><AnimatePresence>{npc && <NpcModal npc={npc} close={() => { if (npc.reward) npc.reward(); setNpc(null); saveGame(false); }}/>}</AnimatePresence><AnimatePresence>{pendingAreaGate && <AreaGateModal gate={pendingAreaGate} enter={confirmAreaGate} stay={cancelAreaGate}/>}</AnimatePresence><AnimatePresence>{objectiveModal && <ObjectiveDetailModal info={objectiveModal} close={() => setObjectiveModal(null)} showOnMap={(target) => { if (!target) return; setObjectiveMapFocus(target); setObjectiveModal(null); setScreen("world"); setToast(`Map target highlighted: ${target.label || "Objective"}`); }}/>}</AnimatePresence><AnimatePresence>{battleResult && <BattleResultModal result={battleResult} onContinue={finishBattleResult} onEvolve={(index)=>startEvolutionFromBattle(index)} />}</AnimatePresence><AnimatePresence>{updateModalVisible && availableUpdate && <UpdateAvailableModal manifest={availableUpdate} status={updateStatus} nativeReady={nativeUpdaterReady} download={() => downloadAvailableUpdate(availableUpdate)} later={() => setUpdateModalVisible(false)} checkAgain={() => checkAppUpdate({ silent: false })}/>}</AnimatePresence><AnimatePresence>{dailyLoginModal && <DailyLoginModal info={dailyLoginModal} claim={claimDailyLoginReward}/>}</AnimatePresence><AnimatePresence>{renameMon && <RenameModal nickname={nickname} setNickname={setNickname} notice={renameNotice} applyNickname={applyNickname} skip={() => { setRenameMon(null); setNickname(""); setRenameNotice(""); setTimeout(() => saveGame(false), 50); }}/>}</AnimatePresence></div>;
 }
 
 
@@ -4728,6 +4972,69 @@ function friendshipStatusLabel(row, me) {
   return row.requester_id === me ? "Request sent" : "Wants to be friends";
 }
 
+
+function DailyLoginModal({ info, claim }) {
+  const milestone = info?.milestone;
+  return <motion.div initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} className="fixed inset-0 z-[1800] bg-black/82 backdrop-blur-md flex items-center justify-center p-4">
+    <motion.div initial={{scale:.94,y:24}} animate={{scale:1,y:0}} exit={{scale:.94,y:24}} className="w-full max-w-xl rounded-[2rem] bg-slate-950 border border-cyan-200/30 shadow-2xl shadow-cyan-300/20 overflow-hidden">
+      <div className="p-5 bg-gradient-to-br from-cyan-300 via-fuchsia-200 to-yellow-200 text-slate-950">
+        <div className="text-xs uppercase tracking-[0.28em] font-black">Daily Login Bonus</div>
+        <h2 className="text-4xl font-black">Day {info?.streak || 1} streak</h2>
+        <p className="font-bold">Synced from your Android/device clock.</p>
+      </div>
+      <div className="p-5 space-y-3">
+        <div className="rounded-2xl bg-white/5 border border-white/10 p-4 text-slate-100">
+          <b>Today:</b> {info?.baseReward?.item} x{info?.baseReward?.qty || 1} · {info?.baseReward?.money || 0} coins
+        </div>
+        {milestone && <div className="rounded-2xl bg-yellow-200/12 border border-yellow-200/30 p-4 text-yellow-50">
+          <div className="font-black text-xl">Milestone reward!</div>
+          <div>{milestone.title}</div>
+          {milestone.monster && <div>Exclusive collection Mythling: <b>{BESTIARY[milestone.monster]?.name || milestone.monster}</b></div>}
+          {milestone.item && <div>{milestone.item} x{milestone.qty || 1}</div>}
+        </div>}
+        <Button onClick={claim} className="w-full rounded-2xl bg-cyan-300 text-slate-950 font-black py-6">Claim Login Reward</Button>
+      </div>
+    </motion.div>
+  </motion.div>;
+}
+function MissionCard({ mission, kind, player, claimMission }) {
+  const live = normalizeLiveOps(player?.liveOps);
+  const bucket = kind === "weekly" ? live.weekly : live.daily;
+  const progress = missionProgress(player, mission);
+  const done = progress >= mission.target;
+  const claimed = !!bucket.claimed?.[mission.id];
+  return <div className={`rounded-2xl border p-3 ${claimed?"bg-lime-300/10 border-lime-200/30":done?"bg-cyan-300/10 border-cyan-200/30":"bg-white/5 border-white/10"}`}>
+    <div className="flex justify-between gap-2"><div><div className="font-black text-white">{mission.label}</div><div className="text-xs text-slate-300">{progress}/{mission.target}</div></div><Badge className={done?"bg-cyan-300 text-slate-950":"bg-slate-800 text-slate-200"}>{kind}</Badge></div>
+    <div className="h-2 mt-2 rounded-full bg-black/30 overflow-hidden"><div className="h-full bg-gradient-to-r from-cyan-300 to-fuchsia-300" style={{width:`${Math.min(100, progress/mission.target*100)}%`}}/></div>
+    <div className="mt-2 text-xs text-slate-300">Reward: {mission.reward.item} x{mission.reward.qty || 1} {mission.reward.money ? `· ${mission.reward.money} coins` : ""}</div>
+    <Button disabled={!done || claimed} onClick={()=>claimMission(mission, kind)} className="mt-2 w-full rounded-xl bg-cyan-300 text-slate-950 font-black disabled:opacity-40">{claimed ? "Claimed" : done ? "Claim" : "In progress"}</Button>
+  </div>;
+}
+function AchievementsScreen({ player, dex, party, storage, setScreen, claimAchievement }) {
+  const live = normalizeLiveOps(player?.liveOps);
+  const list = achievementList(player, dex, party, storage);
+  return <motion.div key="achievements" initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} className="min-h-full p-4 sm:p-6 bg-gradient-to-br from-slate-950 via-indigo-950 to-fuchsia-950">
+    <div className="flex justify-between gap-3 items-start mb-5"><div><div className="text-xs uppercase tracking-[0.32em] text-cyan-100 font-black">Tamer Awards</div><h2 className="text-4xl sm:text-5xl font-black text-white">Achievements & Titles</h2><p className="text-slate-300">Streaks, collection goals, trophies, and permanent titles.</p></div><Button onClick={()=>setScreen("world")} className="rounded-2xl bg-cyan-300 text-slate-950 font-black">Back</Button></div>
+    <div className="grid lg:grid-cols-[320px_1fr] gap-4">
+      <Card className="rounded-3xl bg-white/5 border-white/10"><CardContent className="p-5"><h3 className="text-2xl font-black">Profile</h3><div className="mt-3 space-y-2 text-slate-200"><div>Login streak: <b>{live.loginStreak || 0}</b></div><div>Best streak: <b>{live.bestLoginStreak || 0}</b></div><div>Active title: <b>{live.activeTitle || "None"}</b></div><div>Titles owned: <b>{live.titles.length}</b></div></div></CardContent></Card>
+      <div className="grid md:grid-cols-2 gap-3">{list.map(a=><div key={a.id} className={`rounded-3xl border p-4 ${live.achievements[a.id]?"bg-lime-300/10 border-lime-200/30":a.done?"bg-cyan-300/10 border-cyan-200/30":"bg-slate-900/70 border-white/10"}`}><div className="flex justify-between gap-2"><h3 className="text-xl font-black text-white">{a.title}</h3><Badge className={a.done?"bg-cyan-300 text-slate-950":"bg-slate-800 text-slate-200"}>{live.achievements[a.id]?"Claimed":a.done?"Ready":"Locked"}</Badge></div><p className="text-sm text-slate-300 mt-1">{a.desc}</p><div className="text-xs text-fuchsia-100 mt-2">Reward: {a.reward.title || ""} {a.reward.item || ""} {a.reward.qty ? "x"+a.reward.qty : ""}</div><Button disabled={!a.done || live.achievements[a.id]} onClick={()=>claimAchievement(a)} className="mt-3 w-full rounded-xl bg-cyan-300 text-slate-950 font-black disabled:opacity-40">{live.achievements[a.id]?"Claimed":a.done?"Claim reward":"Not complete"}</Button></div>)}</div>
+    </div>
+  </motion.div>;
+}
+function EventsScreen({ player, party, setScreen, claimMission, joinRaidEvent, attackRaid, claimRaidRewards }) {
+  const live = normalizeLiveOps(player?.liveOps);
+  const raid = live.raid;
+  const evs = currentEvents();
+  return <motion.div key="events" initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} className="min-h-full p-4 sm:p-6 bg-gradient-to-br from-slate-950 via-cyan-950 to-purple-950">
+    <div className="flex justify-between gap-3 items-start mb-5"><div><div className="text-xs uppercase tracking-[0.32em] text-cyan-100 font-black">Live Ops</div><h2 className="text-4xl sm:text-5xl font-black text-white">Missions, Events & Raids</h2><p className="text-slate-300">Daily/weekly goals and calendar-limited activities synced to your device date.</p></div><Button onClick={()=>setScreen("world")} className="rounded-2xl bg-cyan-300 text-slate-950 font-black">Back</Button></div>
+    <div className="grid xl:grid-cols-[1fr_1fr] gap-4">
+      <Card className="rounded-3xl bg-white/5 border-white/10"><CardContent className="p-5"><h3 className="text-2xl font-black mb-3">Daily missions</h3><div className="grid md:grid-cols-2 gap-3">{DAILY_MISSION_POOL.map(m=><MissionCard key={m.id} mission={m} kind="daily" player={player} claimMission={claimMission}/>)}</div></CardContent></Card>
+      <Card className="rounded-3xl bg-white/5 border-white/10"><CardContent className="p-5"><h3 className="text-2xl font-black mb-3">Weekly missions</h3><div className="grid md:grid-cols-2 gap-3">{WEEKLY_MISSION_POOL.map(m=><MissionCard key={m.id} mission={m} kind="weekly" player={player} claimMission={claimMission}/>)}</div></CardContent></Card>
+      <Card className="rounded-3xl bg-white/5 border-white/10"><CardContent className="p-5"><h3 className="text-2xl font-black mb-3">Time-limited events</h3><div className="space-y-3">{evs.map(e=><div key={e.id} className={`rounded-2xl border p-4 ${e.preview?"bg-slate-900/70 border-white/10":"bg-fuchsia-300/10 border-fuchsia-200/30"}`}><div className="flex justify-between gap-2"><div><div className="font-black text-white">{e.name}</div><div className="text-sm text-slate-300">{e.area} · {e.type}</div></div><Badge className={e.preview?"bg-slate-800 text-slate-200":"bg-fuchsia-200 text-slate-950"}>{e.preview?"Upcoming":"Active"}</Badge></div><div className="text-xs text-slate-300 mt-2">{e.start} → {e.end} · Featured: {BESTIARY[e.monster]?.name || e.monster} · Reward: {e.reward}</div></div>)}</div></CardContent></Card>
+      <Card className="rounded-3xl bg-white/5 border-white/10"><CardContent className="p-5"><h3 className="text-2xl font-black mb-3">Co-op Raid Battle</h3>{raid ? <div><div className="rounded-2xl bg-black/25 border border-white/10 p-4"><div className="font-black text-white">{raid.name}</div><div className="text-slate-300">Boss: {raid.boss?.name} Lv.{raid.boss?.level} · Allies: {raid.allies || 1}</div><div className="h-3 mt-3 rounded-full bg-black/40 overflow-hidden"><div className="h-full bg-gradient-to-r from-rose-400 to-yellow-200" style={{width:`${Math.max(0, Math.round((raid.boss.hp/raid.boss.maxHp)*100))}%`}}/></div><div className="text-xs text-slate-300 mt-1">HP {raid.boss.hp}/{raid.boss.maxHp} · Your damage {raid.damage || 0}</div></div><div className="grid grid-cols-2 gap-2 mt-3"><Button onClick={attackRaid} disabled={raid.resolved} className="rounded-xl bg-rose-300 text-slate-950 font-black disabled:opacity-40">Attack raid</Button><Button onClick={claimRaidRewards} disabled={!raid.resolved} className="rounded-xl bg-cyan-300 text-slate-950 font-black disabled:opacity-40">Claim rewards / catch</Button></div></div> : <div><p className="text-slate-300 mb-3">Create or join the featured raid. Full Cloudflare/Supabase co-op tables are included in the update zip; this screen already supports the reward/catch flow and can be connected to live rooms.</p><Button onClick={()=>joinRaidEvent()} className="w-full rounded-2xl bg-cyan-300 text-slate-950 font-black py-5">Join active raid</Button></div>}</CardContent></Card>
+    </div>
+  </motion.div>;
+}
 function FriendsScreen({ party, dex, player, setScreen, authUser, accountProfile }) {
   const [statusMode, setStatusMode] = useState("online");
   const [discoverable, setDiscoverable] = useState(true);
@@ -5681,7 +5988,7 @@ function AccountScreen({
           storage_snapshot: [],
           inventory_snapshot: {},
           dex_caught: 0,
-          save_version: 26,
+          save_version: 27,
           updated_at: new Date().toISOString()
         };
         await supabase.from("mythbound_profiles").upsert(payload, { onConflict: "id" });
@@ -5764,7 +6071,7 @@ function AccountScreen({
         throw new Error("Cloud row exists, but it does not contain party/storage save data. Upload a local save from the old device to repair it.");
       }
       hydrateSaveData(migrated, recovered._recoveredFromProfileSnapshot ? "recovered cloud snapshot" : "cloud save");
-      await uploadSaveDataToCloud({ ...migrated, version: 23, savedAt: Date.now() }, false);
+      await uploadSaveDataToCloud({ ...migrated, version: 27, savedAt: Date.now() }, false);
       setAccountStatus(`Cloud save loaded and upgraded for this version. ${cloudSaveSummary(profile)}`);
     } catch (e) {
       setAccountStatus(`Load cloud save error: ${e.message}`);
@@ -5912,7 +6219,7 @@ function MobileNav({ setScreen, saveGame, muted, setMuted, authUser }) {
       <Button onClick={()=>setScreen("multiplayer")} variant="secondary" className={navButton}><Gamepad2 className="w-5 h-5 mb-1"/>Online</Button>
       <Button onClick={()=>setScreen("friends")} variant="secondary" className={navButton}><Users className="w-5 h-5 mb-1"/>Friends</Button>
       <Button onClick={()=>setScreen("account")} variant="secondary" className={navButton}><Upload className="w-5 h-5 mb-1"/>{authUser ? "Acct ✓" : "Acct"}</Button>
-      <Button onClick={()=>setScreen("objectives")} variant="secondary" className={navButton}><Sparkles className="w-5 h-5 mb-1"/>Goals</Button><Button onClick={()=>setScreen("atlas")} variant="secondary" className={navButton}><Map className="w-5 h-5 mb-1"/>World</Button><Button onClick={()=>setScreen("update")} variant="secondary" className={navButton}><Upload className="w-5 h-5 mb-1"/>Update</Button>
+      <Button onClick={()=>setScreen("objectives")} variant="secondary" className={navButton}><Sparkles className="w-5 h-5 mb-1"/>Goals</Button><Button onClick={()=>setScreen("events")} variant="secondary" className={navButton}><Star className="w-5 h-5 mb-1"/>Events</Button><Button onClick={()=>setScreen("achievements")} variant="secondary" className={navButton}><BadgeCheck className="w-5 h-5 mb-1"/>Awards</Button><Button onClick={()=>setScreen("atlas")} variant="secondary" className={navButton}><Map className="w-5 h-5 mb-1"/>World</Button><Button onClick={()=>setScreen("update")} variant="secondary" className={navButton}><Upload className="w-5 h-5 mb-1"/>Update</Button>
       <Button onClick={()=>saveGame()} variant="secondary" className={navButton}><Save className="w-5 h-5 mb-1"/>Save</Button>
       <Button onClick={()=>setMuted(!muted)} variant="secondary" className={navButton}>{muted ? <VolumeX className="w-5 h-5 mb-1"/> : <Volume2 className="w-5 h-5 mb-1"/>}{muted ? "Muted" : "Sound"}</Button>
     </div>
